@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>Medicus Congress Group — Corporate Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0C1526;--navy2:#111D33;--graph:#1B2333;--gold:#C9A45C;--gold2:#E6CB8E;--ivory:#F6F2EA;--txt:#E8E4DA;--mut:#8E95A6;--line:rgba(201,164,92,.25)}
+body{font-family:Montserrat,sans-serif;background:var(--navy);color:var(--txt);line-height:1.6;font-weight:400}
+.wrap{width:1240px;margin:0 auto}
+a{color:inherit;text-decoration:none}
+.serif{font-family:"Cormorant Garamond",serif}
+.ph{background:linear-gradient(135deg,#2a3346,#151c2c) center/cover no-repeat}
+.btn{display:inline-flex;align-items:center;gap:14px;padding:19px 38px;background:var(--gold);color:var(--navy);font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase}
+.btn.o{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+.kick{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:16px}
+.kick:before{content:"";width:40px;height:1px;background:var(--gold)}
+h2{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:62px;line-height:1.05;letter-spacing:-.01em;margin:22px 0}
+h2 em{color:var(--gold2);font-style:italic}
+.mut{color:var(--mut);font-size:16px;max-width:520px}
+section{padding:130px 0}
+.rn{font-family:"Cormorant Garamond",serif;color:var(--gold);font-size:18px;font-style:italic}
+
+header{position:absolute;top:0;left:0;right:0;z-index:5;border-bottom:1px solid rgba(255,255,255,.1)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:100px}
+.logo{display:flex;align-items:center;gap:16px}
+.logo .m{width:50px;height:50px;border:1px solid var(--gold);display:grid;place-items:center;font-family:"Cormorant Garamond";font-size:28px;color:var(--gold);font-weight:600}
+.logo b{font-family:"Cormorant Garamond";font-size:24px;font-weight:600;letter-spacing:.06em;display:block;line-height:1}
+.logo small{font-size:9px;letter-spacing:.38em;color:var(--gold);text-transform:uppercase}
+nav{display:flex;gap:40px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:500}
+nav a:first-child{color:var(--gold)}
+.lang{font-size:12px;letter-spacing:.2em;display:flex;gap:30px;align-items:center}
+
+.hero{height:880px;position:relative;padding:0;display:flex;align-items:center;overflow:hidden}
+.hero .bg{position:absolute;inset:0;background-image:url(https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=2000&q=80)}
+.hero .bg:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,21,38,.97) 30%,rgba(12,21,38,.7) 60%,rgba(12,21,38,.35)),linear-gradient(0deg,var(--navy),transparent 30%)}
+.hero .wrap{position:relative;padding-top:60px}
+.hero h1{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:96px;line-height:.98;letter-spacing:-.015em;margin:34px 0 34px;max-width:860px}
+.hero h1 em{color:var(--gold2);font-style:italic}
+.hero p{font-size:18px;color:#B9BFCC;max-width:560px;font-weight:300;margin-bottom:50px}
+.hero .act{display:flex;gap:20px;align-items:center}
+.side{position:absolute;right:0;top:50%;transform:translateY(-30%);width:300px;border-left:1px solid var(--line);padding-left:34px}
+.side .it{padding:22px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.side .it:last-child{border:0}
+.side span{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.side b{display:block;font-family:"Cormorant Garamond";font-size:24px;font-weight:500;margin-top:4px}
+.scroll{position:absolute;left:50%;bottom:40px;font-size:11px;letter-spacing:.3em;color:var(--mut);text-transform:uppercase}
+
+.stats{padding:0;background:var(--navy)}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sv{padding:60px 40px;text-align:center;border-right:1px solid var(--line)}
+.sv:last-child{border:0}
+.sv .n{font-family:"Cormorant Garamond";font-size:84px;font-weight:500;color:var(--gold2);line-height:1}
+.sv .l{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--mut);margin-top:14px}
+
+.types .head{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;margin-bottom:80px}
+.tl{border-top:1px solid var(--line)}
+.trow{display:grid;grid-template-columns:90px 1fr 1.1fr 260px 60px;align-items:center;gap:40px;padding:36px 0;border-bottom:1px solid var(--line)}
+.trow h3{font-family:"Cormorant Garamond";font-weight:500;font-size:38px;line-height:1.1}
+.trow p{color:var(--mut);font-size:15px}
+.trow .img{height:140px}
+.trow .ar{width:56px;height:56px;border:1px solid var(--line);display:grid;place-items:center;color:var(--gold)}
+.trow.on{background:linear-gradient(90deg,rgba(201,164,92,.08),transparent);}
+.trow.on .ar{background:var(--gold);color:var(--navy)}
+
+.gal{background:var(--ivory);color:var(--navy)}
+.gal .mut{color:#6B7080}
+.gal h2 em{color:#A7843D}
+.gal .head{display:flex;justify-content:space-between;align-items:end;margin-bottom:70px}
+.gg{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:340px 340px;gap:24px}
+.gi{position:relative}
+.gi.w{grid-row:span 2}
+.gi .cap{position:absolute;left:0;bottom:0;right:0;padding:28px;background:linear-gradient(0deg,rgba(12,21,38,.9),transparent);color:#fff}
+.gi .cap span{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold2)}
+.gi .cap b{display:block;font-family:"Cormorant Garamond";font-size:28px;font-weight:500}
+.gi:before{content:"";position:absolute;inset:14px;border:1px solid rgba(230,203,142,.5);z-index:1;pointer-events:none}
+
+.proc{background:var(--navy2)}
+.pg{display:grid;grid-template-columns:repeat(4,1fr);margin-top:80px;border-left:1px solid var(--line)}
+.pc{padding:0 40px 10px;border-right:1px solid var(--line);position:relative}
+.pc .n{font-family:"Cormorant Garamond";font-size:110px;line-height:.9;color:transparent;-webkit-text-stroke:1px var(--gold);font-weight:600}
+.pc h4{font-family:"Cormorant Garamond";font-size:32px;font-weight:500;margin:30px 0 14px}
+.pc p{color:var(--mut);font-size:15px}
+.pc .dur{margin-top:30px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.pc:before{content:"";position:absolute;left:-5px;top:50px;width:9px;height:9px;background:var(--gold);transform:rotate(45deg)}
+
+.rev{position:relative}
+.rq{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:70px}
+.big{grid-column:span 2;display:grid;grid-template-columns:380px 1fr;gap:80px;align-items:center;padding-bottom:80px;border-bottom:1px solid var(--line)}
+.big .ph{height:460px;background-image:url(https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80);position:relative}
+.big .ph:after{content:"";position:absolute;inset:-18px 18px 18px -18px;border:1px solid var(--gold);z-index:-1}
+.qt{font-family:"Cormorant Garamond";font-size:44px;line-height:1.25;font-style:italic;font-weight:500}
+.qm{font-family:"Cormorant Garamond";font-size:140px;color:var(--gold);line-height:.5;height:60px}
+.auth{margin-top:36px}
+.auth b{font-size:15px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.auth span{display:block;color:var(--gold);font-size:14px;margin-top:4px}
+.sm .qt{font-size:28px}
+
+.part{background:var(--graph);padding:90px 0}
+.ph2{display:flex;align-items:center;justify-content:space-between;margin-bottom:50px}
+.pgrid{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line)}
+.pl{height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--line);color:#B3B9C6;gap:6px}
+.pl:last-child{border:0}
+.pl b{font-family:"Cormorant Garamond";font-size:26px;font-weight:600;letter-spacing:.06em}
+.pl small{font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--mut)}
+
+.cta{padding:0}
+.cg{display:grid;grid-template-columns:1fr 1fr;min-height:640px}
+.cg .ph{background-image:url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80);position:relative}
+.cg .ph:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(12,21,38,.6))}
+.cg .r{padding:110px 100px;background:var(--navy2);border-left:4px solid var(--gold)}
+.cl{margin:44px 0 50px}
+.cl div{display:grid;grid-template-columns:160px 1fr;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.cl span{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.cl b{font-weight:400;font-size:17px}
+
+footer{background:#080F1C;padding:80px 0 36px}
+.fg{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-bottom:60px;border-bottom:1px solid var(--line)}
+footer h5{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;font-weight:500}
+footer li{list-style:none;color:var(--mut);font-size:14px;margin-bottom:12px}
+.fb{display:flex;justify-content:space-between;padding-top:30px;font-size:12px;color:var(--mut);letter-spacing:.06em}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="logo"><div class="m">M</div><div><b>MEDICUS</b><small>Congress Group</small></div></div>
+  <nav><a>Главная</a><a>Мероприятия</a><a>Компетенции</a><a>Портфолио</a><a>О группе</a><a>Контакты</a></nav>
+  <div class="lang"><span style="color:var(--gold)">RU</span><span>EN</span><a class="btn o" style="padding:13px 22px;font-size:11px">Связаться</a></div>
+</div></header>
+
+<section class="hero">
+  <div class="bg ph"></div>
+  <div class="wrap">
+    <span class="kick">Est. 2004 · Москва · Вена · Дубай</span>
+    <h1>Организация <em>медицинских конгрессов</em> мирового уровня</h1>
+    <p>Мы создаём крупнейшие профессиональные площадки для врачебного сообщества — с безупречной научной программой, логистикой и протоколом.</p>
+    <div class="act"><a class="btn">Обсудить проект &nbsp;→</a><a class="btn o">Портфолио</a></div>
+    <div class="side">
+      <div class="it"><span>Член ассоциаций</span><b>ICCA · IAPCO</b></div>
+      <div class="it"><span>Крупнейший конгресс</span><b>14 200 делегатов</b></div>
+      <div class="it"><span>География</span><b>27 стран</b></div>
+    </div>
+  </div>
+  <div class="scroll">Scroll ↓</div>
+</section>
+
+<section class="stats"><div class="wrap"><div class="sg">
+  <div class="sv"><div class="n">22</div><div class="l">Года на рынке</div></div>
+  <div class="sv"><div class="n">1 150</div><div class="l">Мероприятий</div></div>
+  <div class="sv"><div class="n">420K</div><div class="l">Делегатов</div></div>
+  <div class="sv"><div class="n">6 800</div><div class="l">Врачей-спикеров</div></div>
+</div></div></section>
+
+<section class="types"><div class="wrap">
+  <div class="head"><div><span class="kick">Компетенции</span><h2>Форматы, <em>достойные</em> вашей репутации</h2></div><p class="mut">От закрытых экспертных советов до международных конгрессов с десятками тысяч участников — каждый проект реализуется по стандартам IAPCO.</p></div>
+  <div class="tl">
+    <div class="trow on"><span class="rn">I.</span><h3>Медицинские конгрессы</h3><p>Национальные и международные конгрессы, ассамблеи профессиональных сообществ.</p><div class="img ph" style="background-image:url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80)"></div><div class="ar">→</div></div>
+    <div class="trow"><span class="rn">II.</span><h3>Научные конференции</h3><p>Научно-практические форумы с рецензированием тезисов и изданием трудов.</p><div class="img ph" style="background-image:url(https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&q=80)"></div><div class="ar">→</div></div>
+    <div class="trow"><span class="rn">III.</span><h3>Обучающие семинары</h3><p>Мастер-классы и школы для медработников с аккредитацией НМО.</p><div class="img ph" style="background-image:url(https://images.unsplash.com/photo-1551076805-e1869033e561?w=600&q=80)"></div><div class="ar">→</div></div>
+    <div class="trow"><span class="rn">IV.</span><h3>Выставки медоборудования</h3><p>Международные экспозиции производителей медицинской техники.</p><div class="img ph" style="background-image:url(https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&q=80)"></div><div class="ar">→</div></div>
+    <div class="trow"><span class="rn">V.</span><h3>Онлайн-симпозиумы</h3><p>Премиальные трансляции из собственной студии с синхронным переводом.</p><div class="img ph" style="background-image:url(https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80)"></div><div class="ar">→</div></div>
+  </div>
+</div></section>
+
+<section class="gal"><div class="wrap">
+  <div class="head"><div><span class="kick">Портфолио</span><h2>Избранные <em>проекты</em></h2></div><p class="mut">События, которые стали точкой отсчёта для профессионального сообщества.</p></div>
+  <div class="gg">
+    <div class="gi w ph" style="background-image:url(https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=900&q=80)"><div class="cap"><span>Москва · 2025</span><b>Европейский конгресс онкологов</b></div></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=700&q=80)"><div class="cap"><span>Вена · 2025</span><b>Forum of Cardiology</b></div></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80)"><div class="cap"><span>Дубай · 2024</span><b>Gulf Medical Summit</b></div></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1531058020387-3be344556be6?w=700&q=80)"><div class="cap"><span>Санкт-Петербург · 2024</span><b>Ассамблея хирургов</b></div></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=700&q=80)"><div class="cap"><span>Казань · 2024</span><b>MedTech Exhibition</b></div></div>
+  </div>
+</div></section>
+
+<section class="proc"><div class="wrap">
+  <span class="kick">Методология</span><h2>Четыре этапа <em>безупречного</em> события</h2>
+  <div class="pg">
+    <div class="pc"><div class="n">01</div><h4>Заявка</h4><p>Конфиденциальная встреча с партнёром группы, формирование концепции.</p><div class="dur">До 3 дней</div></div>
+    <div class="pc"><div class="n">02</div><h4>Программа</h4><p>Научный комитет, приглашение ключевых лидеров мнений, аккредитация.</p><div class="dur">1–3 месяца</div></div>
+    <div class="pc"><div class="n">03</div><h4>Логистика</h4><p>Площадки, протокол, VIP-сопровождение и travel-менеджмент.</p><div class="dur">Параллельно</div></div>
+    <div class="pc"><div class="n">04</div><h4>Проведение</h4><p>Режиссура, трансляции, пост-отчёт для попечительского совета.</p><div class="dur">Событие + отчёт</div></div>
+  </div>
+</div></section>
+
+<section class="rev"><div class="wrap">
+  <span class="kick">Отзывы</span><h2>Слово <em>нашим клиентам</em></h2>
+  <div class="rq">
+    <div class="big"><div class="ph"></div><div><div class="qm">“</div><div class="qt">Medicus — это уровень, на котором конгресс перестаёт быть мероприятием и становится событием для всей отрасли.</div><div class="auth"><b>Академик В. А. Соколов</b><span>Президент Российского общества хирургов</span></div></div></div>
+    <div class="sm"><div class="qt">«Безукоризненный протокол и внимание к каждому из 300 зарубежных гостей.»</div><div class="auth"><b>Д-р Анна Келлер</b><span>Executive Director, European Medical Association</span></div></div>
+    <div class="sm"><div class="qt">«Партнёр, которому мы доверяем наши ключевые международные симпозиумы.»</div><div class="auth"><b>Михаил Петров</b><span>Вице-президент, международная фарм. компания</span></div></div>
+  </div>
+</div></section>
+
+<section class="part"><div class="wrap">
+  <div class="ph2"><span class="kick">Партнёры и клиенты</span><span class="rn">более 300 организаций</span></div>
+  <div class="pgrid">
+    <div class="pl"><b>ROSMED</b><small>Association</small></div>
+    <div class="pl"><b>Ætherna</b><small>Pharmaceuticals</small></div>
+    <div class="pl"><b>St. Clinic</b><small>Medical Center</small></div>
+    <div class="pl"><b>EURACARD</b><small>Society</small></div>
+    <div class="pl"><b>Helvetia</b><small>Medical Devices</small></div>
+  </div>
+</div></section>
+
+<section class="cta"><div class="cg">
+  <div class="ph"></div>
+  <div class="r">
+    <span class="kick">Контакты</span><h2>Начнём <em>ваш</em> конгресс</h2><p class="mut">Партнёр группы свяжется с вами в течение одного рабочего дня.</p>
+    <div class="cl"><div><span>Телефон</span><b>+7 (495) 777-00-10</b></div><div><span>E-mail</span><b>office@medicus-group.com</b></div><div><span>Штаб-квартира</span><b>Москва, Пресненская наб., 10, башня «Империя»</b></div></div>
+    <a class="btn">Запросить предложение &nbsp;→</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="fg">
+    <div><div class="logo"><div class="m">M</div><div><b>MEDICUS</b><small>Congress Group</small></div></div><p class="mut" style="font-size:14px;margin-top:24px;max-width:340px">Профессиональный организатор медицинских конгрессов (PCO) с 2004 года.</p></div>
+    <div><h5>Мероприятия</h5><ul><li>Конгрессы</li><li>Конференции</li><li>Семинары</li><li>Выставки</li><li>Симпозиумы</li></ul></div>
+    <div><h5>Группа</h5><ul><li>О нас</li><li>Портфолио</li><li>Партнёры</li><li>Пресс-центр</li></ul></div>
+    <div><h5>Офисы</h5><ul><li>Москва</li><li>Вена</li><li>Дубай</li></ul></div>
+  </div>
+  <div class="fb"><span>© 2004–2026 Medicus Congress Group</span><span>Политика конфиденциальности</span></div>
+</div></footer>
+</body>
+</html>

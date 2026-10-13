@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>МедФорум — Clinical Trust</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#0B5ED7;--dark:#0A2540;--light:#F2F7FD;--line:#DCE7F5;--muted:#5B6B82;--cyan:#1EA7E1}
+body{font-family:Inter,sans-serif;color:var(--dark);background:#fff;line-height:1.55}
+.wrap{width:1200px;margin:0 auto}
+.ph{background:linear-gradient(135deg,#cfe2f8,#9cc3ee) center/cover no-repeat}
+a{color:inherit;text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;padding:16px 30px;border-radius:8px;font-weight:600;font-size:16px}
+.btn.ghost{background:#fff;color:var(--blue);border:1.5px solid var(--line)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--blue);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.eyebrow:before{content:"";width:18px;height:2px;background:var(--blue)}
+h2{font-size:42px;line-height:1.15;letter-spacing:-.02em;margin:14px 0 16px;font-weight:700}
+.lead{color:var(--muted);font-size:18px;max-width:620px}
+section{padding:110px 0}
+
+.top{background:var(--dark);color:#B8C7DC;font-size:13px}
+.top .wrap{display:flex;justify-content:space-between;padding:10px 0}
+header{border-bottom:1px solid var(--line);background:#fff}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:84px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:22px}
+.logo i{width:42px;height:42px;border-radius:10px;background:var(--blue);position:relative}
+.logo i:before,.logo i:after{content:"";position:absolute;background:#fff;border-radius:2px;left:50%;top:50%;transform:translate(-50%,-50%)}
+.logo i:before{width:20px;height:6px}.logo i:after{width:6px;height:20px}
+.logo small{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.04em}
+nav{display:flex;gap:30px;font-weight:500;font-size:15px;white-space:nowrap}
+nav a:first-child{color:var(--blue)}
+.hright{display:flex;align-items:center;gap:24px;font-weight:600;white-space:nowrap}
+
+.hero{background:linear-gradient(180deg,var(--light),#fff);padding:80px 0 100px;position:relative;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center}
+.hero h1{font-size:60px;line-height:1.06;letter-spacing:-.03em;font-weight:800;margin:20px 0 24px}
+.hero h1 span{color:var(--blue)}
+.hero p{font-size:19px;color:var(--muted);max-width:540px;margin-bottom:38px}
+.hero .actions{display:flex;gap:14px}
+.badges{display:flex;gap:28px;margin-top:48px;padding-top:30px;border-top:1px solid var(--line)}
+.badges div{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.badges b{width:34px;height:34px;border-radius:50%;background:#E3EEFB;color:var(--blue);display:grid;place-items:center;font-size:15px}
+.hero-img{position:relative;height:560px}
+.hero-img .ph{position:absolute;inset:0 0 0 40px;border-radius:20px;background-image:url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80)}
+.card-float{position:absolute;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(10,37,64,.14);padding:20px 22px}
+.cf1{left:0;bottom:50px;width:290px}
+.cf1 .t{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.cf1 .n{font-weight:700;font-size:17px;margin:6px 0 12px}
+.cf1 .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.cf1 .bar{height:6px;background:#E3EEFB;border-radius:4px;margin-top:10px}
+.cf1 .bar i{display:block;height:100%;width:78%;background:var(--blue);border-radius:4px}
+.cf2{right:-20px;top:40px;display:flex;align-items:center;gap:14px}
+.cf2 b{width:46px;height:46px;border-radius:12px;background:#E6F7EE;color:#14A05A;display:grid;place-items:center;font-size:22px}
+.cf2 strong{display:block;font-size:15px}.cf2 span{font-size:12px;color:var(--muted)}
+
+.stats{padding:0;margin-top:-30px;position:relative}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(10,37,64,.06)}
+.stat{padding:40px 36px;border-right:1px solid var(--line)}
+.stat:last-child{border:0}
+.stat .num{font-size:52px;font-weight:800;color:var(--blue);letter-spacing:-.03em;line-height:1}
+.stat .lbl{margin-top:12px;color:var(--muted);font-size:15px}
+
+.types .head{display:flex;justify-content:space-between;align-items:end;margin-bottom:56px}
+.grid5{display:grid;grid-template-columns:repeat(6,1fr);gap:24px}
+.tcard{grid-column:span 2;border:1px solid var(--line);border-radius:14px;padding:34px;background:#fff;position:relative}
+.tcard:nth-child(4),.tcard:nth-child(5){grid-column:span 3}
+.tcard.feat{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tcard.feat p{color:#CFE0FA}
+.ico{width:56px;height:56px;border-radius:12px;background:var(--light);display:grid;place-items:center;margin-bottom:26px}
+.feat .ico{background:rgba(255,255,255,.15)}
+.ico svg{width:28px;height:28px;stroke:var(--blue);fill:none;stroke-width:1.8}
+.feat .ico svg{stroke:#fff}
+.tcard h3{font-size:22px;margin-bottom:10px}
+.tcard p{color:var(--muted);font-size:15px}
+.tcard .more{margin-top:24px;font-weight:600;font-size:14px;color:var(--blue)}
+.feat .more{color:#fff}
+.tcard .tag{position:absolute;top:30px;right:30px;font-size:12px;padding:5px 10px;border-radius:20px;background:var(--light);color:var(--blue);font-weight:600}
+.feat .tag{background:rgba(255,255,255,.18);color:#fff}
+
+.gallery{background:var(--light)}
+.gallery .head{text-align:center;margin-bottom:56px}
+.gallery .lead{margin:0 auto}
+.ggrid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:260px 260px;gap:20px}
+.gi{border-radius:14px;position:relative;overflow:hidden}
+.gi:nth-child(1){grid-column:span 2;grid-row:span 2}
+.gi:nth-child(4){grid-column:span 2}
+.gi .cap{position:absolute;left:16px;bottom:16px;right:16px;background:rgba(255,255,255,.95);border-radius:10px;padding:14px 16px}
+.gi .cap b{display:block;font-size:15px}.gi .cap span{font-size:13px;color:var(--muted)}
+
+.steps .wrap{display:grid;grid-template-columns:420px 1fr;gap:80px}
+.tl{position:relative}
+.tl:before{content:"";position:absolute;left:27px;top:20px;bottom:20px;width:2px;background:var(--line)}
+.step{display:flex;gap:30px;padding:0 0 44px;position:relative}
+.step:last-child{padding:0}
+.step .n{flex:none;width:56px;height:56px;border-radius:50%;background:#fff;border:2px solid var(--blue);color:var(--blue);font-weight:700;display:grid;place-items:center;font-size:18px;z-index:1}
+.step:first-child .n{background:var(--blue);color:#fff}
+.step .c{border:1px solid var(--line);border-radius:14px;padding:24px 28px;flex:1}
+.step h4{font-size:20px;margin-bottom:6px}.step p{color:var(--muted);font-size:15px}
+.step .d{font-size:13px;color:var(--blue);font-weight:600;margin-bottom:8px}
+.cert{margin-top:40px;background:var(--light);border-radius:14px;padding:28px;display:flex;gap:18px;align-items:center}
+.cert b{font-size:34px;color:var(--blue)}
+
+.reviews{background:var(--dark);color:#fff}
+.reviews h2{color:#fff}.reviews .lead{color:#9FB2CC}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
+.rv{background:#10304F;border:1px solid #1C4167;border-radius:16px;padding:36px}
+.rv .q{font-size:56px;line-height:.6;color:var(--cyan);font-family:Georgia,serif}
+.rv p{color:#D6E2F1;font-size:16px;margin:20px 0 30px}
+.who{display:flex;gap:14px;align-items:center;border-top:1px solid #1C4167;padding-top:24px}
+.who .av{width:52px;height:52px;border-radius:50%;background:#2a5c8a center/cover}
+.who b{display:block}.who span{font-size:13px;color:#9FB2CC}
+.stars{color:#FFC94D;letter-spacing:3px;font-size:14px}
+
+.partners{padding:90px 0}
+.partners .head{text-align:center;margin-bottom:46px;color:var(--muted);font-weight:500}
+.plist{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.pl{height:120px;display:flex;align-items:center;justify-content:center;gap:10px;border-right:1px solid var(--line);color:#8296B0;font-weight:700;font-size:17px}
+.pl:last-child{border:0}
+.pl i{width:30px;height:30px;border-radius:50%;border:3px solid #A9BBD2}
+.pl:nth-child(2) i{border-radius:6px}.pl:nth-child(4) i{border-radius:0;transform:rotate(45deg);width:22px;height:22px}
+
+.cta{padding:0 0 110px}
+.ctabox{background:linear-gradient(120deg,var(--blue),#1A7FE8);border-radius:24px;color:#fff;display:grid;grid-template-columns:1.2fr 1fr;overflow:hidden}
+.ctabox .l{padding:70px}
+.ctabox h2{color:#fff;font-size:44px}
+.ctabox p{color:#D6E6FB;font-size:18px;margin-bottom:36px}
+.contacts{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px;padding-top:30px;border-top:1px solid rgba(255,255,255,.25)}
+.contacts span{font-size:13px;color:#BFD6F7}.contacts b{display:block;font-size:18px;margin-top:4px}
+.ctabox .r{padding:50px 60px 50px 0}
+.form{background:#fff;border-radius:16px;padding:36px;color:var(--dark)}
+.form h4{font-size:22px;margin-bottom:22px}
+.inp{border:1px solid var(--line);border-radius:8px;padding:15px 16px;color:#98A6BA;font-size:15px;margin-bottom:12px}
+.form .btn{width:100%;justify-content:center;margin-top:8px}
+.form small{display:block;text-align:center;color:var(--muted);font-size:12px;margin-top:14px}
+
+footer{background:#F7FAFE;border-top:1px solid var(--line);padding:70px 0 30px}
+.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:50px}
+footer p,footer li{color:var(--muted);font-size:14px}
+footer ul{list-style:none}footer li{margin-bottom:10px}
+footer h5{font-size:14px;margin-bottom:18px}
+.fbot{border-top:1px solid var(--line);padding-top:26px;display:flex;justify-content:space-between;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap"><span>Аккредитованный организатор мероприятий НМО · Лицензия № 0421-М</span><span>Пн–Пт 9:00–19:00 · info@medforum.ru</span></div></div>
+<header><div class="wrap">
+  <div class="logo"><i></i><div>МедФорум<small>ОРГАНИЗАЦИЯ МЕДИЦИНСКИХ СОБЫТИЙ</small></div></div>
+  <nav><a>Главная</a><a>Мероприятия</a><a>Услуги</a><a>Портфолио</a><a>О компании</a><a>Контакты</a></nav>
+  <div class="hright"><span>+7 (495) 120-45-67</span><a class="btn" style="padding:12px 22px;font-size:15px">Оставить заявку</a></div>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div>
+    <span class="eyebrow">С 2009 года · Аккредитация НМО</span>
+    <h1>Организация <span>медицинских конгрессов</span> и&nbsp;конференций</h1>
+    <p>Полный цикл подготовки научных мероприятий для врачей и медицинских организаций — от научной программы до аккредитации баллов НМО.</p>
+    <div class="actions"><a class="btn">Обсудить мероприятие →</a><a class="btn ghost">Смотреть портфолио</a></div>
+    <div class="badges"><div><b>✓</b>Баллы НМО</div><div><b>✓</b>Соответствие 152-ФЗ</div><div><b>✓</b>Этический кодекс AIPM</div></div>
+  </div>
+  <div class="hero-img">
+    <div class="ph"></div>
+    <div class="card-float cf1"><div class="t">Ближайшее событие</div><div class="n">XII Всероссийский конгресс кардиологов</div><div class="row"><span>Регистрация</span><span>1 560 / 2 000</span></div><div class="bar"><i></i></div></div>
+    <div class="card-float cf2"><b>✚</b><div><strong>12 баллов НМО</strong><span>для участников</span></div></div>
+  </div>
+</div></section>
+
+<section class="stats"><div class="wrap">
+  <div class="stat"><div class="num">17</div><div class="lbl">лет опыта в организации медицинских событий</div></div>
+  <div class="stat"><div class="num">640+</div><div class="lbl">проведённых конгрессов и конференций</div></div>
+  <div class="stat"><div class="num">185 000</div><div class="lbl">участников из 42 стран</div></div>
+  <div class="stat"><div class="num">3 200</div><div class="lbl">врачей-спикеров и экспертов</div></div>
+</div></section>
+
+<section class="types"><div class="wrap">
+  <div class="head"><div><span class="eyebrow">Форматы</span><h2>Виды мероприятий</h2><p class="lead">Проводим события любого масштаба — от закрытых экспертных советов до международных конгрессов.</p></div><a class="btn ghost">Все услуги →</a></div>
+  <div class="grid5">
+    <div class="tcard feat"><span class="tag">от 1 000 чел.</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/></svg></div><h3>Медицинские конгрессы</h3><p>Многодневные национальные и международные конгрессы с параллельными секциями.</p><div class="more">Подробнее →</div></div>
+    <div class="tcard"><span class="tag">НМО</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></div><h3>Научные конференции</h3><p>Научно-практические конференции с публикацией тезисов и сборников.</p><div class="more">Подробнее →</div></div>
+    <div class="tcard"><span class="tag">20–80 чел.</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M2 8l10-5 10 5-10 5z"/><path d="M6 10v5c3 3 9 3 12 0v-5"/></svg></div><h3>Обучающие семинары</h3><p>Мастер-классы, школы и симуляционные тренинги для медработников.</p><div class="more">Подробнее →</div></div>
+    <div class="tcard"><span class="tag">до 15 000 м²</span><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 10h3l1-2 2 4 1-2h3"/></svg></div><h3>Выставки медоборудования</h3><p>Застройка стендов, логистика экспонатов и деловая программа для производителей медтехники.</p><div class="more">Подробнее →</div></div>
+    <div class="tcard"><span class="tag">Онлайн</span><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg></div><h3>Онлайн-симпозиумы</h3><p>Трансляции из студии, интерактив с аудиторией и контроль присутствия для НМО.</p><div class="more">Подробнее →</div></div>
+  </div>
+</div></section>
+
+<section class="gallery"><div class="wrap">
+  <div class="head"><span class="eyebrow">Портфолио</span><h2>Прошедшие мероприятия</h2><p class="lead">Более 640 событий в 38 городах России и за рубежом.</p></div>
+  <div class="ggrid">
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1000&q=80)"><div class="cap"><b>Национальный конгресс терапевтов</b><span>Москва, Крокус Экспо · 4 800 участников</span></div></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80)"></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&q=80)"></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1000&q=80)"><div class="cap"><b>Школа по хирургии</b><span>Санкт-Петербург · 120 участников</span></div></div>
+  </div>
+</div></section>
+
+<section class="steps"><div class="wrap">
+  <div><span class="eyebrow">Процесс</span><h2>Как мы работаем</h2><p class="lead">Прозрачный процесс с персональным менеджером проекта на каждом этапе.</p>
+    <div class="cert"><b>✚</b><div><strong>Персональный менеджер</strong><p style="color:var(--muted);font-size:14px">Один контакт от заявки до пост-отчёта</p></div></div>
+  </div>
+  <div class="tl">
+    <div class="step"><div class="n">01</div><div class="c"><div class="d">1–3 дня</div><h4>Заявка и бриф</h4><p>Определяем цели, аудиторию, формат и бюджет мероприятия.</p></div></div>
+    <div class="step"><div class="n">02</div><div class="c"><div class="d">2–6 недель</div><h4>Научная программа</h4><p>Формируем программный комитет, приглашаем спикеров, подаём документы на НМО.</p></div></div>
+    <div class="step"><div class="n">03</div><div class="c"><div class="d">Параллельно</div><h4>Логистика</h4><p>Площадка, техника, проживание и трансфер участников, регистрация.</p></div></div>
+    <div class="step"><div class="n">04</div><div class="c"><div class="d">День события</div><h4>Проведение и отчёт</h4><p>Сопровождение на площадке, трансляция, итоговая аналитика.</p></div></div>
+  </div>
+</div></section>
+
+<section class="reviews"><div class="wrap">
+  <span class="eyebrow" style="color:var(--cyan)">Отзывы</span><h2>Нам доверяют врачи и ассоциации</h2><p class="lead">Мнения наших клиентов и участников мероприятий.</p>
+  <div class="rgrid">
+    <div class="rv"><div class="q">“</div><div class="stars">★★★★★</div><p>Безупречная организация конгресса на 3 000 участников. Научная программа, регистрация, баллы НМО — всё отработано без единого сбоя.</p><div class="who"><div class="av" style="background-image:url(https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&q=80)"></div><div><b>Игорь Савельев</b><span>д.м.н., председатель Ассоциации кардиологов</span></div></div></div>
+    <div class="rv"><div class="q">“</div><div class="stars">★★★★★</div><p>Работаем с командой уже 6 лет. Ценю точность, соблюдение сроков и умение работать с самыми требовательными спикерами.</p><div class="who"><div class="av" style="background-image:url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&q=80)"></div><div><b>Елена Морозова</b><span>Главный врач ГКБ № 15</span></div></div></div>
+    <div class="rv"><div class="q">“</div><div class="stars">★★★★★</div><p>Онлайн-симпозиум собрал 9 000 зрителей. Отличная студия, интерактив и подробная аналитика по вовлечённости.</p><div class="who"><div class="av" style="background-image:url(https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&q=80)"></div><div><b>Андрей Ким</b><span>Медицинский директор, фарм. компания</span></div></div></div>
+  </div>
+</div></section>
+
+<section class="partners"><div class="wrap">
+  <div class="head">Нам доверяют более 200 медицинских организаций</div>
+  <div class="plist"><div class="pl"><i></i>РосМедАссоц</div><div class="pl"><i></i>КлиникаПлюс</div><div class="pl"><i></i>ФармаЛайн</div><div class="pl"><i></i>НМИЦ</div><div class="pl"><i></i>BioGen</div><div class="pl"><i></i>МедТех</div></div>
+</div></section>
+
+<section class="cta"><div class="wrap"><div class="ctabox">
+  <div class="l"><h2>Планируете медицинское мероприятие?</h2><p>Расскажите о задаче — подготовим концепцию и смету в течение 2 рабочих дней.</p><a class="btn ghost" style="border:0">Получить консультацию →</a>
+    <div class="contacts"><div><span>Телефон</span><b>+7 (495) 120-45-67</b></div><div><span>E-mail</span><b>info@medforum.ru</b></div><div><span>Адрес</span><b>Москва, ул. Пироговская, 12</b></div><div><span>Режим работы</span><b>Пн–Пт 9:00–19:00</b></div></div>
+  </div>
+  <div class="r"><div class="form"><h4>Заявка на мероприятие</h4><div class="inp">Ваше имя</div><div class="inp">Организация</div><div class="inp">Телефон или e-mail</div><div class="inp">Формат мероприятия ▾</div><a class="btn">Отправить заявку</a><small>Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности</small></div></div>
+</div></div></section>
+
+<footer><div class="wrap">
+  <div class="fgrid">
+    <div><div class="logo" style="margin-bottom:20px"><i></i><div>МедФорум<small>ОРГАНИЗАЦИЯ МЕДИЦИНСКИХ СОБЫТИЙ</small></div></div><p>Профессиональная организация медицинских конгрессов, конференций и образовательных программ с 2009 года.</p></div>
+    <div><h5>Мероприятия</h5><ul><li>Конгрессы</li><li>Конференции</li><li>Семинары</li><li>Выставки</li><li>Онлайн-симпозиумы</li></ul></div>
+    <div><h5>Компания</h5><ul><li>О нас</li><li>Портфолио</li><li>Команда</li><li>Вакансии</li></ul></div>
+    <div><h5>Контакты</h5><ul><li>+7 (495) 120-45-67</li><li>info@medforum.ru</li><li>Москва, ул. Пироговская, 12</li></ul></div>
+  </div>
+  <div class="fbot"><span>© 2026 МедФорум. Все права защищены.</span><span>Политика конфиденциальности · Пользовательское соглашение</span></div>
+</div></footer>
+</body>
+</html>

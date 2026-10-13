@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>Забота — Soft Care</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--mint:#BFEBDD;--mint2:#E6F7F1;--mintd:#2FA38A;--sky:#D6ECFA;--sky2:#EEF7FD;--peach:#FFE3D6;--lav:#E7E3FA;--ink:#24414B;--mut:#6F8790;--cream:#FFFCF8}
+body{font-family:Nunito,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+.wrap{width:1200px;margin:0 auto}
+a{color:inherit;text-decoration:none}
+.ph{background:linear-gradient(135deg,var(--mint),var(--sky)) center/cover no-repeat}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--mintd);color:#fff;padding:18px 34px;border-radius:100px;font-weight:800;font-size:16px;box-shadow:0 12px 30px rgba(47,163,138,.28)}
+.btn.w{background:#fff;color:var(--ink);box-shadow:0 8px 24px rgba(36,65,75,.08)}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--mint2);color:var(--mintd);padding:8px 18px;border-radius:100px;font-weight:800;font-size:14px}
+h2{font-size:46px;line-height:1.15;font-weight:900;letter-spacing:-.02em;margin:18px 0 16px}
+h2 span{color:var(--mintd)}
+.mut{color:var(--mut);font-size:18px;max-width:600px}
+section{padding:110px 0}
+.c{text-align:center}.c .mut{margin:0 auto}
+
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:100px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:900;font-size:26px}
+.logo i{width:46px;height:46px;border-radius:50%;background:var(--mint);display:grid;place-items:center;font-style:normal;font-size:22px;color:var(--mintd)}
+nav{display:flex;gap:8px;background:#fff;padding:8px;border-radius:100px;box-shadow:0 6px 24px rgba(36,65,75,.06)}
+nav a{padding:10px 20px;border-radius:100px;font-weight:700;font-size:15px;color:var(--mut)}
+nav a:first-child{background:var(--mint2);color:var(--mintd)}
+
+.hero{padding:40px 0 100px}
+.hbox{background:linear-gradient(135deg,var(--mint2),var(--sky2));border-radius:48px;padding:80px;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden}
+.blob{position:absolute;border-radius:50%}
+.hbox .blob.a{width:340px;height:340px;background:var(--mint);opacity:.5;right:-80px;top:-100px}
+.hbox .blob.b{width:200px;height:200px;background:var(--peach);opacity:.7;left:46%;bottom:-90px}
+.hero h1{font-size:62px;line-height:1.08;font-weight:900;letter-spacing:-.025em;margin:22px 0 24px;position:relative}
+.hero h1 span{color:var(--mintd);position:relative;white-space:nowrap}
+.hero h1 span:after{content:"";position:absolute;left:0;right:0;bottom:4px;height:14px;background:var(--mint);z-index:-1;border-radius:8px}
+.hero p{font-size:19px;color:var(--mut);margin-bottom:38px;max-width:520px}
+.hero .act{display:flex;gap:14px;align-items:center}
+.people{display:flex;align-items:center;gap:14px;margin-top:44px}
+.ava{display:flex}
+.ava i{width:46px;height:46px;border-radius:50%;border:3px solid #fff;margin-left:-12px;background:center/cover}
+.ava i:first-child{margin:0}
+.people small{color:var(--mut);font-size:14px}.people b{color:var(--ink)}
+.himg{position:relative;height:520px}
+.himg .ph{position:absolute;inset:0 20px 0 40px;border-radius:200px 200px 40px 40px;background-image:url(https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=900&q=80);border:10px solid #fff;box-shadow:0 30px 60px rgba(36,65,75,.12)}
+.bub{position:absolute;background:#fff;border-radius:22px;padding:16px 20px;box-shadow:0 16px 40px rgba(36,65,75,.12);display:flex;align-items:center;gap:12px;font-weight:800;font-size:15px}
+.bub em{font-style:normal;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:20px}
+.bub small{display:block;font-weight:600;color:var(--mut);font-size:12px}
+.b1{left:-10px;top:70px}.b1 em{background:var(--peach)}
+.b2{right:-10px;bottom:70px}.b2 em{background:var(--mint)}
+
+.stats{padding:0 0 30px}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.st{border-radius:32px;padding:36px;display:flex;flex-direction:column;gap:8px}
+.st:nth-child(1){background:var(--mint2)}.st:nth-child(2){background:var(--sky2)}.st:nth-child(3){background:#FFF2EB}.st:nth-child(4){background:#F3F1FD}
+.st .ic{width:54px;height:54px;border-radius:18px;background:#fff;display:grid;place-items:center;font-size:24px;margin-bottom:12px}
+.st .n{font-size:50px;font-weight:900;line-height:1;letter-spacing:-.02em}
+.st .l{color:var(--mut);font-weight:600}
+
+.tg{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;margin-top:60px}
+.tc{background:#fff;border-radius:32px;padding:34px 26px 30px;text-align:center;box-shadow:0 10px 30px rgba(36,65,75,.06);position:relative}
+.ill{width:130px;height:130px;margin:0 auto 24px;border-radius:50%;display:grid;place-items:center}
+.ill svg{width:96px;height:96px}
+.tc h3{font-size:20px;font-weight:900;line-height:1.25;margin-bottom:10px}
+.tc p{color:var(--mut);font-size:14px}
+.tc .go{margin:22px auto 0;width:44px;height:44px;border-radius:50%;background:var(--mint2);color:var(--mintd);display:grid;place-items:center;font-weight:900}
+
+.gal{background:var(--mint2);border-radius:60px;margin:0 30px}
+.gg{display:grid;grid-template-columns:1.2fr 1fr 1fr;grid-template-rows:250px 250px;gap:20px;margin-top:60px}
+.gi{border-radius:32px;position:relative;border:6px solid #fff}
+.gi:first-child{grid-row:span 2}
+.gi .tg2{position:absolute;left:18px;top:18px;background:#fff;border-radius:100px;padding:8px 16px;font-weight:800;font-size:13px}
+
+.proc .row{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:70px;position:relative}
+.proc .row:before{content:"";position:absolute;top:60px;left:12%;right:12%;border-top:3px dashed var(--mint)}
+.s4{text-align:center;position:relative}
+.s4 .circ{width:120px;height:120px;margin:0 auto 26px;border-radius:50%;background:#fff;box-shadow:0 12px 30px rgba(36,65,75,.08);display:grid;place-items:center;font-size:44px;position:relative}
+.s4 .circ b{position:absolute;top:-4px;right:-4px;width:38px;height:38px;border-radius:50%;background:var(--mintd);color:#fff;display:grid;place-items:center;font-size:16px;border:4px solid var(--cream)}
+.s4 h4{font-size:22px;font-weight:900;margin-bottom:8px}
+.s4 p{color:var(--mut);font-size:15px;max-width:240px;margin:0 auto}
+
+.rev{background:linear-gradient(180deg,var(--cream),var(--sky2))}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px}
+.rc{background:#fff;border-radius:36px;padding:38px;box-shadow:0 14px 40px rgba(36,65,75,.07);position:relative}
+.rc:nth-child(2){transform:translateY(30px)}
+.rc .hd{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.rc .av{width:64px;height:64px;border-radius:22px;background:center/cover}
+.rc .hd b{display:block;font-size:17px}.rc .hd span{color:var(--mut);font-size:13px}
+.rc p{font-size:16px;color:#466069}
+.rc .hearts{margin-top:22px;color:#FF8A8A;font-size:18px;letter-spacing:4px}
+.rc .qq{position:absolute;right:30px;top:24px;font-size:80px;line-height:1;color:var(--mint);font-weight:900}
+
+.part{padding:80px 0 100px;background:var(--sky2)}
+.pr{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:40px}
+.pl{background:#fff;border-radius:24px;height:100px;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:900;color:#8FA6AE;font-size:17px}
+.pl i{width:30px;height:30px;border-radius:50%;background:var(--mint)}
+.pl:nth-child(2n) i{background:var(--sky);border-radius:10px}
+.pl:nth-child(3n) i{background:var(--peach)}
+
+.cta .cb{background:var(--mintd);border-radius:48px;padding:70px 80px;color:#fff;display:grid;grid-template-columns:1.1fr 1fr;gap:50px;align-items:center;position:relative;overflow:hidden}
+.cb .blob{width:300px;height:300px;background:rgba(255,255,255,.1);right:-60px;bottom:-120px}
+.cb .blob.t{width:180px;height:180px;left:40%;top:-90px;right:auto;bottom:auto}
+.cb h2{color:#fff;font-size:50px}
+.cb p{color:#DDF5EE;font-size:18px;margin-bottom:34px}
+.cb .btn{background:#fff;color:var(--mintd);box-shadow:none}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative}
+.cc{background:rgba(255,255,255,.14);border-radius:26px;padding:24px}
+.cc em{font-style:normal;font-size:26px}
+.cc span{display:block;font-size:13px;color:#CFEFE6;margin-top:10px}.cc b{font-size:17px}
+
+footer{padding:80px 0 34px}
+.fg{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-bottom:50px}
+footer h5{font-weight:900;font-size:16px;margin-bottom:16px}
+footer li{list-style:none;color:var(--mut);margin-bottom:10px;font-weight:600}
+.fb{background:#fff;border-radius:100px;padding:20px 34px;display:flex;justify-content:space-between;color:var(--mut);font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="logo"><i>♡</i>Вместе&nbsp;<span style="color:var(--mintd)">Мед</span></div>
+  <nav><a>Главная</a><a>Мероприятия</a><a>Как мы работаем</a><a>Истории</a><a>Контакты</a></nav>
+  <a class="btn" style="padding:14px 26px;font-size:15px">Связаться с нами</a>
+</div></header>
+
+<section class="hero"><div class="wrap"><div class="hbox">
+  <div class="blob a"></div><div class="blob b"></div>
+  <div style="position:relative">
+    <span class="chip">♡ Мероприятия, созданные с заботой</span>
+    <h1>Организация медицинских <span>конгрессов</span> и&nbsp;конференций</h1>
+    <p>Мы берём на себя все хлопоты, чтобы врачи могли сосредоточиться на главном — знаниях, общении и заботе о пациентах.</p>
+    <div class="act"><a class="btn">Обсудить мероприятие</a><a class="btn w">Наши истории →</a></div>
+    <div class="people"><div class="ava"><i style="background-image:url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=120&q=80)"></i><i style="background-image:url(https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=120&q=80)"></i><i style="background-image:url(https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=120&q=80);background-color:var(--peach)"></i><i style="background:var(--mint);display:grid;place-items:center;font-weight:900;font-size:12px;font-style:normal">+5K</i></div><small><b>5 000+ врачей</b> доверили нам<br>своё профессиональное развитие</small></div>
+  </div>
+  <div class="himg"><div class="ph"></div>
+    <div class="bub b1"><em>🎓</em><div>Баллы НМО<small>для каждого участника</small></div></div>
+    <div class="bub b2"><em>🤝</em><div>98% участников<small>вернутся снова</small></div></div>
+  </div>
+</div></div></section>
+
+<section class="stats"><div class="wrap"><div class="sg">
+  <div class="st"><div class="ic">🌱</div><div class="n">12 лет</div><div class="l">заботливой организации</div></div>
+  <div class="st"><div class="ic">📅</div><div class="n">480+</div><div class="l">тёплых мероприятий</div></div>
+  <div class="st"><div class="ic">👥</div><div class="n">96 000</div><div class="l">довольных участников</div></div>
+  <div class="st"><div class="ic">🩺</div><div class="n">2 300</div><div class="l">врачей-спикеров</div></div>
+</div></div></section>
+
+<section class="types"><div class="wrap c">
+  <span class="chip">Наши форматы</span><h2>Мероприятия для <span>каждого</span></h2><p class="mut">Подберём формат, в котором вашим участникам будет комфортно учиться и общаться.</p>
+  <div class="tg">
+    <div class="tc"><div class="ill" style="background:var(--mint2)"><svg viewBox="0 0 96 96"><circle cx="48" cy="30" r="12" fill="#2FA38A"/><path d="M26 74c0-14 10-24 22-24s22 10 22 24z" fill="#2FA38A"/><circle cx="20" cy="40" r="8" fill="#8ED6C3"/><path d="M6 76c0-10 6-17 14-17s14 7 14 17z" fill="#8ED6C3"/><circle cx="76" cy="40" r="8" fill="#8ED6C3"/><path d="M62 76c0-10 6-17 14-17s14 7 14 17z" fill="#8ED6C3"/></svg></div><h3>Медицинские конгрессы</h3><p>Большие встречи профессионального сообщества</p><div class="go">→</div></div>
+    <div class="tc"><div class="ill" style="background:var(--sky2)"><svg viewBox="0 0 96 96"><rect x="14" y="16" width="68" height="44" rx="10" fill="#9CCDF0"/><path d="M26 48l12-12 10 8 16-16" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="72" r="8" fill="#4A9FD8"/><path d="M34 92c0-8 6-12 14-12s14 4 14 12z" fill="#4A9FD8"/></svg></div><h3>Научные конференции</h3><p>Делимся открытиями и исследованиями</p><div class="go">→</div></div>
+    <div class="tc"><div class="ill" style="background:#FFF2EB"><svg viewBox="0 0 96 96"><path d="M12 36l36-18 36 18-36 18z" fill="#FFB596"/><path d="M26 44v16c12 10 32 10 44 0V44l-22 11z" fill="#FF9670"/><rect x="80" y="36" width="4" height="22" rx="2" fill="#FF9670"/></svg></div><h3>Обучающие семинары</h3><p>Практика в небольших уютных группах</p><div class="go">→</div></div>
+    <div class="tc"><div class="ill" style="background:#F3F1FD"><svg viewBox="0 0 96 96"><rect x="12" y="26" width="72" height="48" rx="12" fill="#BDB2F2"/><path d="M28 52h10l5-10 8 18 5-8h12" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="38" y="76" width="20" height="8" rx="4" fill="#9585E6"/></svg></div><h3>Выставки медтехники</h3><p>Знакомство с новым оборудованием</p><div class="go">→</div></div>
+    <div class="tc"><div class="ill" style="background:var(--mint2)"><svg viewBox="0 0 96 96"><rect x="10" y="20" width="76" height="52" rx="12" fill="#8ED6C3"/><circle cx="48" cy="42" r="10" fill="#fff"/><path d="M32 66c0-10 7-14 16-14s16 4 16 14z" fill="#fff"/><circle cx="76" cy="30" r="5" fill="#FF8A8A"/></svg></div><h3>Онлайн-симпозиумы</h3><p>Учиться можно из любой точки страны</p><div class="go">→</div></div>
+  </div>
+</div></section>
+
+<section class="gal"><div class="wrap c">
+  <span class="chip" style="background:#fff">Истории</span><h2>Моменты, которые <span>согревают</span></h2><p class="mut">Каждое мероприятие — это сотни встреч, улыбок и новых знаний.</p>
+  <div class="gg">
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80)"><span class="tg2">🩺 Школа педиатров · Казань</span></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&q=80)"><span class="tg2">Конгресс терапевтов</span></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80)"><span class="tg2">Мастер-класс</span></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80)"><span class="tg2">Конференция медсестёр</span></div>
+    <div class="gi ph" style="background-image:url(https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&q=80)"><span class="tg2">Онлайн-симпозиум</span></div>
+  </div>
+</div></section>
+
+<section class="proc"><div class="wrap c">
+  <span class="chip">Просто и понятно</span><h2>Как мы <span>работаем</span></h2><p class="mut">Четыре простых шага — и вы спокойны за своё мероприятие.</p>
+  <div class="row">
+    <div class="s4"><div class="circ">💬<b>1</b></div><h4>Заявка</h4><p>Вы рассказываете о мечте — мы внимательно слушаем</p></div>
+    <div class="s4"><div class="circ">📋<b>2</b></div><h4>Программа</h4><p>Подбираем спикеров и темы, близкие вашей аудитории</p></div>
+    <div class="s4"><div class="circ">🚌<b>3</b></div><h4>Логистика</h4><p>Площадка, проживание, трансфер — всё продумано</p></div>
+    <div class="s4"><div class="circ">🎉<b>4</b></div><h4>Проведение</h4><p>Встречаем каждого гостя с улыбкой</p></div>
+  </div>
+</div></section>
+
+<section class="rev"><div class="wrap c">
+  <span class="chip">Отзывы</span><h2>Нам <span>пишут</span></h2>
+  <div class="rg" style="text-align:left">
+    <div class="rc"><div class="qq">“</div><div class="hd"><div class="av" style="background-image:url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&q=80)"></div><div><b>Ольга Смирнова</b><span>Врач-педиатр, Казань</span></div></div><p>Впервые на конференции было так уютно! Организаторы помнили обо всём — от кофе-брейков до удобных мест для мам с детьми.</p><div class="hearts">♥♥♥♥♥</div></div>
+    <div class="rc"><div class="qq">“</div><div class="hd"><div class="av" style="background-image:url(https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&q=80)"></div><div><b>Сергей Волков</b><span>Главный врач детской больницы</span></div></div><p>Команда «Вместе Мед» стала для нас настоящим другом. Каждый семинар — тёплый, живой и очень полезный.</p><div class="hearts">♥♥♥♥♥</div></div>
+    <div class="rc"><div class="qq">“</div><div class="hd"><div class="av" style="background-image:url(https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&q=80)"></div><div><b>Наталья Белова</b><span>Ассоциация медсестёр России</span></div></div><p>Онлайн-симпозиум собрал медсестёр из 60 городов. Спасибо за заботу о каждом участнике!</p><div class="hearts">♥♥♥♥♥</div></div>
+  </div>
+</div></section>
+
+<section class="part"><div class="wrap c">
+  <span class="chip" style="background:#fff">Друзья и партнёры</span>
+  <div class="pr"><div class="pl"><i></i>ДетМед</div><div class="pl"><i></i>ЗдравАссоц</div><div class="pl"><i></i>Клиника+</div><div class="pl"><i></i>ФармаДом</div><div class="pl"><i></i>Медсёстры РФ</div><div class="pl"><i></i>VitaCare</div></div>
+</div></section>
+
+<section class="cta"><div class="wrap"><div class="cb">
+  <div class="blob"></div><div class="blob t"></div>
+  <div style="position:relative"><h2>Давайте создадим тёплое событие вместе</h2><p>Напишите нам — мы перезвоним в течение часа и всё расскажем.</p><a class="btn">Оставить заявку ♡</a></div>
+  <div class="cards">
+    <div class="cc"><em>📞</em><span>Позвонить</span><b>+7 (843) 200-30-40</b></div>
+    <div class="cc"><em>✉️</em><span>Написать</span><b>hello@vmeste-med.ru</b></div>
+    <div class="cc"><em>📍</em><span>Приехать</span><b>Казань, ул. Баумана, 5</b></div>
+    <div class="cc"><em>💬</em><span>Мессенджер</span><b>@vmeste_med</b></div>
+  </div>
+</div></div></section>
+
+<footer><div class="wrap">
+  <div class="fg">
+    <div><div class="logo"><i>♡</i>Вместе&nbsp;<span style="color:var(--mintd)">Мед</span></div><p style="color:var(--mut);margin-top:18px;max-width:340px;font-weight:600">Организуем медицинские мероприятия с теплом и вниманием к каждому участнику.</p></div>
+    <div><h5>Мероприятия</h5><ul><li>Конгрессы</li><li>Конференции</li><li>Семинары</li><li>Выставки</li><li>Онлайн</li></ul></div>
+    <div><h5>О нас</h5><ul><li>Команда</li><li>Истории</li><li>Партнёры</li></ul></div>
+    <div><h5>Контакты</h5><ul><li>+7 (843) 200-30-40</li><li>hello@vmeste-med.ru</li></ul></div>
+  </div>
+  <div class="fb"><span>© 2026 Вместе Мед · Сделано с ♡</span><span>Политика конфиденциальности</span></div>
+</div></footer>
+</body>
+</html>
