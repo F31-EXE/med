@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>XII Всероссийский конгресс кардиологов — МедФорум</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#0B5ED7;--dark:#0A2540;--light:#F2F7FD;--line:#DCE7F5;--muted:#5B6B82;--cyan:#1EA7E1;--green:#14A05A}
+body{font-family:Inter,sans-serif;color:var(--dark);background:#fff;line-height:1.55}
+.wrap{width:1200px;margin:0 auto}
+.ph{background:linear-gradient(135deg,#cfe2f8,#9cc3ee) center/cover no-repeat}
+.ph{background-color:#B6D3F3}
+a{color:inherit;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--blue);color:#fff;padding:16px 30px;border-radius:8px;font-weight:600;font-size:16px;white-space:nowrap}
+.btn.ghost{background:#fff;color:var(--blue);border:1.5px solid var(--line)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--blue);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.eyebrow:before{content:"";width:18px;height:2px;background:var(--blue)}
+h2{font-size:36px;line-height:1.15;letter-spacing:-.02em;margin:12px 0 14px;font-weight:700}
+.lead{color:var(--muted);font-size:17px;max-width:640px}
+section{padding:90px 0}
+.shead{display:flex;justify-content:space-between;align-items:end;margin-bottom:44px}
+
+.top{background:var(--dark);color:#B8C7DC;font-size:13px}
+.top .wrap{display:flex;justify-content:space-between;padding:10px 0}
+header{border-bottom:1px solid var(--line);background:#fff}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:84px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:22px}
+.logo i{width:42px;height:42px;border-radius:10px;background:var(--blue);position:relative}
+.logo i:before,.logo i:after{content:"";position:absolute;background:#fff;border-radius:2px;left:50%;top:50%;transform:translate(-50%,-50%)}
+.logo i:before{width:20px;height:6px}.logo i:after{width:6px;height:20px}
+.logo small{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.04em}
+nav{display:flex;gap:30px;font-weight:500;font-size:15px;white-space:nowrap}
+nav a.on{color:var(--blue)}
+.hright{display:flex;align-items:center;gap:24px;font-weight:600;white-space:nowrap}
+
+.ev-hero{background:linear-gradient(180deg,var(--light),#fff);padding:28px 0 70px}
+.crumbs{font-size:14px;color:var(--muted);margin-bottom:34px}
+.crumbs b{color:var(--dark);font-weight:500}
+.ev-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:50px;align-items:start}
+.tags{display:flex;gap:10px;margin-bottom:22px}
+.tg{font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;background:#E3EEFB;color:var(--blue)}
+.tg.g{background:#E6F7EE;color:var(--green)}
+.tg.d{background:var(--dark);color:#fff}
+.ev-hero h1{font-size:52px;line-height:1.08;letter-spacing:-.03em;font-weight:800;margin-bottom:20px}
+.ev-hero .sub{font-size:19px;color:var(--muted);max-width:680px;margin-bottom:34px}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:34px}
+.meta>div{padding:22px 24px;border-right:1px solid var(--line);display:flex;gap:14px;align-items:flex-start}
+.meta>div:last-child{border:0}
+.meta b{flex:none;width:42px;height:42px;border-radius:10px;background:var(--light);display:grid;place-items:center}
+.meta svg{width:22px;height:22px;stroke:var(--blue);fill:none;stroke-width:1.8}
+.meta span{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.meta strong{font-size:16px;line-height:1.35;display:block;margin-top:2px}
+.ev-hero .actions{display:flex;gap:14px}
+.ev-img{height:300px;border-radius:16px;background-image:url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=900&q=80);margin-bottom:-110px;position:relative}
+.ev-img .live{position:absolute;left:16px;top:16px;background:rgba(255,255,255,.95);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:600}
+.reg-card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 50px rgba(10,37,64,.10);padding:28px;position:relative;margin:0 20px}
+.reg-card .t{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.count{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 22px}
+.count div{background:var(--light);border-radius:10px;text-align:center;padding:10px 0}
+.count strong{display:block;font-size:24px;font-weight:800;color:var(--blue);line-height:1.1}
+.count span{font-size:11px;color:var(--muted)}
+.rrow{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.rrow b{color:var(--dark)}
+.bar{height:6px;background:#E3EEFB;border-radius:4px;margin:10px 0 22px}
+.bar i{display:block;height:100%;width:78%;background:var(--blue);border-radius:4px}
+.reg-card .btn{width:100%}
+.reg-card small{display:block;text-align:center;font-size:12px;color:var(--muted);margin-top:12px}
+
+.tabs{position:relative;border-bottom:1px solid var(--line);background:#fff;margin-top:40px}
+.tabs .wrap{display:flex;gap:6px}
+.tabs a{padding:20px 18px;font-weight:600;font-size:15px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs a.on{color:var(--blue);border-color:var(--blue)}
+
+.about .wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:70px}
+.about p{color:#334a66;font-size:17px;margin-bottom:16px}
+.dirs{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.dirs span{border:1px solid var(--line);border-radius:8px;padding:9px 14px;font-size:14px;font-weight:500}
+.facts{background:var(--light);border-radius:16px;padding:32px}
+.facts h4{font-size:18px;margin-bottom:18px}
+.fact{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);font-size:15px}
+.fact:last-of-type{border:0}
+.fact span{color:var(--muted)}
+.orgs{margin-top:22px;padding-top:22px;border-top:1px solid var(--line)}
+.orgs span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.orgs div{display:flex;align-items:center;gap:12px;margin-top:12px;font-weight:600;font-size:15px}
+.orgs i{width:36px;height:36px;border-radius:50%;border:3px solid #A9BBD2;flex:none}
+
+.prog{background:var(--light)}
+.days{display:flex;gap:12px;margin-bottom:28px}
+.day{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 22px;min-width:180px}
+.day b{display:block;font-size:16px}.day span{font-size:13px;color:var(--muted)}
+.day.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.day.on span{color:#CFE0FA}
+.halls{display:flex;gap:10px;margin-bottom:20px;font-size:14px;color:var(--muted);align-items:center}
+.halls span{padding:6px 12px;border-radius:20px;background:#fff;border:1px solid var(--line)}
+.halls span.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+.sched{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.slot{display:grid;grid-template-columns:150px 1fr 230px 140px;gap:30px;padding:26px 32px;border-bottom:1px solid var(--line);align-items:start}
+.slot:last-child{border:0}
+.slot .tm{font-weight:700;font-size:17px}
+.slot .tm small{display:block;font-weight:500;color:var(--muted);font-size:13px}
+.slot h4{font-size:18px;margin-bottom:6px}
+.slot p{color:var(--muted);font-size:14px}
+.slot .mods{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.slot .mods i{width:36px;height:36px;border-radius:50%;flex:none;margin-right:-18px;border:2px solid #fff}
+.slot .mods em{font-style:normal;margin-left:22px}
+.slot .hl{justify-self:end;font-size:12px;font-weight:600;padding:5px 10px;border-radius:20px;background:#E3EEFB;color:var(--blue)}
+.slot.brk{background:#FAFCFF;padding:16px 32px}
+.slot.brk h4{font-size:15px;font-weight:500;color:var(--muted);margin:0}
+.slot.key{border-left:4px solid var(--blue)}
+.slot .nmo{display:inline-block;margin-top:10px;font-size:12px;font-weight:600;color:var(--green);background:#E6F7EE;padding:4px 10px;border-radius:20px}
+
+.spk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.spk .ph{height:280px;border-radius:14px;margin-bottom:16px;position:relative}
+.spk .ph .role{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.95);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--blue)}
+.spk b{display:block;font-size:17px}
+.spk span{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+
+.venue{background:var(--light)}
+.venue .wrap{display:grid;grid-template-columns:1fr 1.25fr;gap:40px}
+.vinfo{background:#fff;border:1px solid var(--line);border-radius:16px;padding:36px}
+.vinfo h3{font-size:24px;margin-bottom:6px}
+.vinfo .addr{color:var(--muted);margin-bottom:26px}
+.vrow{display:flex;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+.vrow b{flex:none;width:40px;height:40px;border-radius:10px;background:var(--light);display:grid;place-items:center;color:var(--blue);font-size:18px}
+.vrow strong{display:block;font-size:15px}.vrow span{font-size:14px;color:var(--muted)}
+.vphotos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.vphotos div{height:110px;border-radius:10px}
+.map{border-radius:16px;position:relative;overflow:hidden;border:1px solid var(--line);min-height:560px;background:#EAF1EA}
+.map .blk{position:absolute;inset:0;background:
+repeating-linear-gradient(90deg,transparent 0 118px,#fff 118px 132px),
+repeating-linear-gradient(0deg,transparent 0 96px,#fff 96px 108px),#E9EEF3}
+.map .park{position:absolute;left:60px;top:300px;width:250px;height:180px;background:#CFE8CF;border-radius:20px}
+.map .river{position:absolute;right:-120px;top:-60px;width:420px;height:720px;border-radius:50%;border:46px solid #BFDDF5;border-left-color:transparent;border-bottom-color:transparent;transform:rotate(18deg)}
+.map .road{position:absolute;left:-40px;top:250px;width:120%;height:22px;background:#FFE7A8;transform:rotate(-12deg);box-shadow:0 0 0 3px #fff}
+.map .pin{position:absolute;left:52%;top:40%;transform:translate(-50%,-100%);text-align:center}
+.map .pin .lbl{background:#fff;border-radius:10px;padding:10px 14px;box-shadow:0 12px 30px rgba(10,37,64,.18);font-size:14px;font-weight:600;margin-bottom:8px;white-space:nowrap}
+.map .pin .lbl span{display:block;font-size:12px;color:var(--muted);font-weight:500}
+.map .pin i{display:block;margin:0 auto;width:34px;height:34px;background:var(--blue);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:4px solid #fff;box-shadow:0 6px 14px rgba(11,94,215,.4)}
+.map .metro{position:absolute;left:28%;top:62%;background:#fff;border-radius:20px;padding:6px 12px 6px 6px;font-size:13px;font-weight:600;display:flex;gap:8px;align-items:center;box-shadow:0 6px 18px rgba(10,37,64,.12)}
+.map .metro b{width:22px;height:22px;border-radius:50%;background:#E4202E;color:#fff;font-size:12px;display:grid;place-items:center}
+.map .zoom{position:absolute;right:16px;top:16px;background:#fff;border-radius:8px;box-shadow:0 4px 14px rgba(10,37,64,.12);font-size:20px;font-weight:600}
+.map .zoom div{width:40px;height:40px;display:grid;place-items:center;border-bottom:1px solid var(--line)}
+.map .zoom div:last-child{border:0}
+
+.tariffs{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:50px}
+.tf{border:1px solid var(--line);border-radius:16px;padding:32px;position:relative}
+.tf.on{border:2px solid var(--blue);box-shadow:0 20px 50px rgba(11,94,215,.12)}
+.tf .badge{position:absolute;top:-13px;left:32px;background:var(--blue);color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px}
+.tf h4{font-size:20px}
+.tf .who{color:var(--muted);font-size:14px;margin:4px 0 20px}
+.tf .pr{font-size:40px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.tf .pr small{font-size:15px;font-weight:500;color:var(--muted)}
+.tf ul{list-style:none;margin:24px 0 28px;padding-top:22px;border-top:1px solid var(--line)}
+.tf li{font-size:15px;padding:6px 0 6px 28px;position:relative}
+.tf li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+.tf li.no{color:#9AA8BB}.tf li.no:before{content:"—";color:#B7C3D3}
+.tf .btn{width:100%}
+
+.regbox{background:linear-gradient(120deg,var(--blue),#1A7FE8);border-radius:20px;display:grid;grid-template-columns:1fr 1.15fr;overflow:hidden;color:#fff}
+.regbox .l{padding:56px}
+.regbox h3{font-size:34px;line-height:1.15;margin-bottom:14px;letter-spacing:-.02em}
+.regbox p{color:#D6E6FB;font-size:16px;margin-bottom:28px}
+.steps3 div{display:flex;gap:14px;align-items:center;margin-bottom:16px;font-size:15px}
+.steps3 b{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:14px;flex:none}
+.regbox .r{padding:40px 44px 40px 0}
+.form{background:#fff;border-radius:16px;padding:32px;color:var(--dark)}
+.form h4{font-size:20px;margin-bottom:6px}
+.form .hint{font-size:13px;color:var(--muted);margin-bottom:20px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.inp{border:1px solid var(--line);border-radius:8px;padding:14px 16px;color:#98A6BA;font-size:15px;margin-bottom:12px}
+.inp.sel{display:flex;justify-content:space-between}
+.fmt{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.fmt div{border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;display:flex;gap:10px;align-items:center}
+.fmt div i{width:18px;height:18px;border-radius:50%;border:2px solid #B7C3D3;flex:none}
+.fmt div.on{border-color:var(--blue);background:#F5F9FF}
+.fmt div.on i{border:5px solid var(--blue)}
+.chk{display:flex;gap:10px;font-size:13px;color:var(--muted);margin:4px 0 18px;align-items:flex-start}
+.chk i{width:18px;height:18px;border-radius:4px;background:var(--blue);flex:none;color:#fff;font-size:12px;display:grid;place-items:center;font-style:normal;margin-top:1px}
+.form .btn{width:100%}
+
+.ptier{margin-bottom:34px}
+.ptier>span{display:block;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.prow{display:grid;gap:16px}
+.pl{height:110px;border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:center;gap:10px;color:#8296B0;font-weight:700;font-size:17px;background:#fff}
+.pl i{width:30px;height:30px;border-radius:50%;border:3px solid #A9BBD2}
+.pl.gen{height:150px;font-size:26px;color:var(--dark);border-color:#BFD5F2;background:var(--light)}
+.pl.gen i{width:44px;height:44px;border-color:var(--blue)}
+.pl.sm{height:84px;font-size:15px}
+
+.docs{background:var(--light)}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.doc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:18px}
+.doc .ic{width:48px;height:56px;border-radius:6px;background:#FDECEC;color:#D93A3A;font-size:11px;font-weight:800;display:grid;place-items:center;flex:none;position:relative}
+.doc .ic.x{background:#E6F7EE;color:var(--green)}
+.doc .ic.w{background:#E3EEFB;color:var(--blue)}
+.doc div{flex:1}
+.doc b{display:block;font-size:16px}
+.doc span{font-size:13px;color:var(--muted)}
+.doc .dl{flex:none;width:42px;height:42px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;color:var(--blue);font-weight:700}
+
+.more-ev{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.mc{border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.mc .ph{height:190px;position:relative}
+.mc .dt{position:absolute;left:16px;top:16px;background:#fff;border-radius:10px;padding:8px 12px;text-align:center;line-height:1.1}
+.mc .dt b{display:block;font-size:22px;color:var(--blue)}.mc .dt span{font-size:12px;color:var(--muted);text-transform:uppercase}
+.mc .bd{padding:22px 24px}
+.mc .bd small{font-size:13px;color:var(--blue);font-weight:600}
+.mc h4{font-size:18px;margin:6px 0 8px;line-height:1.3}
+.mc p{font-size:14px;color:var(--muted)}
+
+footer{background:#F7FAFE;border-top:1px solid var(--line);padding:70px 0 30px}
+.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:50px}
+footer p,footer li{color:var(--muted);font-size:14px}
+footer ul{list-style:none}footer li{margin-bottom:10px}
+footer h5{font-size:14px;margin-bottom:18px}
+.fbot{border-top:1px solid var(--line);padding-top:26px;display:flex;justify-content:space-between;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap"><span>Аккредитованный организатор мероприятий НМО · Лицензия № 0421-М</span><span>Пн–Пт 9:00–19:00 · info@medforum.ru</span></div></div>
+<header><div class="wrap">
+  <div class="logo"><i></i><div>МедФорум<small>ОРГАНИЗАЦИЯ МЕДИЦИНСКИХ СОБЫТИЙ</small></div></div>
+  <nav><a href="index.html">Главная</a><a class="on">Мероприятия</a><a>Услуги</a><a>Обучение</a><a>О компании</a><a>Контакты</a></nav>
+  <div class="hright"><span>+7 (495) 120-45-67</span><a class="btn" style="padding:12px 22px;font-size:15px">Оставить заявку</a></div>
+</div></header>
+
+<section class="ev-hero"><div class="wrap">
+  <div class="crumbs">Главная &nbsp;/&nbsp; Мероприятия &nbsp;/&nbsp; <b>XII Всероссийский конгресс кардиологов</b></div>
+  <div class="ev-grid">
+    <div>
+      <div class="tags"><span class="tg d">Конгресс</span><span class="tg">Кардиология</span><span class="tg g">✚ 12 баллов НМО</span><span class="tg">Очно + онлайн</span></div>
+      <h1>XII Всероссийский конгресс кардиологов</h1>
+      <p class="sub">«Профилактика и лечение сердечно-сосудистых заболеваний: от доказательной медицины к клинической практике»</p>
+      <div class="meta">
+        <div><b><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></b><div><span>Даты</span><strong>18–20 ноября 2026</strong></div></div>
+        <div><b><svg viewBox="0 0 24 24"><path d="M12 22s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></b><div><span>Площадка</span><strong>Москва, Конгресс-центр «Технополис»</strong></div></div>
+        <div><b><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6M16 4a3.5 3.5 0 0 1 0 7M18 14c2.5.5 4 2.5 4 6"/></svg></b><div><span>Участники</span><strong>2 000 делегатов, 86 спикеров</strong></div></div>
+      </div>
+      <div class="actions"><a class="btn">Зарегистрироваться →</a><a class="btn ghost">↓ Скачать программу (PDF)</a></div>
+    </div>
+    <div>
+      <div class="ev-img ph"><span class="live">● Регистрация открыта</span></div>
+      <div class="reg-card">
+        <div class="t">До начала конгресса</div>
+        <div class="count"><div><strong>35</strong><span>дней</span></div><div><strong>14</strong><span>часов</span></div><div><strong>27</strong><span>минут</span></div><div><strong>08</strong><span>секунд</span></div></div>
+        <div class="rrow"><span>Зарегистрировано</span><b>1 560 / 2 000</b></div>
+        <div class="bar"><i></i></div>
+        <a class="btn">Зарегистрироваться</a>
+        <small>Участие для врачей бесплатное · подтверждение придёт на e-mail</small>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<div class="tabs"><div class="wrap"><a class="on">О конгрессе</a><a>Программа</a><a>Спикеры</a><a>Площадка</a><a>Условия участия</a><a>Регистрация</a><a>Партнёры</a><a>Документы</a></div></div>
+
+<section class="about"><div class="wrap">
+  <div>
+    <span class="eyebrow">О конгрессе</span><h2>Главное событие года для кардиологов России</h2>
+    <p>Конгресс объединяет ведущих специалистов в области кардиологии, сердечно-сосудистой хирургии и функциональной диагностики. Три дня, четыре параллельных зала, более 40 научных сессий, клинические разборы и мастер-классы.</p>
+    <p>Мероприятие подано на аккредитацию в Координационный совет по развитию НМО. Участники очной и онлайн-части получат индивидуальный код подтверждения.</p>
+    <div class="dirs"><span>Артериальная гипертензия</span><span>Сердечная недостаточность</span><span>Нарушения ритма</span><span>Ишемическая болезнь сердца</span><span>Кардиоонкология</span><span>Визуализация в кардиологии</span><span>Реабилитация</span></div>
+  </div>
+  <div class="facts">
+    <h4>Ключевые факты</h4>
+    <div class="fact"><span>Формат</span><b>Очно + онлайн-трансляция</b></div>
+    <div class="fact"><span>Научных сессий</span><b>42</b></div>
+    <div class="fact"><span>Залов</span><b>4 параллельных</b></div>
+    <div class="fact"><span>Баллы НМО</span><b>12 (по 4 за день)</b></div>
+    <div class="fact"><span>Выставка</span><b>60 стендов, 1 800 м²</b></div>
+    <div class="orgs"><span>Организаторы</span>
+      <div><i></i>Российская ассоциация кардиологов</div>
+      <div><i style="border-radius:8px"></i>НМИЦ кардиологии Минздрава России</div>
+    </div>
+  </div>
+</div></section>
+
+<section class="prog"><div class="wrap">
+  <div class="shead"><div><span class="eyebrow">Программа</span><h2>Научная программа</h2><p class="lead">Программа предварительная и может уточняться. Актуальная версия всегда доступна для скачивания.</p></div><a class="btn ghost">↓ Полная программа PDF</a></div>
+  <div class="days">
+    <div class="day on"><b>День 1</b><span>18 ноября, среда</span></div>
+    <div class="day"><b>День 2</b><span>19 ноября, четверг</span></div>
+    <div class="day"><b>День 3</b><span>20 ноября, пятница</span></div>
+  </div>
+  <div class="halls">Зал: <span class="on">Все залы</span><span>Пленарный</span><span>Зал А</span><span>Зал Б</span><span>Зал В</span></div>
+  <div class="sched">
+    <div class="slot brk"><div class="tm">08:00</div><h4>Регистрация участников, открытие выставки, приветственный кофе</h4><div></div><div></div></div>
+    <div class="slot key"><div class="tm">10:00<small>– 11:30</small></div><div><h4>Торжественное открытие. Пленарное заседание</h4><p>Кардиология 2026: итоги года, новые клинические рекомендации и национальные приоритеты.</p><span class="nmo">✚ Учитывается для НМО</span></div><div class="mods"><i class="ph" style="background-image:url(https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&q=80)"></i><i class="ph" style="background-image:url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&q=80)"></i><em>Проф. И. Савельев,<br>проф. Е. Морозова</em></div><span class="hl">Пленарный зал</span></div>
+    <div class="slot"><div class="tm">12:00<small>– 13:30</small></div><div><h4>Артериальная гипертензия: персонализированный подход</h4><p>Комбинированная терапия, ведение резистентной АГ, клинические случаи.</p></div><div class="mods"><i class="ph" style="background-image:url(https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=100&q=80)"></i><em>Д.м.н. А. Ким</em></div><span class="hl">Зал А</span></div>
+    <div class="slot"><div class="tm">12:00<small>– 13:30</small></div><div><h4>Симпозиум: современные антикоагулянты при ФП</h4><p>Сателлитный симпозиум при поддержке компании-партнёра. Не обеспечивается баллами НМО.</p></div><div class="mods"><i class="ph" style="background-image:url(https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=100&q=80)"></i><em>К.м.н. Д. Орлов</em></div><span class="hl">Зал Б</span></div>
+    <div class="slot brk"><div class="tm">13:30</div><h4>Обед · Посещение выставки</h4><div></div><div></div></div>
+    <div class="slot"><div class="tm">14:30<small>– 16:00</small></div><div><h4>Хроническая сердечная недостаточность: от диагностики к реабилитации</h4><p>Разбор клинических рекомендаций 2026 года, новые классы препаратов.</p><span class="nmo">✚ Учитывается для НМО</span></div><div class="mods"><i class="ph" style="background-image:url(https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&q=80)"></i><i class="ph" style="background-image:url(https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=100&q=80)"></i><em>Проф. Н. Белова,<br>д.м.н. С. Волков</em></div><span class="hl">Пленарный зал</span></div>
+    <div class="slot"><div class="tm">16:30<small>– 18:00</small></div><div><h4>Мастер-класс: эхокардиография для практикующего врача</h4><p>Практическое занятие на симуляторах. Количество мест ограничено — 30 человек.</p></div><div class="mods"><i class="ph" style="background-image:url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&q=80)"></i><em>К.м.н. О. Смирнова</em></div><span class="hl">Зал В</span></div>
+  </div>
+</div></section>
+
+<section class="speakers"><div class="wrap">
+  <div class="shead"><div><span class="eyebrow">Спикеры</span><h2>86 экспертов из 24 городов</h2><p class="lead">Ведущие кардиологи, кардиохирурги и исследователи России и стран СНГ.</p></div><a class="btn ghost">Все спикеры →</a></div>
+  <div class="spk-grid">
+    <div class="spk"><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500&q=80)"><span class="role">Председатель</span></div><b>Игорь Савельев</b><span>д.м.н., профессор, президент Ассоциации кардиологов</span></div>
+    <div class="spk"><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&q=80)"><span class="role">Сопредседатель</span></div><b>Елена Морозова</b><span>д.м.н., профессор, НМИЦ кардиологии</span></div>
+    <div class="spk"><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=500&q=80)"></div><b>Андрей Ким</b><span>д.м.н., руководитель отдела гипертензии</span></div>
+    <div class="spk"><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=500&q=80)"></div><b>Наталья Белова</b><span>профессор, кафедра кардиологии РНИМУ</span></div>
+  </div>
+</div></section>
+
+<section class="venue"><div class="wrap">
+  <div class="vinfo">
+    <span class="eyebrow">Площадка</span>
+    <h3 style="margin-top:14px">Конгресс-центр «Технополис»</h3>
+    <div class="addr">Москва, Волгоградский проспект, 42, корп. 5</div>
+    <div class="vrow"><b>Ⓜ</b><div><strong>Метро «Текстильщики»</strong><span>7 минут пешком, выход № 2</span></div></div>
+    <div class="vrow"><b>🚗</b><div><strong>Парковка для участников</strong><span>Бесплатно, 400 мест, въезд с ул. Шоссейной</span></div></div>
+    <div class="vrow"><b>🏨</b><div><strong>Проживание</strong><span>Спецтарифы в 3 гостиницах рядом — при регистрации</span></div></div>
+    <div class="vphotos"><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&q=80)"></div><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&q=80)"></div></div>
+  </div>
+  <div class="map">
+    <div class="blk"></div><div class="park"></div><div class="river"></div><div class="road"></div>
+    <div class="metro"><b>М</b>Текстильщики</div>
+    <div class="pin"><div class="lbl">Конгресс-центр «Технополис»<span>Волгоградский пр., 42</span></div><i></i></div>
+    <div class="zoom"><div>+</div><div>−</div></div>
+  </div>
+</div></section>
+
+<section class="conds"><div class="wrap">
+  <div class="shead"><div><span class="eyebrow">Условия участия</span><h2>Выберите формат участия</h2><p class="lead">Для врачей и ординаторов участие бесплатное. Для компаний доступны пакеты экспонента и спонсора.</p></div></div>
+  <div class="tariffs">
+    <div class="tf"><h4>Онлайн-участник</h4><div class="who">Врачи и ординаторы из любого города</div><div class="pr">0 ₽</div><ul><li>Трансляция всех залов</li><li>Баллы НМО при контроле присутствия</li><li>Записи докладов на 30 дней</li><li class="no">Посещение выставки</li><li class="no">Мастер-классы</li></ul><a class="btn ghost">Выбрать</a></div>
+    <div class="tf on"><span class="badge">Популярный выбор</span><h4>Очный делегат</h4><div class="who">Врачи, ординаторы, медсёстры</div><div class="pr">0 ₽ <small>/ при регистрации до 1 ноября</small></div><ul><li>Все залы и секции</li><li>12 баллов НМО</li><li>Портфель делегата и сертификат</li><li>Посещение выставки</li><li>Запись на мастер-классы</li></ul><a class="btn">Зарегистрироваться</a></div>
+    <div class="tf"><h4>Экспонент / спонсор</h4><div class="who">Фармкомпании и производители медтехники</div><div class="pr">от 180 000 ₽</div><ul><li>Стенд от 6 м² в выставочной зоне</li><li>Сателлитный симпозиум</li><li>Логотип на сайте и в программе</li><li>Бейджи для персонала стенда</li><li>Отчёт по посетителям</li></ul><a class="btn ghost">Запросить пакеты</a></div>
+  </div>
+
+  <div class="regbox">
+    <div class="l">
+      <h3>Онлайн-регистрация на конгресс</h3>
+      <p>Заполните форму — регистрация займёт не больше двух минут. Подтверждение и персональный QR-код для входа придут на e-mail.</p>
+      <div class="steps3"><div><b>1</b>Заполните анкету участника</div><div><b>2</b>Получите письмо с QR-кодом</div><div><b>3</b>Покажите QR-код на стойке регистрации</div></div>
+    </div>
+    <div class="r"><div class="form">
+      <h4>Регистрация участника</h4><div class="hint">Поля, отмеченные *, обязательны</div>
+      <div class="f2"><div class="inp">Фамилия *</div><div class="inp">Имя и отчество *</div></div>
+      <div class="f2"><div class="inp">E-mail *</div><div class="inp">Телефон *</div></div>
+      <div class="inp sel"><span>Специальность *</span><span>▾</span></div>
+      <div class="inp">Место работы, город</div>
+      <div class="fmt"><div class="on"><i></i>Очное участие</div><div><i></i>Онлайн-трансляция</div></div>
+      <div class="chk"><i>✓</i>Согласен на обработку персональных данных и получение баллов НМО</div>
+      <a class="btn">Зарегистрироваться</a>
+    </div></div>
+  </div>
+</div></section>
+
+<section class="partners" style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><span class="eyebrow">Партнёры</span><h2>Партнёры конгресса</h2></div><a class="btn ghost">Стать партнёром →</a></div>
+  <div class="ptier"><span>Генеральный партнёр</span><div class="prow" style="grid-template-columns:1fr"><div class="pl gen"><i></i>ФармаЛайн</div></div></div>
+  <div class="ptier"><span>Официальные партнёры</span><div class="prow" style="grid-template-columns:repeat(4,1fr)"><div class="pl"><i></i>BioGen</div><div class="pl"><i style="border-radius:6px"></i>КардиоТех</div><div class="pl"><i></i>МедТех</div><div class="pl"><i style="border-radius:6px"></i>НоваФарм</div></div></div>
+  <div class="ptier" style="margin:0"><span>Информационные партнёры</span><div class="prow" style="grid-template-columns:repeat(6,1fr)"><div class="pl sm">Врач.Ру</div><div class="pl sm">Кардиовестник</div><div class="pl sm">МедПортал</div><div class="pl sm">Doctor Today</div><div class="pl sm">Ремедиум</div><div class="pl sm">ЗдравИнфо</div></div></div>
+</div></section>
+
+<section class="docs"><div class="wrap">
+  <div class="shead"><div><span class="eyebrow">Документы и материалы</span><h2>Документы конгресса</h2></div></div>
+  <div class="dgrid">
+    <div class="doc"><span class="ic">PDF</span><div><b>Научная программа конгресса</b><span>PDF · 2,4 МБ · обновлено 10.10.2026</span></div><span class="dl">↓</span></div>
+    <div class="doc"><span class="ic">PDF</span><div><b>Информационное письмо</b><span>PDF · 640 КБ</span></div><span class="dl">↓</span></div>
+    <div class="doc"><span class="ic w">DOC</span><div><b>Требования к оформлению тезисов</b><span>DOCX · 85 КБ · приём до 15.10.2026</span></div><span class="dl">↓</span></div>
+    <div class="doc"><span class="ic">PDF</span><div><b>Спонсорские пакеты и условия экспонирования</b><span>PDF · 3,1 МБ</span></div><span class="dl">↓</span></div>
+    <div class="doc"><span class="ic x">XLS</span><div><b>Заявка экспонента</b><span>XLSX · 42 КБ</span></div><span class="dl">↓</span></div>
+    <div class="doc"><span class="ic">PDF</span><div><b>Порядок получения баллов НМО</b><span>PDF · 310 КБ</span></div><span class="dl">↓</span></div>
+  </div>
+</div></section>
+
+<section class="other"><div class="wrap">
+  <div class="shead"><div><span class="eyebrow">Смотрите также</span><h2>Другие мероприятия</h2></div><a class="btn ghost">Все мероприятия →</a></div>
+  <div class="more-ev">
+    <div class="mc"><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&q=80)"><div class="dt"><b>04</b><span>дек</span></div></div><div class="bd"><small>Конференция · 6 баллов НМО</small><h4>Неврология сегодня: инсульт и реабилитация</h4><p>Санкт-Петербург · очно + онлайн</p></div></div>
+    <div class="mc"><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1551076805-e1869033e561?w=600&q=80)"><div class="dt"><b>11</b><span>дек</span></div></div><div class="bd"><small>Семинар · 4 балла НМО</small><h4>Школа ультразвуковой диагностики</h4><p>Москва · 40 участников</p></div></div>
+    <div class="mc"><div class="ph" style="background-image:url(https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80)"><div class="dt"><b>22</b><span>янв</span></div></div><div class="bd"><small>Онлайн-симпозиум</small><h4>Эндокринология: сахарный диабет 2 типа</h4><p>Онлайн · трансляция из студии</p></div></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="fgrid">
+    <div><div class="logo" style="margin-bottom:20px"><i></i><div>МедФорум<small>ОРГАНИЗАЦИЯ МЕДИЦИНСКИХ СОБЫТИЙ</small></div></div><p>Профессиональная организация медицинских конгрессов, конференций и образовательных программ с 2009 года.</p></div>
+    <div><h5>Мероприятия</h5><ul><li>Предстоящие</li><li>Архив</li><li>Онлайн-трансляции</li><li>Обучение</li></ul></div>
+    <div><h5>Компания</h5><ul><li>О нас</li><li>Услуги</li><li>Сведения об образовательной организации</li><li>Версия для слабовидящих</li></ul></div>
+    <div><h5>Контакты</h5><ul><li>+7 (495) 120-45-67</li><li>info@medforum.ru</li><li>Москва, ул. Пироговская, 12</li></ul></div>
+  </div>
+  <div class="fbot"><span>© 2026 МедФорум. Все права защищены.</span><span>Политика конфиденциальности · Согласие на обработку ПДн</span></div>
+</div></footer>
+</body>
+</html>
