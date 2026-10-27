@@ -1,3 +1,4 @@
+import path from "node:path";
 import express from "express";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -11,6 +12,7 @@ import { speakersRouter } from "./routes/speakers.js";
 import { uploadsRouter } from "./routes/uploads.js";
 import { registrationsRouter } from "./routes/registrations.js";
 import { newsRouter } from "./routes/news.js";
+import { documentsRouter, publicFilesRouter } from "./routes/documents.js";
 import { loadUser, requireAuth, requireCsrfHeader } from "./middleware/auth.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 
@@ -39,10 +41,12 @@ export function createApp() {
   api.use("/uploads", requireAuth, uploadsRouter);
   api.use("/registrations", requireAuth, registrationsRouter);
   api.use("/news", requireAuth, newsRouter);
+  api.use("/documents", requireAuth, documentsRouter);
   api.use(notFound);
 
   app.use("/api", api);
-  app.use("/uploads", express.static(config.UPLOADS_DIR, { maxAge: "30d", immutable: true, index: false }));
+  app.use("/uploads/images", express.static(path.join(config.UPLOADS_DIR, "images"), { maxAge: "30d", immutable: true, index: false }));
+  app.use("/files", publicFilesRouter);
   app.use(errorHandler);
 
   return app;

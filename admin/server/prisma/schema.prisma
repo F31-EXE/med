@@ -144,6 +144,7 @@ model Event {
   speakers              EventSpeaker[]
   registrations         Registration[]
   news                  News[]
+  documents             Document[]
 
   @@index([startDate])
   @@index([deletedAt])
@@ -351,4 +352,29 @@ model NewsImage {
   sortOrder Int
 
   @@index([newsId])
+}
+
+model Document {
+  id               String   @id @default(cuid())
+  publicId         String   @unique
+  title            String
+  description      String?
+  fileKey          String
+  originalName     String
+  extension        String
+  mimeType         String
+  size             Int
+  fileUpdatedAt    DateTime @default(now())
+  eventId          String?
+  event            Event?   @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  eventSortOrder   Int      @default(0)
+  svedenSection    String?
+  sectionSortOrder Int      @default(0)
+  createdById      String?
+  updatedById      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([eventId, eventSortOrder])
+  @@index([svedenSection, sectionSortOrder])
 }
