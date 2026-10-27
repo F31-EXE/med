@@ -5,6 +5,7 @@ import { CheckOutlined, CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { api } from "../api/client";
 import { applyFieldErrors } from "../api/forms";
 import { dictionaryLabels, useDictionary, type DictionaryItem, type DictionaryType } from "../api/dictionaries";
+import { ContactsSettings, NotificationsSettings, NumbersSettings } from "./settings/SiteSettingsTabs";
 
 const hints: Record<DictionaryType, string> = {
   directions: "Медицинские направления для мероприятий и фильтра каталога на сайте.",
@@ -158,11 +159,16 @@ export function SettingsPage() {
       <Card>
         <Tabs
           destroyOnHidden
-          items={(Object.keys(dictionaryLabels) as DictionaryType[]).map((type) => ({
-            key: type,
-            label: dictionaryLabels[type].title,
-            children: <DictionaryTable type={type} />,
-          }))}
+          items={[
+            { key: "contacts", label: "Контакты", children: <ContactsSettings /> },
+            { key: "numbers", label: "Цифры компании", children: <NumbersSettings /> },
+            { key: "notifications", label: "Уведомления", children: <NotificationsSettings /> },
+            ...(Object.keys(dictionaryLabels) as DictionaryType[]).map((type) => ({
+              key: type,
+              label: dictionaryLabels[type].title,
+              children: <DictionaryTable type={type} />,
+            })),
+          ]}
         />
       </Card>
     </>

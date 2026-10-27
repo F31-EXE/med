@@ -412,3 +412,23 @@ model EventPartner {
 
   @@id([eventId, partnerId])
 }
+
+model Page {
+  key            String   @id
+  title          String
+  path           String?  @unique
+  body           String?
+  blocks         Json     @default("{}")
+  seoTitle       String?
+  seoDescription String?
+  updatedById    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SiteSetting {
+  key         String   @id
+  value       Json
+  updatedById String?
+  updatedAt   DateTime @updatedAt
+}
