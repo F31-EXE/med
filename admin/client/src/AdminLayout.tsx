@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Button, Drawer, Grid, Layout, Menu, Space, Typography } from "antd";
 import { LogoutOutlined, MenuOutlined } from "@ant-design/icons";
 import { useAuth } from "./auth/AuthProvider";
@@ -79,12 +79,15 @@ export function AdminLayout() {
         >
           {isDesktop ? <span /> : <Button icon={<MenuOutlined />} onClick={() => setDrawerOpen(true)} aria-label="Меню" />}
           <Space size="middle">
-            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.3, textAlign: "right" }}>
+            <Link
+              to="/profile"
+              style={{ display: "flex", flexDirection: "column", lineHeight: 1.3, textAlign: "right", color: "inherit" }}
+            >
               <span>{user.name}</span>
               <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                 {roleLabels[user.role]}
               </Typography.Text>
-            </div>
+            </Link>
             <Button
               icon={<LogoutOutlined />}
               onClick={async () => {

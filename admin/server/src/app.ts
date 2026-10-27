@@ -3,7 +3,8 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { config } from "./config.js";
 import { authRouter } from "./routes/auth.js";
-import { loadUser, requireCsrfHeader } from "./middleware/auth.js";
+import { usersRouter } from "./routes/users.js";
+import { loadUser, requireAuth, requireCsrfHeader } from "./middleware/auth.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 
 export function createApp() {
@@ -22,6 +23,7 @@ export function createApp() {
     res.json({ ok: true });
   });
   api.use("/auth", authRouter);
+  api.use("/users", requireAuth, usersRouter);
   api.use(notFound);
 
   app.use("/api", api);

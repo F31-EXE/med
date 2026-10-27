@@ -26,6 +26,7 @@ export const config = {
   isProd: parsed.data.NODE_ENV === "production",
   sessionTtlMs: 7 * 24 * 60 * 60 * 1000,
   resetTokenTtlMs: 60 * 60 * 1000,
+  inviteTokenTtlMs: 3 * 24 * 60 * 60 * 1000,
   maxFailedLogins: 5,
   lockoutMs: 15 * 60 * 1000,
   sessionCookie: "mexpo_sid",

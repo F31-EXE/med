@@ -15,7 +15,7 @@ import {
   toPublicUser,
   verifyPassword,
 } from "../lib/auth.js";
-import { sendMail } from "../lib/mailer.js";
+import { sendPasswordLink } from "../lib/passwordLinks.js";
 import { requireAuth } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
 
@@ -97,26 +97,25 @@ authRouter.post("/forgot-password", limiter, async (req, res) => {
   const body = z.object({ email }).parse(req.body);
   const user = await prisma.user.findUnique({ where: { email: body.email } });
 
-  if (user?.isActive) {
-    const token = generateToken();
-    await prisma.$transaction([
-      prisma.passwordResetToken.deleteMany({ where: { userId: user.id, usedAt: null } }),
-      prisma.passwordResetToken.create({
-        data: {
-          tokenHash: hashToken(token),
-          userId: user.id,
-          expiresAt: new Date(Date.now() + config.resetTokenTtlMs),
-        },
-      }),
-    ]);
-    const link = `${config.APP_URL}/reset-password?token=${encodeURIComponent(token)}`;
-    await sendMail(
-      user.email,
-      "Восстановление пароля — админ-панель Media Expo Group",
-      `Здравствуйте, ${user.name}!\n\nЧтобы задать новый пароль, перейдите по ссылке (действует 1 час):\n${link}\n\nЕсли вы не запрашивали восстановление, просто проигнорируйте это письмо.`,
-      `<p>Здравствуйте, ${escapeHtml(user.name)}!</p><p>Чтобы задать новый пароль, перейдите по ссылке (действует 1&nbsp;час):</p><p><a href="${link}">${link}</a></p><p>Если вы не запрашивали восстановление, просто проигнорируйте это письмо.</p>`,
-    );
+  if (user?.isActive) await sendPasswordLink(user, "reset");
+
+  res.json({ ok: true });
+});
+
+authRouter.post("/change-password", requireAuth, async (req, res) => {
+  const body = z
+    .object({ currentPassword: z.string().min(1, "Введите текущий пароль").max(128), newPassword })
+    .parse(req.body);
+
+  const user = req.user!;
+  if (!(await verifyPassword(body.currentPassword, user.passwordHash))) {
+    throw new HttpError(400, "Текущий пароль указан неверно", { currentPassword: "Текущий пароль указан неверно" });
   }
+
+  await prisma.$transaction([
+    prisma.user.update({ where: { id: user.id }, data: { passwordHash: await hashPassword(body.newPassword) } }),
+    prisma.session.deleteMany({ where: { userId: user.id, NOT: { id: req.sessionId } } }),
+  ]);
 
   res.json({ ok: true });
 });
@@ -145,7 +144,3 @@ authRouter.post("/reset-password", limiter, async (req, res) => {
 
   res.json({ ok: true });
 });
-
-function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-}
