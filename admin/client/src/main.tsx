@@ -18,6 +18,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { EventsModule } from "./pages/events/EventsModule";
 import { SpeakersPage } from "./pages/speakers/SpeakersPage";
 import { RegistrationsPage } from "./pages/registrations/RegistrationsPage";
+import { NewsModule } from "./pages/news/NewsModule";
 
 const modulePages: Partial<Record<ModuleKey, ReactNode>> = {
   users: <UsersPage />,
@@ -25,6 +26,7 @@ const modulePages: Partial<Record<ModuleKey, ReactNode>> = {
   events: <EventsModule />,
   speakers: <SpeakersPage />,
   registrations: <RegistrationsPage />,
+  news: <NewsModule />,
 };
 
 const queryClient = new QueryClient({

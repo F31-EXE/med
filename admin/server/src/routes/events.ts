@@ -240,6 +240,23 @@ eventsRouter.get("/", async (req, res) => {
   });
 });
 
+eventsRouter.get("/options", async (req, res) => {
+  const { q, ids } = z.object({ q: z.string().trim().max(100).optional(), ids: z.string().max(2000).optional() }).parse(req.query);
+  const rows = await prisma.event.findMany({
+    where: {
+      deletedAt: null,
+      OR: [
+        q ? { title: { contains: q, mode: "insensitive" } } : {},
+        ...(ids ? [{ id: { in: ids.split(",").filter(Boolean) } }] : []),
+      ],
+    },
+    select: { id: true, title: true, startDate: true, endDate: true },
+    orderBy: { startDate: "desc" },
+    take: 30,
+  });
+  res.json({ items: rows.map((e) => ({ ...e, startDate: formatDateOnly(e.startDate), endDate: formatDateOnly(e.endDate) })) });
+});
+
 eventsRouter.get("/:id", async (req, res) => {
   res.json({ event: serialize(await findEvent(req.params.id)) });
 });

@@ -2,7 +2,7 @@ import { ApiError } from "./client";
 
 export type UploadedImage = { url: string; thumbUrl: string };
 
-export async function uploadImage(file: File, preset: "speaker" | "cover" = "speaker"): Promise<UploadedImage> {
+export async function uploadImage(file: File, preset: "speaker" | "cover" | "gallery" = "speaker"): Promise<UploadedImage> {
   const body = new FormData();
   body.append("file", file);
   let res: Response;

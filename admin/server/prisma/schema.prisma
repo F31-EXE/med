@@ -143,6 +143,7 @@ model Event {
   programDays           ProgramDay[]
   speakers              EventSpeaker[]
   registrations         Registration[]
+  news                  News[]
 
   @@index([startDate])
   @@index([deletedAt])
@@ -309,4 +310,45 @@ model Registration {
   @@unique([eventId, email])
   @@index([eventId, status])
   @@index([createdAt])
+}
+
+enum NewsStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model News {
+  id             String      @id @default(cuid())
+  title          String
+  slug           String      @unique
+  excerpt        String?
+  body           String?
+  coverUrl       String?
+  coverThumbUrl  String?
+  eventId        String?
+  event          Event?      @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  status         NewsStatus  @default(DRAFT)
+  publishAt      DateTime?
+  seoTitle       String?
+  seoDescription String?
+  deletedAt      DateTime?
+  createdById    String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  images         NewsImage[]
+
+  @@index([status, publishAt])
+  @@index([deletedAt])
+}
+
+model NewsImage {
+  id        String  @id @default(cuid())
+  newsId    String
+  news      News    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  url       String
+  thumbUrl  String
+  caption   String?
+  sortOrder Int
+
+  @@index([newsId])
 }

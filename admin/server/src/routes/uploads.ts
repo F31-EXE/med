@@ -24,6 +24,7 @@ const upload = multer({
 const presets = {
   speaker: { full: { width: 800, height: 800, fit: "inside" }, thumb: { width: 240, height: 240, fit: "cover" } },
   cover: { full: { width: 1920, height: 1080, fit: "inside" }, thumb: { width: 640, height: 360, fit: "cover" } },
+  gallery: { full: { width: 1920, height: 1920, fit: "inside" }, thumb: { width: 480, height: 360, fit: "cover" } },
 } as const;
 
 uploadsRouter.post("/image", requireRole("ADMIN", "EDITOR"), (req, res, next) => {
@@ -36,7 +37,8 @@ uploadsRouter.post("/image", requireRole("ADMIN", "EDITOR"), (req, res, next) =>
   });
 }, async (req, res) => {
   if (!req.file) throw new HttpError(400, "Выберите файл");
-  const preset = presets[req.query.preset === "cover" ? "cover" : "speaker"];
+  const presetName = String(req.query.preset);
+  const preset = presets[Object.hasOwn(presets, presetName) ? (presetName as keyof typeof presets) : "speaker"];
 
   const now = new Date();
   const dir = path.join("images", String(now.getFullYear()), String(now.getMonth() + 1).padStart(2, "0"));

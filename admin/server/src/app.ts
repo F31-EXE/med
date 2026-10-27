@@ -10,6 +10,7 @@ import { eventSpeakersRouter, programRouter } from "./routes/program.js";
 import { speakersRouter } from "./routes/speakers.js";
 import { uploadsRouter } from "./routes/uploads.js";
 import { registrationsRouter } from "./routes/registrations.js";
+import { newsRouter } from "./routes/news.js";
 import { loadUser, requireAuth, requireCsrfHeader } from "./middleware/auth.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 
@@ -37,6 +38,7 @@ export function createApp() {
   api.use("/speakers", requireAuth, speakersRouter);
   api.use("/uploads", requireAuth, uploadsRouter);
   api.use("/registrations", requireAuth, registrationsRouter);
+  api.use("/news", requireAuth, newsRouter);
   api.use(notFound);
 
   app.use("/api", api);
