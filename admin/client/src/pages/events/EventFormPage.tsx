@@ -30,6 +30,7 @@ import { dictionaryOptions, useDictionary } from "../../api/dictionaries";
 import { formatOptions, modeOptions, type EventDetail, type Tariff } from "./eventTypes";
 import { StatusTags } from "./EventsListPage";
 import { useEventActions } from "./useEventActions";
+import { EventTabs } from "./EventTabs";
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -216,6 +217,8 @@ export function EventFormPage() {
           </Space>
         )}
       </Flex>
+
+      <EventTabs id={id} active="main" />
 
       {deleted && (
         <Alert

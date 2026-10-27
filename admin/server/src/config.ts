@@ -13,6 +13,7 @@ const schema = z.object({
   SMTP_PASS: z.string().optional(),
   MAIL_FROM: z.string().default("Media Expo Group <noreply@med-expo.org>"),
   TIMEZONE: z.string().default("Asia/Yekaterinburg"),
+  UPLOADS_DIR: z.string().default("uploads"),
 });
 
 const parsed = schema.safeParse(process.env);

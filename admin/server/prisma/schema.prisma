@@ -135,6 +135,9 @@ model Event {
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
   tariffs               EventTariff[]
+  halls                 Hall[]
+  programDays           ProgramDay[]
+  speakers              EventSpeaker[]
 
   @@index([startDate])
   @@index([deletedAt])
@@ -151,4 +154,102 @@ model EventTariff {
   includes  String?
 
   @@index([eventId])
+}
+
+model Speaker {
+  id            String           @id @default(cuid())
+  lastName      String
+  firstName     String
+  middleName    String?
+  degree        String?
+  position      String?
+  city          String?
+  bio           String?
+  photoUrl      String?
+  photoThumbUrl String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  events        EventSpeaker[]
+  sessions      SessionSpeaker[]
+
+  @@index([lastName])
+}
+
+enum EventSpeakerRole {
+  CHAIR
+  CO_CHAIR
+  COMMITTEE
+  SPEAKER
+}
+
+model EventSpeaker {
+  eventId   String
+  event     Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  speakerId String
+  speaker   Speaker          @relation(fields: [speakerId], references: [id], onDelete: Restrict)
+  role      EventSpeakerRole @default(SPEAKER)
+  sortOrder Int
+
+  @@id([eventId, speakerId])
+}
+
+model Hall {
+  id        String           @id @default(cuid())
+  eventId   String
+  event     Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name      String
+  sortOrder Int
+  sessions  ProgramSession[]
+
+  @@index([eventId])
+}
+
+model ProgramDay {
+  id       String           @id @default(cuid())
+  eventId  String
+  event    Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  date     DateTime         @db.Date
+  title    String?
+  sessions ProgramSession[]
+
+  @@unique([eventId, date])
+}
+
+enum SessionKind {
+  SESSION
+  BREAK
+}
+
+model ProgramSession {
+  id          String           @id @default(cuid())
+  dayId       String
+  day         ProgramDay       @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  hallId      String?
+  hall        Hall?            @relation(fields: [hallId], references: [id], onDelete: SetNull)
+  kind        SessionKind      @default(SESSION)
+  startTime   String
+  endTime     String
+  title       String
+  description String?
+  nmo         Boolean          @default(false)
+  sortOrder   Int
+  speakers    SessionSpeaker[]
+
+  @@index([dayId])
+}
+
+enum SessionSpeakerRole {
+  MODERATOR
+  SPEAKER
+}
+
+model SessionSpeaker {
+  sessionId String
+  session   ProgramSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  speakerId String
+  speaker   Speaker            @relation(fields: [speakerId], references: [id], onDelete: Restrict)
+  role      SessionSpeakerRole @default(SPEAKER)
+  sortOrder Int
+
+  @@id([sessionId, speakerId])
 }

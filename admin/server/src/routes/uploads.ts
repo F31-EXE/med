@@ -1,0 +1,65 @@
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { randomBytes } from "node:crypto";
+import { Router } from "express";
+import multer from "multer";
+import sharp from "sharp";
+import { config } from "../config.js";
+import { requireRole } from "../middleware/auth.js";
+import { HttpError } from "../middleware/error.js";
+
+export const uploadsRouter = Router();
+
+const allowed = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024, files: 1 },
+  fileFilter: (_req, file, cb) => {
+    if (allowed.has(file.mimetype)) cb(null, true);
+    else cb(new HttpError(400, "Загрузите изображение в формате JPG, PNG или WebP"));
+  },
+});
+
+const presets = {
+  speaker: { full: { width: 800, height: 800, fit: "inside" }, thumb: { width: 240, height: 240, fit: "cover" } },
+  cover: { full: { width: 1920, height: 1080, fit: "inside" }, thumb: { width: 640, height: 360, fit: "cover" } },
+} as const;
+
+uploadsRouter.post("/image", requireRole("ADMIN", "EDITOR"), (req, res, next) => {
+  upload.single("file")(req, res, (err: unknown) => {
+    if (err instanceof multer.MulterError) {
+      return next(new HttpError(400, err.code === "LIMIT_FILE_SIZE" ? "Файл больше 10 МБ" : "Не удалось загрузить файл"));
+    }
+    if (err) return next(err);
+    next();
+  });
+}, async (req, res) => {
+  if (!req.file) throw new HttpError(400, "Выберите файл");
+  const preset = presets[req.query.preset === "cover" ? "cover" : "speaker"];
+
+  const now = new Date();
+  const dir = path.join("images", String(now.getFullYear()), String(now.getMonth() + 1).padStart(2, "0"));
+  const name = randomBytes(12).toString("base64url");
+  await mkdir(path.join(config.UPLOADS_DIR, dir), { recursive: true });
+
+  let full: Buffer;
+  let thumb: Buffer;
+  try {
+    const source = sharp(req.file.buffer, { failOn: "error" }).rotate();
+    [full, thumb] = await Promise.all([
+      source.clone().resize({ ...preset.full, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer(),
+      source.clone().resize({ ...preset.thumb, position: "attention" }).webp({ quality: 80 }).toBuffer(),
+    ]);
+  } catch {
+    throw new HttpError(400, "Файл повреждён или не является изображением");
+  }
+
+  await Promise.all([
+    writeFile(path.join(config.UPLOADS_DIR, dir, `${name}.webp`), full),
+    writeFile(path.join(config.UPLOADS_DIR, dir, `${name}-thumb.webp`), thumb),
+  ]);
+
+  const base = `/uploads/${dir.split(path.sep).join("/")}/${name}`;
+  res.status(201).json({ url: `${base}.webp`, thumbUrl: `${base}-thumb.webp` });
+});

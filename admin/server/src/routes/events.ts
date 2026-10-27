@@ -322,6 +322,10 @@ eventsRouter.post("/:id/copy", async (req, res) => {
     ...rest
   } = src;
 
+  const [halls, speakers] = await Promise.all([
+    prisma.hall.findMany({ where: { eventId: src.id } }),
+    prisma.eventSpeaker.findMany({ where: { eventId: src.id } }),
+  ]);
   const title = `${src.title} (копия)`;
   const slug = await uniqueSlug(`${src.slug}-copy`.slice(0, 80), async (s) => !!(await prisma.event.findUnique({ where: { slug: s } })));
 
@@ -335,6 +339,8 @@ eventsRouter.post("/:id/copy", async (req, res) => {
       createdById: req.user!.id,
       directions: { connect: directions.map((d) => ({ id: d.id })) },
       tariffs: { create: tariffs.map(({ id: _tid, eventId: _eid, ...t }) => t) },
+      halls: { create: halls.map((h) => ({ name: h.name, sortOrder: h.sortOrder })) },
+      speakers: { create: speakers.map((s) => ({ speakerId: s.speakerId, role: s.role, sortOrder: s.sortOrder })) },
     },
     include: detailInclude,
   });
