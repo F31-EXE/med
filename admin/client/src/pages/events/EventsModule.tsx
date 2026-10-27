@@ -4,6 +4,7 @@ import { EventFormPage } from "./EventFormPage";
 import { EventSpeakersPage } from "./EventSpeakersPage";
 import { EventDocumentsPage } from "./EventDocumentsPage";
 import { EventPartnersPage } from "./EventPartnersPage";
+import { EventResultsPage } from "./EventResultsPage";
 import { ProgramPage } from "./program/ProgramPage";
 
 export function EventsModule() {
@@ -16,6 +17,7 @@ export function EventsModule() {
       <Route path=":id/speakers" element={<EventSpeakersPage />} />
       <Route path=":id/partners" element={<EventPartnersPage />} />
       <Route path=":id/documents" element={<EventDocumentsPage />} />
+      <Route path=":id/results" element={<EventResultsPage />} />
     </Routes>
   );
 }

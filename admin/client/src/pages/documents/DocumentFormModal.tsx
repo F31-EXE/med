@@ -13,7 +13,7 @@ type Values = { title?: string; description?: string | null; eventId: string | n
 type Props = {
   open: boolean;
   document: DocumentItem | null;
-  defaults?: { eventId?: string | null; svedenSection?: string | null };
+  defaults?: { eventId?: string | null; svedenSection?: string | null; eventSection?: "MAIN" | "RESULTS" };
   onClose: () => void;
 };
 
@@ -45,6 +45,7 @@ export function DocumentFormModal({ open, document, defaults, onClose }: Props) 
           description: v.description,
           eventId: v.eventId,
           svedenSection: v.svedenSection,
+          eventSection: v.eventId ? (defaults?.eventSection ?? "MAIN") : undefined,
         });
       }
       return api<{ document: DocumentItem }>(`/documents/${document.id}`, { method: "PUT", body: v }).then((r) => r.document);

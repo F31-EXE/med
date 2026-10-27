@@ -20,8 +20,8 @@ function EventDocuments({ eventId, readOnly }: { eventId: string; readOnly: bool
   const [editing, setEditing] = useState<DocumentItem | "new" | null>(null);
 
   const list = useQuery({
-    queryKey: ["documents", "list", `eventId=${eventId}`],
-    queryFn: () => api<{ items: DocumentItem[] }>(`/documents?eventId=${eventId}`),
+    queryKey: ["documents", "list", `eventId=${eventId}&eventSection=MAIN`],
+    queryFn: () => api<{ items: DocumentItem[] }>(`/documents?eventId=${eventId}&eventSection=MAIN`),
   });
 
   const unplace = useMutation({
@@ -59,7 +59,7 @@ function EventDocuments({ eventId, readOnly }: { eventId: string; readOnly: bool
         ) : (
           <DocumentList
             items={list.data.items}
-            sortScope={{ scope: "event", key: eventId }}
+            sortScope={{ scope: "event", key: eventId, eventSection: "MAIN" }}
             showPlacement={false}
             readOnly={readOnly}
             onEdit={setEditing}

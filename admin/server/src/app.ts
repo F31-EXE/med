@@ -15,6 +15,7 @@ import { newsRouter } from "./routes/news.js";
 import { documentsRouter, publicFilesRouter } from "./routes/documents.js";
 import { eventPartnersRouter, partnersRouter } from "./routes/partners.js";
 import { pagesRouter } from "./routes/pages.js";
+import { eventResultsRouter } from "./routes/eventResults.js";
 import { settingsRouter } from "./routes/settings.js";
 import { loadUser, requireAuth, requireCsrfHeader } from "./middleware/auth.js";
 import { errorHandler, notFound } from "./middleware/error.js";
@@ -40,6 +41,7 @@ export function createApp() {
   api.use("/events/:eventId/program", requireAuth, programRouter);
   api.use("/events/:eventId/speakers", requireAuth, eventSpeakersRouter);
   api.use("/events/:eventId/partners", requireAuth, eventPartnersRouter);
+  api.use("/events/:eventId/results", requireAuth, eventResultsRouter);
   api.use("/events", requireAuth, eventsRouter);
   api.use("/speakers", requireAuth, speakersRouter);
   api.use("/uploads", requireAuth, uploadsRouter);

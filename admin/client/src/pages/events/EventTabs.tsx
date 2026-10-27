@@ -7,9 +7,9 @@ import { api } from "../../api/client";
 import type { EventDetail } from "./eventTypes";
 import { StatusTags } from "./EventsListPage";
 
-export type EventTabKey = "main" | "program" | "speakers" | "partners" | "documents";
+export type EventTabKey = "main" | "program" | "speakers" | "partners" | "documents" | "results";
 
-const paths: Record<EventTabKey, string> = { main: "", program: "/program", speakers: "/speakers", partners: "/partners", documents: "/documents" };
+const paths: Record<EventTabKey, string> = { main: "", program: "/program", speakers: "/speakers", partners: "/partners", documents: "/documents", results: "/results" };
 
 export function EventTabs({ id, active }: { id?: string; active: EventTabKey }) {
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ export function EventTabs({ id, active }: { id?: string; active: EventTabKey }) 
         { key: "speakers", label: "Спикеры", disabled: !id },
         { key: "partners", label: "Партнёры", disabled: !id },
         { key: "documents", label: "Документы", disabled: !id },
+        { key: "results", label: "Итоги", disabled: !id },
       ]}
       style={{ marginBottom: 8 }}
     />

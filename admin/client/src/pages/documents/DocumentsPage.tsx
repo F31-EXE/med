@@ -36,7 +36,10 @@ export function DocumentsPage() {
 
   const query = new URLSearchParams({ page: String(page) });
   if (params.get("q")) query.set("q", params.get("q")!);
-  if (view === "event" && eventId) query.set("eventId", eventId);
+  if (view === "event" && eventId) {
+    query.set("eventId", eventId);
+    query.set("eventSection", "MAIN");
+  }
   if (view === "section" && section) query.set("section", section);
   if (view === "unplaced") query.set("unplaced", "true");
   const waiting = (view === "event" && !eventId) || (view === "section" && !section);
@@ -50,7 +53,7 @@ export function DocumentsPage() {
 
   const sortScope =
     !params.get("q") && view === "event" && eventId
-      ? { scope: "event" as const, key: eventId }
+      ? { scope: "event" as const, key: eventId, eventSection: "MAIN" as const }
       : !params.get("q") && view === "section" && section
         ? { scope: "section" as const, key: section }
         : undefined;
@@ -110,7 +113,9 @@ export function DocumentsPage() {
         </Typography.Paragraph>
       )}
       {view === "event" && eventId && (
-        <Typography.Paragraph type="secondary">Порядок документов на странице мероприятия меняется перетаскиванием.</Typography.Paragraph>
+        <Typography.Paragraph type="secondary">
+          Порядок документов на странице мероприятия меняется перетаскиванием. Материалы докладов — на вкладке мероприятия «Итоги».
+        </Typography.Paragraph>
       )}
 
       <Card size="small">

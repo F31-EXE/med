@@ -31,16 +31,19 @@ import { formatOptions, modeOptions, type EventDetail, type Tariff } from "./eve
 import { StatusTags } from "./EventsListPage";
 import { useEventActions } from "./useEventActions";
 import { EventTabs } from "./EventTabs";
+import { ImageUpload } from "../../components/ImageUpload";
+import type { UploadedImage } from "../../api/uploads";
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 type FormValues = Omit<
   EventDetail,
-  "id" | "startDate" | "endDate" | "registrationDeadline" | "status" | "state" | "city" | "directions" | "deletedAt" | "purgeAt" | "updatedAt" | "archivedAt" | "publishedAt"
+  "id" | "startDate" | "endDate" | "registrationDeadline" | "coverUrl" | "coverThumbUrl" | "status" | "state" | "city" | "directions" | "deletedAt" | "purgeAt" | "updatedAt" | "archivedAt" | "publishedAt"
 > & {
   dates: [Dayjs, Dayjs];
   registrationDeadline: Dayjs | null;
+  cover: UploadedImage | null;
 };
 
 const emptyValues: Partial<FormValues> = {
@@ -50,6 +53,7 @@ const emptyValues: Partial<FormValues> = {
   tariffs: [],
   registrationEnabled: true,
   showRegistrationCount: false,
+  cover: null,
 };
 
 function toForm(e: EventDetail): FormValues {
@@ -57,13 +61,16 @@ function toForm(e: EventDetail): FormValues {
     ...e,
     dates: [dayjs(e.startDate), dayjs(e.endDate)],
     registrationDeadline: e.registrationDeadline ? dayjs(e.registrationDeadline) : null,
+    cover: e.coverUrl && e.coverThumbUrl ? { url: e.coverUrl, thumbUrl: e.coverThumbUrl } : null,
   };
 }
 
 function toApi(v: FormValues) {
-  const { dates, registrationDeadline, ...rest } = v;
+  const { dates, registrationDeadline, cover, ...rest } = v;
   return {
     ...rest,
+    coverUrl: cover?.url ?? null,
+    coverThumbUrl: cover?.thumbUrl ?? null,
     slug: rest.slug || null,
     startDate: dates[0].format("YYYY-MM-DD"),
     endDate: dates[1].format("YYYY-MM-DD"),
@@ -247,6 +254,9 @@ export function EventFormPage() {
         <Section title="Основное">
           <Form.Item label="Название" name="title" rules={[{ required: true, min: 3, message: "Введите название" }]}>
             <Input maxLength={200} showCount />
+          </Form.Item>
+          <Form.Item label="Обложка" name="cover" extra="Фото для карточки в каталоге и шапки страницы. Лучше горизонтальное, от 1600 px по ширине.">
+            <ImageUpload preset="cover" />
           </Form.Item>
           <Form.Item label="Тема или подзаголовок" name="subtitle">
             <Input maxLength={300} />

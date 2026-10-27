@@ -12,7 +12,7 @@ const dateFmt = new Intl.DateTimeFormat("ru-RU", { dateStyle: "short" });
 
 type Props = {
   items: DocumentItem[];
-  sortScope?: { scope: "event" | "section"; key: string };
+  sortScope?: { scope: "event" | "section"; key: string; eventSection?: "MAIN" | "RESULTS" };
   showPlacement?: boolean;
   onEdit: (doc: DocumentItem) => void;
   onUnplace?: (doc: DocumentItem) => void;
@@ -48,7 +48,7 @@ export function DocumentList({ items, sortScope, showPlacement = true, onEdit, o
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["documents"] });
 
   const reorder = useMutation({
-    mutationFn: (ids: string[]) => api(`/documents/order/${sortScope!.scope}`, { method: "PUT", body: { key: sortScope!.key, ids } }),
+    mutationFn: (ids: string[]) => api(`/documents/order/${sortScope!.scope}`, { method: "PUT", body: { key: sortScope!.key, ids, eventSection: sortScope!.eventSection } }),
     onError: (e) => {
       message.error(e.message);
       refresh();
@@ -111,7 +111,10 @@ export function DocumentList({ items, sortScope, showPlacement = true, onEdit, o
           <Space size={4} wrap style={{ marginTop: 4 }}>
             {doc.event && (
               <Tag color="blue">
-                <Link to={`/events/${doc.event.id}/documents`}>{doc.event.title}</Link>
+                <Link to={`/events/${doc.event.id}/${doc.eventSection === "RESULTS" ? "results" : "documents"}`}>
+                  {doc.eventSection === "RESULTS" ? "Итоги: " : ""}
+                  {doc.event.title}
+                </Link>
               </Tag>
             )}
             {doc.sectionTitle && <Tag color="purple">Сведения: {doc.sectionTitle}</Tag>}

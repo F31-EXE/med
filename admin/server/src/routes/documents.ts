@@ -52,6 +52,7 @@ const metaSchema = z.object({
   description: text(1000),
   eventId: z.string().nullish().transform((v) => v || null),
   svedenSection: z.enum(svedenKeys, { error: "Неизвестный подраздел" }).nullish().transform((v) => v || null),
+  eventSection: z.enum(["MAIN", "RESULTS"]).optional(),
 });
 
 const include = { event: { select: { id: true, title: true, startDate: true } } } satisfies Prisma.DocumentInclude;
@@ -96,6 +97,7 @@ documentsRouter.get("/", async (req, res) => {
       q: z.string().trim().max(100).optional(),
       eventId: z.string().optional(),
       section: z.enum(svedenKeys).optional(),
+      eventSection: z.enum(["MAIN", "RESULTS"]).optional(),
       unplaced: z.enum(["true"]).optional(),
       page: z.coerce.number().int().min(1).default(1),
     })
@@ -113,6 +115,7 @@ documentsRouter.get("/", async (req, res) => {
           }
         : {},
       q.eventId ? { eventId: q.eventId } : {},
+      q.eventId && q.eventSection ? { eventSection: q.eventSection } : {},
       q.section ? { svedenSection: q.section } : {},
       q.unplaced ? { eventId: null, svedenSection: null } : {},
     ],
@@ -139,7 +142,8 @@ documentsRouter.post("/", receiveFile, async (req, res) => {
   if (!req.file) throw new HttpError(400, "Выберите файл", { file: "Выберите файл" });
   const originalName = decodeFileName(req.file.originalname);
   const { extension, mimeType } = detectDocument(originalName, req.file.buffer);
-  const meta = metaSchema.parse({ ...req.body, title: req.body.title || titleFromFileName(originalName) });
+  const parsed = metaSchema.parse({ ...req.body, title: req.body.title || titleFromFileName(originalName) });
+  const meta = { ...parsed, eventSection: parsed.eventSection ?? "MAIN" };
   await checkEvent(meta.eventId);
 
   const fileKey = await storeDocument(req.file.buffer, extension);
@@ -153,7 +157,7 @@ documentsRouter.post("/", receiveFile, async (req, res) => {
         extension,
         mimeType,
         size: req.file.size,
-        eventSortOrder: meta.eventId ? await nextOrder({ eventId: meta.eventId }, "eventSortOrder") : 0,
+        eventSortOrder: meta.eventId ? await nextOrder({ eventId: meta.eventId, eventSection: meta.eventSection }, "eventSortOrder") : 0,
         sectionSortOrder: meta.svedenSection ? await nextOrder({ svedenSection: meta.svedenSection }, "sectionSortOrder") : 0,
         createdById: req.user!.id,
         updatedById: req.user!.id,
@@ -169,14 +173,17 @@ documentsRouter.post("/", receiveFile, async (req, res) => {
 
 documentsRouter.put("/:id", async (req, res) => {
   const current = await findDocument(String(req.params.id));
-  const meta = metaSchema.parse(req.body);
+  const parsed = metaSchema.parse(req.body);
+  const meta = { ...parsed, eventSection: parsed.eventSection ?? current.eventSection };
   await checkEvent(meta.eventId);
   const doc = await prisma.document.update({
     where: { id: current.id },
     data: {
       ...meta,
       eventSortOrder:
-        meta.eventId && meta.eventId !== current.eventId ? await nextOrder({ eventId: meta.eventId }, "eventSortOrder") : current.eventSortOrder,
+        meta.eventId && (meta.eventId !== current.eventId || meta.eventSection !== current.eventSection)
+          ? await nextOrder({ eventId: meta.eventId, eventSection: meta.eventSection }, "eventSortOrder")
+          : current.eventSortOrder,
       sectionSortOrder:
         meta.svedenSection && meta.svedenSection !== current.svedenSection
           ? await nextOrder({ svedenSection: meta.svedenSection }, "sectionSortOrder")
@@ -210,9 +217,11 @@ documentsRouter.post("/:id/file", receiveFile, async (req, res) => {
 
 documentsRouter.put("/order/:scope", async (req, res) => {
   const scope = z.enum(["event", "section"]).parse(req.params.scope);
-  const body = z.object({ key: z.string().min(1), ids: z.array(z.string()).max(500) }).parse(req.body);
+  const body = z
+    .object({ key: z.string().min(1), ids: z.array(z.string()).max(500), eventSection: z.enum(["MAIN", "RESULTS"]).default("MAIN") })
+    .parse(req.body);
   const where: Prisma.DocumentWhereInput =
-    scope === "event" ? { eventId: body.key } : { svedenSection: z.enum(svedenKeys).parse(body.key) };
+    scope === "event" ? { eventId: body.key, eventSection: body.eventSection } : { svedenSection: z.enum(svedenKeys).parse(body.key) };
   const existing = await prisma.document.findMany({ where, select: { id: true } });
   const known = new Set(existing.map((d) => d.id));
   if (body.ids.length !== known.size || body.ids.some((id) => !known.has(id))) {

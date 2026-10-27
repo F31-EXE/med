@@ -69,6 +69,8 @@ export type EventDetail = EventListItem & {
   showRegistrationCount: boolean;
   seoTitle: string | null;
   seoDescription: string | null;
+  coverUrl: string | null;
+  coverThumbUrl: string | null;
   archivedAt: string | null;
   publishedAt: string | null;
   tariffs: Tariff[];

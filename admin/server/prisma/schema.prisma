@@ -130,6 +130,11 @@ model Event {
   registrationFormats   ParticipationFormat[] @default([OFFLINE, ONLINE])
   registrationFields    Json                  @default("{}")
   confirmationText      String?
+  coverUrl              String?
+  coverThumbUrl         String?
+  resultsText           String?
+  resultsFacts          Json                  @default("[]")
+  resultsLinks          Json                  @default("[]")
   seoTitle              String?
   seoDescription        String?
   archivedAt            DateTime?
@@ -146,6 +151,7 @@ model Event {
   news                  News[]
   documents             Document[]
   partners              EventPartner[]
+  images                EventImage[]
 
   @@index([startDate])
   @@index([deletedAt])
@@ -356,8 +362,8 @@ model NewsImage {
 }
 
 model Document {
-  id               String   @id @default(cuid())
-  publicId         String   @unique
+  id               String               @id @default(cuid())
+  publicId         String               @unique
   title            String
   description      String?
   fileKey          String
@@ -365,18 +371,19 @@ model Document {
   extension        String
   mimeType         String
   size             Int
-  fileUpdatedAt    DateTime @default(now())
+  fileUpdatedAt    DateTime             @default(now())
   eventId          String?
-  event            Event?   @relation(fields: [eventId], references: [id], onDelete: SetNull)
-  eventSortOrder   Int      @default(0)
+  event            Event?               @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  eventSection     EventDocumentSection @default(MAIN)
+  eventSortOrder   Int                  @default(0)
   svedenSection    String?
-  sectionSortOrder Int      @default(0)
+  sectionSortOrder Int                  @default(0)
   createdById      String?
   updatedById      String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
 
-  @@index([eventId, eventSortOrder])
+  @@index([eventId, eventSection, eventSortOrder])
   @@index([svedenSection, sectionSortOrder])
 }
 
@@ -431,4 +438,21 @@ model SiteSetting {
   value       Json
   updatedById String?
   updatedAt   DateTime @updatedAt
+}
+
+enum EventDocumentSection {
+  MAIN
+  RESULTS
+}
+
+model EventImage {
+  id        String  @id @default(cuid())
+  eventId   String
+  event     Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  url       String
+  thumbUrl  String
+  caption   String?
+  sortOrder Int
+
+  @@index([eventId])
 }

@@ -10,6 +10,7 @@ export type DocumentItem = {
   size: number;
   fileUpdatedAt: string;
   eventId: string | null;
+  eventSection: "MAIN" | "RESULTS";
   event: { id: string; title: string; startDate: string } | null;
   svedenSection: string | null;
   sectionTitle: string | null;

@@ -34,6 +34,12 @@ const int = (min: number, max: number) =>
     .nullish()
     .transform((v) => v ?? null);
 
+const uploadUrl = z
+  .string()
+  .regex(/^\/uploads\/[\w/.-]+\.webp$/, "Некорректная ссылка на изображение")
+  .nullish()
+  .transform((v) => v || null);
+
 const dateOnly = z.string({ error: "Укажите дату" }).regex(/^\d{4}-\d{2}-\d{2}$/, "Укажите дату");
 
 const eventSchema = z
@@ -73,6 +79,8 @@ const eventSchema = z
     showRegistrationCount: z.boolean().default(false),
     seoTitle: text(120),
     seoDescription: text(300),
+    coverUrl: uploadUrl,
+    coverThumbUrl: uploadUrl,
     tariffs: z
       .array(
         z.object({
@@ -337,6 +345,9 @@ eventsRouter.post("/:id/copy", async (req, res) => {
     status: _s,
     keyFacts,
     registrationFields,
+    resultsText: _rt,
+    resultsFacts: _rf,
+    resultsLinks: _rl,
     ...rest
   } = src;
 
