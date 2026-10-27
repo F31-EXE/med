@@ -29,6 +29,8 @@ type Values = {
   publishAt: Dayjs | null;
 };
 
+const fieldNames = ["title", "slug", "excerpt", "body", "cover", "eventId", "images", "seoTitle", "seoDescription", "mode", "publishAt"] as const;
+
 function toForm(n: News): Values {
   return {
     title: n.title,
@@ -108,7 +110,7 @@ export function NewsFormPage() {
       if (isNew) navigate(`/news/${saved.id}`, { replace: true });
       else {
         form.setFieldsValue(toForm(saved));
-        form.setFields(form.getFieldsError().filter((f) => f.errors.length).map((f) => ({ name: f.name, errors: [] })));
+        form.setFields(fieldNames.map((name) => ({ name, errors: [] })));
       }
     },
     onError: (e) => {
