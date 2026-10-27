@@ -319,6 +319,7 @@ eventsRouter.post("/:id/copy", async (req, res) => {
     createdById: _by,
     status: _s,
     keyFacts,
+    registrationFields,
     ...rest
   } = src;
 
@@ -335,6 +336,7 @@ eventsRouter.post("/:id/copy", async (req, res) => {
       title,
       slug,
       keyFacts: keyFacts ?? [],
+      registrationFields: registrationFields ?? {},
       status: "DRAFT",
       createdById: req.user!.id,
       directions: { connect: directions.map((d) => ({ id: d.id })) },

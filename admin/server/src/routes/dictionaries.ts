@@ -36,8 +36,10 @@ const dictionaries = {
   specialties: {
     delegate: prisma.specialty as unknown as DictDelegate,
     list: (where: { isActive?: boolean }) =>
-      prisma.specialty.findMany({ where, orderBy: { name: "asc" } }).then((rows) => rows.map((r) => ({ ...r, usage: 0 }))),
-    usage: async (_id: string) => 0,
+      prisma.specialty
+        .findMany({ where, orderBy: { name: "asc" }, include: { _count: { select: { registrations: true } } } })
+        .then((rows) => rows.map(({ _count, ...r }) => ({ ...r, usage: _count.registrations }))),
+    usage: (id: string) => prisma.registration.count({ where: { specialtyId: id } }),
   },
 };
 
@@ -91,7 +93,7 @@ dictionariesRouter.delete("/:type/:id", requireRole("ADMIN"), async (req, res) =
   await findItem(dict, String(req.params.id));
   const usage = await dict.usage(String(req.params.id));
   if (usage > 0) {
-    throw new HttpError(409, `Значение используется в мероприятиях (${usage}). Отключите его вместо удаления`);
+    throw new HttpError(409, `Значение уже используется (${usage}). Отключите его вместо удаления`);
   }
   await dict.delegate.delete({ where: { id: String(req.params.id) } });
   res.status(204).end();

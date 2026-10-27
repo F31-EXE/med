@@ -459,9 +459,14 @@ export function EventFormPage() {
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item label="Показывать на сайте счётчик регистраций" name="showRegistrationCount" valuePropName="checked" style={{ marginBottom: 0 }}>
+          <Form.Item label="Показывать на сайте счётчик регистраций" name="showRegistrationCount" valuePropName="checked">
             <Switch />
           </Form.Item>
+          {event && (
+            <Typography.Text type="secondary">
+              Форматы участия, поля формы и текст письма — в <Link to={`/registrations?eventId=${event.id}`}>разделе «Регистрации»</Link>.
+            </Typography.Text>
+          )}
         </Section>
 
         <Section title="SEO">

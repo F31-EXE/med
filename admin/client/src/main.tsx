@@ -17,12 +17,14 @@ import { ProfilePage } from "./pages/ProfilePage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { EventsModule } from "./pages/events/EventsModule";
 import { SpeakersPage } from "./pages/speakers/SpeakersPage";
+import { RegistrationsPage } from "./pages/registrations/RegistrationsPage";
 
 const modulePages: Partial<Record<ModuleKey, ReactNode>> = {
   users: <UsersPage />,
   settings: <SettingsPage />,
   events: <EventsModule />,
   speakers: <SpeakersPage />,
+  registrations: <RegistrationsPage />,
 };
 
 const queryClient = new QueryClient({

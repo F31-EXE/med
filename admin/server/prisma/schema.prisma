@@ -72,10 +72,11 @@ model City {
 }
 
 model Specialty {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
+  id            String         @id @default(cuid())
+  name          String         @unique
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  registrations Registration[]
 }
 
 enum EventFormat {
@@ -98,22 +99,22 @@ enum EventStatus {
 }
 
 model Event {
-  id                    String         @id @default(cuid())
+  id                    String                @id @default(cuid())
   title                 String
-  slug                  String         @unique
+  slug                  String                @unique
   subtitle              String?
   format                EventFormat
-  attendanceMode        AttendanceMode @default(OFFLINE)
-  status                EventStatus    @default(DRAFT)
-  startDate             DateTime       @db.Date
-  endDate               DateTime       @db.Date
+  attendanceMode        AttendanceMode        @default(OFFLINE)
+  status                EventStatus           @default(DRAFT)
+  startDate             DateTime              @db.Date
+  endDate               DateTime              @db.Date
   cityId                String?
-  city                  City?          @relation(fields: [cityId], references: [id], onDelete: SetNull)
+  city                  City?                 @relation(fields: [cityId], references: [id], onDelete: SetNull)
   directions            Direction[]
   nmoPoints             Int?
   expectedParticipants  Int?
   description           String?
-  keyFacts              Json           @default("[]")
+  keyFacts              Json                  @default("[]")
   organizers            String?
   venueName             String?
   venueAddress          String?
@@ -122,22 +123,26 @@ model Event {
   venueAccommodation    String?
   venueLat              Float?
   venueLng              Float?
-  registrationEnabled   Boolean        @default(true)
+  registrationEnabled   Boolean               @default(true)
   registrationDeadline  DateTime?
   maxParticipants       Int?
-  showRegistrationCount Boolean        @default(false)
+  showRegistrationCount Boolean               @default(false)
+  registrationFormats   ParticipationFormat[] @default([OFFLINE, ONLINE])
+  registrationFields    Json                  @default("{}")
+  confirmationText      String?
   seoTitle              String?
   seoDescription        String?
   archivedAt            DateTime?
   deletedAt             DateTime?
   publishedAt           DateTime?
   createdById           String?
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
   tariffs               EventTariff[]
   halls                 Hall[]
   programDays           ProgramDay[]
   speakers              EventSpeaker[]
+  registrations         Registration[]
 
   @@index([startDate])
   @@index([deletedAt])
@@ -252,4 +257,56 @@ model SessionSpeaker {
   sortOrder Int
 
   @@id([sessionId, speakerId])
+}
+
+enum ParticipationFormat {
+  OFFLINE
+  ONLINE
+  EXHIBITOR
+  SPEAKER
+}
+
+enum RegistrationStatus {
+  NEW
+  CONFIRMED
+  REJECTED
+}
+
+enum RegistrationSource {
+  SITE
+  MANUAL
+}
+
+model Registration {
+  id                  String              @id @default(cuid())
+  eventId             String
+  event               Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  lastName            String
+  firstName           String
+  middleName          String?
+  email               String
+  phone               String
+  specialtyId         String?
+  specialty           Specialty?          @relation(fields: [specialtyId], references: [id], onDelete: SetNull)
+  specialtyName       String
+  workplace           String?
+  position            String?
+  city                String
+  format              ParticipationFormat
+  snils               String?
+  consentPersonalData Boolean
+  consentAt           DateTime
+  consentMailing      Boolean             @default(false)
+  status              RegistrationStatus  @default(NEW)
+  statusChangedAt     DateTime?
+  statusChangedById   String?
+  source              RegistrationSource  @default(SITE)
+  managerComment      String?
+  createdById         String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@unique([eventId, email])
+  @@index([eventId, status])
+  @@index([createdAt])
 }
