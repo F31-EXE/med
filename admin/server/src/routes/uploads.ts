@@ -11,13 +11,15 @@ import { HttpError } from "../middleware/error.js";
 export const uploadsRouter = Router();
 
 const allowed = new Set(["image/jpeg", "image/png", "image/webp"]);
+const SVG = "image/svg+xml";
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024, files: 1 },
-  fileFilter: (_req, file, cb) => {
-    if (allowed.has(file.mimetype)) cb(null, true);
-    else cb(new HttpError(400, "Загрузите изображение в формате JPG, PNG или WebP"));
+  fileFilter: (req, file, cb) => {
+    const logo = req.query.preset === "logo";
+    if (allowed.has(file.mimetype) || (logo && file.mimetype === SVG)) cb(null, true);
+    else cb(new HttpError(400, logo ? "Загрузите логотип в формате SVG, PNG, JPG или WebP" : "Загрузите изображение в формате JPG, PNG или WebP"));
   },
 });
 
@@ -25,6 +27,7 @@ const presets = {
   speaker: { full: { width: 800, height: 800, fit: "inside" }, thumb: { width: 240, height: 240, fit: "cover" } },
   cover: { full: { width: 1920, height: 1080, fit: "inside" }, thumb: { width: 640, height: 360, fit: "cover" } },
   gallery: { full: { width: 1920, height: 1920, fit: "inside" }, thumb: { width: 480, height: 360, fit: "cover" } },
+  logo: { full: { width: 800, height: 400, fit: "inside" }, thumb: { width: 320, height: 160, fit: "inside" } },
 } as const;
 
 uploadsRouter.post("/image", requireRole("ADMIN", "EDITOR"), (req, res, next) => {
@@ -48,10 +51,15 @@ uploadsRouter.post("/image", requireRole("ADMIN", "EDITOR"), (req, res, next) =>
   let full: Buffer;
   let thumb: Buffer;
   try {
-    const source = sharp(req.file.buffer, { failOn: "error" }).rotate();
+    const isSvg = req.file.mimetype === SVG;
+    const source = sharp(req.file.buffer, { failOn: "error", ...(isSvg ? { density: 300 } : {}) }).rotate();
     [full, thumb] = await Promise.all([
       source.clone().resize({ ...preset.full, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer(),
-      source.clone().resize({ ...preset.thumb, position: "attention" }).webp({ quality: 80 }).toBuffer(),
+      source
+        .clone()
+        .resize({ ...preset.thumb, ...(preset.thumb.fit === "cover" ? { position: "attention" } : { withoutEnlargement: true }) })
+        .webp({ quality: 80 })
+        .toBuffer(),
     ]);
   } catch {
     throw new HttpError(400, "Файл повреждён или не является изображением");

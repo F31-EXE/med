@@ -13,6 +13,7 @@ import { uploadsRouter } from "./routes/uploads.js";
 import { registrationsRouter } from "./routes/registrations.js";
 import { newsRouter } from "./routes/news.js";
 import { documentsRouter, publicFilesRouter } from "./routes/documents.js";
+import { eventPartnersRouter, partnersRouter } from "./routes/partners.js";
 import { loadUser, requireAuth, requireCsrfHeader } from "./middleware/auth.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 
@@ -36,12 +37,14 @@ export function createApp() {
   api.use("/dictionaries", requireAuth, dictionariesRouter);
   api.use("/events/:eventId/program", requireAuth, programRouter);
   api.use("/events/:eventId/speakers", requireAuth, eventSpeakersRouter);
+  api.use("/events/:eventId/partners", requireAuth, eventPartnersRouter);
   api.use("/events", requireAuth, eventsRouter);
   api.use("/speakers", requireAuth, speakersRouter);
   api.use("/uploads", requireAuth, uploadsRouter);
   api.use("/registrations", requireAuth, registrationsRouter);
   api.use("/news", requireAuth, newsRouter);
   api.use("/documents", requireAuth, documentsRouter);
+  api.use("/partners", requireAuth, partnersRouter);
   api.use(notFound);
 
   app.use("/api", api);

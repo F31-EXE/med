@@ -145,6 +145,7 @@ model Event {
   registrations         Registration[]
   news                  News[]
   documents             Document[]
+  partners              EventPartner[]
 
   @@index([startDate])
   @@index([deletedAt])
@@ -377,4 +378,37 @@ model Document {
 
   @@index([eventId, eventSortOrder])
   @@index([svedenSection, sectionSortOrder])
+}
+
+model Partner {
+  id            String         @id @default(cuid())
+  name          String
+  url           String?
+  description   String?
+  logoUrl       String?
+  logoThumbUrl  String?
+  showOnHome    Boolean        @default(false)
+  homeSortOrder Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  events        EventPartner[]
+
+  @@index([name])
+}
+
+enum PartnerLevel {
+  GENERAL
+  OFFICIAL
+  INFO
+}
+
+model EventPartner {
+  eventId   String
+  event     Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  partnerId String
+  partner   Partner      @relation(fields: [partnerId], references: [id], onDelete: Restrict)
+  level     PartnerLevel
+  sortOrder Int
+
+  @@id([eventId, partnerId])
 }

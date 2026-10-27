@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { App, Button, Flex, Image, Upload } from "antd";
 import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
-import { uploadImage, type UploadedImage } from "../api/uploads";
+import { uploadImage, type UploadPreset, type UploadedImage } from "../api/uploads";
 
 type Props = {
   value?: UploadedImage | null;
   onChange?: (value: UploadedImage | null) => void;
-  preset?: "speaker" | "cover";
+  preset?: UploadPreset;
   disabled?: boolean;
+  accept?: string;
 };
 
-export function ImageUpload({ value, onChange, preset = "speaker", disabled }: Props) {
+export function ImageUpload({ value, onChange, preset = "speaker", disabled, accept = "image/jpeg,image/png,image/webp" }: Props) {
+  const contain = preset === "logo";
   const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
 
@@ -20,19 +22,19 @@ export function ImageUpload({ value, onChange, preset = "speaker", disabled }: P
         <Image
           src={value.thumbUrl}
           preview={{ src: value.url }}
-          width={96}
-          height={96}
-          style={{ objectFit: "cover", borderRadius: 8 }}
+          width={contain ? 160 : 96}
+          height={contain ? 80 : 96}
+          style={{ objectFit: contain ? "contain" : "cover", borderRadius: 8, background: contain ? "repeating-conic-gradient(#f0f0f0 0% 25%, #fff 0% 50%) 50% / 16px 16px" : undefined }}
           alt="Фото"
         />
       ) : (
-        <div style={{ width: 96, height: 96, borderRadius: 8, background: "#F3F6FA", display: "grid", placeItems: "center", color: "#8c8c8c", fontSize: 12 }}>
+        <div style={{ width: contain ? 160 : 96, height: contain ? 80 : 96, borderRadius: 8, background: "#F3F6FA", display: "grid", placeItems: "center", color: "#8c8c8c", fontSize: 12 }}>
           Нет фото
         </div>
       )}
       <Flex vertical gap={8}>
         <Upload
-          accept="image/jpeg,image/png,image/webp"
+          accept={accept}
           showUploadList={false}
           disabled={disabled || loading}
           customRequest={async ({ file }) => {
