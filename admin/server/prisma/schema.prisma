@@ -54,3 +54,101 @@ model PasswordResetToken {
 
   @@index([userId])
 }
+
+model Direction {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  events    Event[]
+}
+
+model City {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  events    Event[]
+}
+
+model Specialty {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+enum EventFormat {
+  CONGRESS
+  CONFERENCE
+  SEMINAR
+  EXHIBITION
+  ONLINE_SYMPOSIUM
+}
+
+enum AttendanceMode {
+  OFFLINE
+  ONLINE
+  HYBRID
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Event {
+  id                    String         @id @default(cuid())
+  title                 String
+  slug                  String         @unique
+  subtitle              String?
+  format                EventFormat
+  attendanceMode        AttendanceMode @default(OFFLINE)
+  status                EventStatus    @default(DRAFT)
+  startDate             DateTime       @db.Date
+  endDate               DateTime       @db.Date
+  cityId                String?
+  city                  City?          @relation(fields: [cityId], references: [id], onDelete: SetNull)
+  directions            Direction[]
+  nmoPoints             Int?
+  expectedParticipants  Int?
+  description           String?
+  keyFacts              Json           @default("[]")
+  organizers            String?
+  venueName             String?
+  venueAddress          String?
+  venueHowToGet         String?
+  venueParking          String?
+  venueAccommodation    String?
+  venueLat              Float?
+  venueLng              Float?
+  registrationEnabled   Boolean        @default(true)
+  registrationDeadline  DateTime?
+  maxParticipants       Int?
+  showRegistrationCount Boolean        @default(false)
+  seoTitle              String?
+  seoDescription        String?
+  archivedAt            DateTime?
+  deletedAt             DateTime?
+  publishedAt           DateTime?
+  createdById           String?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  tariffs               EventTariff[]
+
+  @@index([startDate])
+  @@index([deletedAt])
+}
+
+model EventTariff {
+  id        String  @id @default(cuid())
+  eventId   String
+  event     Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  sortOrder Int
+  name      String
+  audience  String?
+  price     Int?
+  includes  String?
+
+  @@index([eventId])
+}

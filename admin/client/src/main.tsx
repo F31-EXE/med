@@ -14,9 +14,13 @@ import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { DashboardPage, ModulePlaceholder } from "./pages/DashboardPage";
 import { UsersPage } from "./pages/UsersPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { EventsModule } from "./pages/events/EventsModule";
 
 const modulePages: Partial<Record<ModuleKey, ReactNode>> = {
   users: <UsersPage />,
+  settings: <SettingsPage />,
+  events: <EventsModule />,
 };
 
 const queryClient = new QueryClient({

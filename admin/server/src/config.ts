@@ -12,6 +12,7 @@ const schema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   MAIL_FROM: z.string().default("Media Expo Group <noreply@med-expo.org>"),
+  TIMEZONE: z.string().default("Asia/Yekaterinburg"),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -27,6 +28,7 @@ export const config = {
   sessionTtlMs: 7 * 24 * 60 * 60 * 1000,
   resetTokenTtlMs: 60 * 60 * 1000,
   inviteTokenTtlMs: 3 * 24 * 60 * 60 * 1000,
+  trashTtlMs: 30 * 24 * 60 * 60 * 1000,
   maxFailedLogins: 5,
   lockoutMs: 15 * 60 * 1000,
   sessionCookie: "mexpo_sid",
