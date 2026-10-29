@@ -50,14 +50,35 @@
   margin: 0;
 }
 
-.rte-content .ProseMirror h2 {
-  font-size: 1.4em;
+.rte-content .ProseMirror :is(h1, h2, h3, h4, h5, h6) {
   margin: 1em 0 0.25em;
+  line-height: 1.3;
+}
+
+.rte-content .ProseMirror h1 {
+  font-size: 1.75em;
+}
+
+.rte-content .ProseMirror h2 {
+  font-size: 1.45em;
 }
 
 .rte-content .ProseMirror h3 {
-  font-size: 1.15em;
-  margin: 1em 0 0.25em;
+  font-size: 1.25em;
+}
+
+.rte-content .ProseMirror h4 {
+  font-size: 1.1em;
+}
+
+.rte-content .ProseMirror h5 {
+  font-size: 1em;
+}
+
+.rte-content .ProseMirror h6 {
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .rte-content .ProseMirror ul,

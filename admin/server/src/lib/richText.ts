@@ -2,15 +2,11 @@ import sanitizeHtml from "sanitize-html";
 import { z } from "zod";
 
 const options: sanitizeHtml.IOptions = {
-  allowedTags: ["p", "br", "h2", "h3", "strong", "b", "em", "i", "u", "s", "a", "ul", "ol", "li", "blockquote", "hr"],
+  allowedTags: ["p", "br", "h1", "h2", "h3", "h4", "h5", "h6", "strong", "b", "em", "i", "u", "s", "a", "ul", "ol", "li", "blockquote", "hr"],
   allowedAttributes: { a: ["href", "target", "rel"] },
   allowedSchemes: ["http", "https", "mailto", "tel"],
   allowProtocolRelative: false,
   transformTags: {
-    h1: "h2",
-    h4: "h3",
-    h5: "h3",
-    h6: "h3",
     b: "strong",
     i: "em",
     del: "s",

@@ -25,6 +25,8 @@ type Props = {
   maxChars?: number;
 };
 
+const HEADINGS = [1, 2, 3, 4, 5, 6] as const;
+
 const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 export function toEditorHtml(value: string | null | undefined) {
@@ -106,7 +108,7 @@ export function RichTextEditor({ value, onChange, placeholder, disabled, maxChar
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        heading: { levels: [2, 3] },
+        heading: { levels: [...HEADINGS] },
         code: false,
         codeBlock: false,
         link: { openOnClick: false, autolink: true, defaultProtocol: "https", HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" } },
@@ -132,8 +134,8 @@ export function RichTextEditor({ value, onChange, placeholder, disabled, maxChar
     selector: ({ editor: e }) =>
       e
         ? {
-            h2: e.isActive("heading", { level: 2 }),
-            h3: e.isActive("heading", { level: 3 }),
+            heading: HEADINGS.find((level) => e.isActive("heading", { level })) ?? 0,
+            paragraph: e.isActive("paragraph") && !e.isActive("blockquote") && !e.isActive("listItem"),
             bold: e.isActive("bold"),
             italic: e.isActive("italic"),
             underline: e.isActive("underline"),
@@ -156,12 +158,14 @@ export function RichTextEditor({ value, onChange, placeholder, disabled, maxChar
     <div className={`rte${disabled ? " rte-disabled" : ""}`}>
       {!disabled && (
         <div className="rte-toolbar" role="toolbar" aria-label="Форматирование текста">
-          <ToolButton title="Заголовок" active={state.h2} onClick={() => c().toggleHeading({ level: 2 }).run()}>
-            <b>H2</b>
+          <ToolButton title="Абзац (обычный текст)" active={state.paragraph} onClick={() => c().lift("blockquote").liftListItem("listItem").setParagraph().run()}>
+            <b>P</b>
           </ToolButton>
-          <ToolButton title="Подзаголовок" active={state.h3} onClick={() => c().toggleHeading({ level: 3 }).run()}>
-            <b>H3</b>
-          </ToolButton>
+          {HEADINGS.map((level) => (
+            <ToolButton key={level} title={`Заголовок ${level}`} active={state.heading === level} onClick={() => c().toggleHeading({ level }).run()}>
+              <b>H{level}</b>
+            </ToolButton>
+          ))}
           <span className="rte-sep" />
           <ToolButton title="Жирный (Ctrl+B)" active={state.bold} onClick={() => c().toggleBold().run()}>
             <BoldOutlined />
