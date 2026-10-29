@@ -22,6 +22,8 @@ import { NewsModule } from "./pages/news/NewsModule";
 import { DocumentsPage } from "./pages/documents/DocumentsPage";
 import { PartnersPage } from "./pages/partners/PartnersPage";
 import { PagesModule } from "./pages/sitePages/PagesModule";
+import { RequestsPage } from "./pages/RequestsPage";
+import { PreviewPage } from "./pages/PreviewPage";
 
 const modulePages: Partial<Record<ModuleKey, ReactNode>> = {
   users: <UsersPage />,
@@ -33,6 +35,7 @@ const modulePages: Partial<Record<ModuleKey, ReactNode>> = {
   documents: <DocumentsPage />,
   partners: <PartnersPage />,
   pages: <PagesModule />,
+  requests: <RequestsPage />,
 };
 
 const queryClient = new QueryClient({
@@ -52,6 +55,7 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 </Route>
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/preview" element={<PreviewPage />} />
                 <Route element={<RequireAuth />}>
                   <Route element={<AdminLayout />}>
                     <Route index element={<DashboardPage />} />

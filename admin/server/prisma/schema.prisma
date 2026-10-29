@@ -456,3 +456,27 @@ model EventImage {
 
   @@index([eventId])
 }
+
+enum ContactRequestStatus {
+  NEW
+  PROCESSED
+}
+
+model ContactRequest {
+  id             String               @id @default(cuid())
+  name           String
+  organization   String?
+  phone          String?
+  email          String?
+  comment        String?
+  source         String?
+  consentAt      DateTime
+  status         ContactRequestStatus @default(NEW)
+  managerComment String?
+  processedAt    DateTime?
+  processedById  String?
+  ip             String?
+  createdAt      DateTime             @default(now())
+
+  @@index([status, createdAt])
+}

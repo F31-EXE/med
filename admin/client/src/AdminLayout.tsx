@@ -40,6 +40,9 @@ export function AdminLayout() {
       <Typography.Text type="secondary" style={{ display: "block", fontWeight: 400, fontSize: 12 }}>
         админ-панель
       </Typography.Text>
+      <a href="/preview" target="_blank" rel="noreferrer" style={{ fontSize: 12, fontWeight: 400 }}>
+        Тестовая страница сайта ↗
+      </a>
     </div>
   );
 

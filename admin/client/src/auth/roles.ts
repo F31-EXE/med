@@ -19,6 +19,7 @@ export const modules = [
   { key: "events", label: "Мероприятия", roles: content },
   { key: "speakers", label: "Спикеры", roles: content },
   { key: "registrations", label: "Регистрации", roles: ["ADMIN", "REGISTRATION_MANAGER"] as Role[] },
+  { key: "requests", label: "Обращения", roles: ["ADMIN", "REGISTRATION_MANAGER"] as Role[] },
   { key: "news", label: "Новости", roles: content },
   { key: "partners", label: "Партнёры и клиенты", roles: content },
   { key: "documents", label: "Документы", roles: content },

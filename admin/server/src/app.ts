@@ -18,6 +18,8 @@ import { pagesRouter } from "./routes/pages.js";
 import { eventResultsRouter } from "./routes/eventResults.js";
 import { settingsRouter } from "./routes/settings.js";
 import { dashboardRouter } from "./routes/dashboard.js";
+import { publicRouter } from "./routes/public.js";
+import { contactRequestsRouter } from "./routes/contactRequests.js";
 import { loadUser, requireAuth, requireCsrfHeader } from "./middleware/auth.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 
@@ -37,6 +39,7 @@ export function createApp() {
     res.json({ ok: true });
   });
   api.use("/auth", authRouter);
+  api.use("/public", publicRouter);
   api.use("/users", requireAuth, usersRouter);
   api.use("/dictionaries", requireAuth, dictionariesRouter);
   api.use("/events/:eventId/program", requireAuth, programRouter);
@@ -53,6 +56,7 @@ export function createApp() {
   api.use("/pages", requireAuth, pagesRouter);
   api.use("/settings", requireAuth, settingsRouter);
   api.use("/dashboard", requireAuth, dashboardRouter);
+  api.use("/contact-requests", requireAuth, contactRequestsRouter);
   api.use(notFound);
 
   app.use("/api", api);
