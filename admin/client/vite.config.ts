@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
+  base: "/admin/",
   plugins: [react()],
   server: {
     host: "127.0.0.1",
@@ -10,6 +11,7 @@ export default defineConfig({
       "/api": "http://127.0.0.1:4000",
       "/uploads": "http://127.0.0.1:4000",
       "/files": "http://127.0.0.1:4000",
+      "/assets": "http://127.0.0.1:4000",
     },
   },
 });

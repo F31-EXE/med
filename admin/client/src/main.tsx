@@ -23,8 +23,7 @@ import { DocumentsPage } from "./pages/documents/DocumentsPage";
 import { PartnersPage } from "./pages/partners/PartnersPage";
 import { PagesModule } from "./pages/sitePages/PagesModule";
 import { RequestsPage } from "./pages/RequestsPage";
-import { PreviewPage } from "./pages/PreviewPage";
-import { EventPreviewPage } from "./pages/EventPreviewPage";
+import { theme } from "./theme";
 
 const modulePages: Partial<Record<ModuleKey, ReactNode>> = {
   users: <UsersPage />,
@@ -45,10 +44,10 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ConfigProvider locale={ruRU} theme={{ token: { colorPrimary: "#0B5ED7", fontSize: 15 } }}>
+    <ConfigProvider locale={ruRU} theme={theme}>
       <AntApp>
         <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
+          <BrowserRouter basename="/admin">
             <AuthProvider>
               <Routes>
                 <Route element={<GuestOnly />}>
@@ -56,8 +55,6 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 </Route>
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
-                <Route path="/preview" element={<PreviewPage />} />
-                <Route path="/preview/events/:slug" element={<EventPreviewPage />} />
                 <Route element={<RequireAuth />}>
                   <Route element={<AdminLayout />}>
                     <Route index element={<DashboardPage />} />

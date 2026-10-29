@@ -5,6 +5,7 @@ import { Card, Col, Empty, Flex, Progress, Row, Spin, Statistic, Tag, Typography
 import { api } from "../api/client";
 import { useAuth } from "../auth/AuthProvider";
 import { roleLabels } from "../auth/roles";
+import { colors } from "../theme";
 import { formatDateRange } from "./events/eventTypes";
 import { availabilityLabels, type AvailabilityReason } from "./registrations/registrationTypes";
 
@@ -73,14 +74,14 @@ export function DashboardPage() {
           {query.data.registrations && (
             <>
               <Col xs={12} md={6}>
-                <Card size="small">
+                <Card size="small" variant="borderless" style={{ background: colors.mintSoft, boxShadow: "none", height: "100%" }}>
                   <Link to="/registrations?status=NEW" style={{ color: "inherit" }}>
                     <Statistic title="Новые заявки" value={query.data.registrations.newTotal} />
                   </Link>
                 </Card>
               </Col>
               <Col xs={12} md={6}>
-                <Card size="small">
+                <Card size="small" variant="borderless" style={{ background: colors.skySoft, boxShadow: "none", height: "100%" }}>
                   <Statistic title="Заявок за сутки" value={query.data.registrations.last24h} />
                 </Card>
               </Col>
@@ -89,14 +90,14 @@ export function DashboardPage() {
           {query.data.content && (
             <>
               <Col xs={12} md={6}>
-                <Card size="small">
+                <Card size="small" variant="borderless" style={{ background: colors.peachSoft, boxShadow: "none", height: "100%" }}>
                   <Link to="/news?tab=scheduled" style={{ color: "inherit" }}>
                     <Statistic title="Новостей запланировано" value={query.data.content.scheduledNews.length} />
                   </Link>
                 </Card>
               </Col>
               <Col xs={12} md={6}>
-                <Card size="small">
+                <Card size="small" variant="borderless" style={{ background: colors.lavSoft, boxShadow: "none", height: "100%" }}>
                   <Link to="/pages" style={{ color: "inherit" }}>
                     <Statistic title="Страниц без SEO" value={query.data.content.pagesWithoutSeo} />
                   </Link>

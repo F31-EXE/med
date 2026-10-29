@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs, { type Dayjs } from "dayjs";
 import { Alert, App, Button, Card, Col, DatePicker, Flex, Form, Input, Modal, Radio, Result, Row, Space, Spin, Typography } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, ExportOutlined } from "@ant-design/icons";
 import { api, ApiError } from "../../api/client";
 import { applyFieldErrors } from "../../api/forms";
 import type { UploadedImage } from "../../api/uploads";
@@ -163,24 +163,31 @@ export function NewsFormPage() {
           )}
         </div>
         {news && !deleted && (
-          <Button
-            danger
-            onClick={() =>
-              Modal.confirm({
-                title: "Удалить новость?",
-                content: "Она попадёт в корзину. Восстановить её можно в течение 30 дней.",
-                okText: "Удалить",
-                okButtonProps: { danger: true },
-                cancelText: "Отмена",
-                onOk: async () => {
-                  await actions.remove.mutateAsync(news.id);
-                  navigate("/news");
-                },
-              })
-            }
-          >
-            Удалить
-          </Button>
+          <Space wrap>
+            {news.state === "published" && (
+              <Button href={`/news/${news.slug}`} target="_blank" icon={<ExportOutlined />}>
+                На сайте
+              </Button>
+            )}
+            <Button
+              danger
+              onClick={() =>
+                Modal.confirm({
+                  title: "Удалить новость?",
+                  content: "Она попадёт в корзину. Восстановить её можно в течение 30 дней.",
+                  okText: "Удалить",
+                  okButtonProps: { danger: true },
+                  cancelText: "Отмена",
+                  onOk: async () => {
+                    await actions.remove.mutateAsync(news.id);
+                    navigate("/news");
+                  },
+                })
+              }
+            >
+              Удалить
+            </Button>
+          </Space>
         )}
       </Flex>
 

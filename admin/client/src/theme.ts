@@ -1,0 +1,58 @@
+import type { ThemeConfig } from "antd";
+
+export const colors = {
+  primary: "#0B5ED7",
+  primarySoft: "#E7F0FC",
+  mint: "#2FA38A",
+  mintDark: "#23826E",
+  mintSoft: "#E6F7F1",
+  skySoft: "#EEF6FD",
+  peachSoft: "#FFF2EB",
+  lavSoft: "#F2F0FC",
+  ink: "#102A43",
+  muted: "#5B6E83",
+  line: "#DDE7F1",
+  bgSoft: "#F6FAFD",
+};
+
+export const theme: ThemeConfig = {
+  token: {
+    colorPrimary: colors.primary,
+    colorInfo: colors.primary,
+    colorSuccess: colors.mint,
+    colorLink: colors.primary,
+    colorText: colors.ink,
+    colorTextSecondary: colors.muted,
+    colorBorder: colors.line,
+    colorBorderSecondary: "#E8EFF6",
+    colorBgLayout: colors.bgSoft,
+    fontFamily: '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    fontSize: 15,
+    borderRadius: 10,
+    borderRadiusLG: 18,
+    borderRadiusSM: 8,
+    controlHeight: 40,
+    boxShadowTertiary: "0 6px 20px rgba(16,42,67,.05)",
+  },
+  components: {
+    Layout: { siderBg: "#FFFFFF", headerBg: "rgba(255,255,255,.92)", bodyBg: colors.bgSoft, headerHeight: 68 },
+    Menu: {
+      itemBg: "transparent",
+      itemSelectedBg: colors.mintSoft,
+      itemSelectedColor: colors.mintDark,
+      itemHoverBg: colors.bgSoft,
+      itemBorderRadius: 12,
+      itemHeight: 42,
+      itemMarginInline: 12,
+      itemColor: colors.ink,
+      fontSize: 15,
+    },
+    Button: { primaryShadow: "0 8px 20px rgba(11,94,215,.2)", fontWeight: 600, borderRadius: 999, borderRadiusLG: 999, borderRadiusSM: 999 },
+    Card: { borderRadiusLG: 20, headerFontSize: 17 },
+    Table: { headerBg: colors.bgSoft, headerColor: colors.muted, rowHoverBg: "#F3F8FD", borderColor: "#E8EFF6" },
+    Tabs: { itemSelectedColor: colors.primary, inkBarColor: colors.primary },
+    Tag: { borderRadiusSM: 999 },
+    Segmented: { itemSelectedBg: "#FFFFFF", trackBg: "#EEF3F8" },
+    Badge: { colorError: "#E5484D" },
+  },
+};

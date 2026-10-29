@@ -23,7 +23,7 @@ import {
   Switch,
   Typography,
 } from "antd";
-import { ArrowLeftOutlined, DeleteOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, DeleteOutlined, MoreOutlined, PlusOutlined, ExportOutlined } from "@ant-design/icons";
 import { api, ApiError } from "../../api/client";
 import { applyFieldErrors } from "../../api/forms";
 import { dictionaryOptions, useDictionary } from "../../api/dictionaries";
@@ -185,6 +185,11 @@ export function EventFormPage() {
         </div>
         {event && !deleted && (
           <Space wrap>
+            {event.status === "PUBLISHED" && (
+              <Button href={`/events/${event.slug}`} target="_blank" icon={<ExportOutlined />}>
+                На сайте
+              </Button>
+            )}
             <Button
               onClick={() => actions.setStatus.mutate({ id: event.id, status: event.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED" })}
               loading={actions.setStatus.isPending}

@@ -16,9 +16,14 @@
 
 Каждая папка содержит самодостаточный `index.html` (в `01-clinical-trust` ещё и `event.html`) со всем CSS внутри тега `<style>`. Сборки, зависимостей и JS нет.
 
-## Админ-панель (`admin/`)
+## Сайт и админ-панель (`admin/`)
 
-Рабочая админка сайта по разделу 6 ТЗ: `admin/server` (Express + Prisma + PostgreSQL, TypeScript) и `admin/client` (Vite + React + Ant Design). Запуск и устройство авторизации описаны в `admin/README.md`. Правила ниже про HTML-макеты к админке не относятся: там адаптивная вёрстка (десктоп, планшет, телефон) и обычный TypeScript-код.
+Рабочий сайт и админка по ТЗ: `admin/server` (Express + Prisma + PostgreSQL, TypeScript; публичный сайт рендерится на сервере из `server/src/site`) и `admin/client` (Vite + React + Ant Design, открывается по `/admin`). Запуск, демо-наполнение (`npm run db:demo -w server`) и устройство описаны в `admin/README.md`.
+
+- Стиль сайта и админки — гибрид вариантов 1 и 4 (заказчику понравились оба): структура и синий цвет доверия из 01, мятные акценты, пастельные подложки, скругления и иллюстрации из 04. Токены — `admin/server/public/site.css` (`:root`) и `admin/client/src/theme.ts`; меняйте их согласованно. Заголовки — Nunito, текст — Inter, шрифты отдаются с сервера (`server/public/fonts`).
+- Сайт: адаптивная вёрстка (телефон в приоритете), минимум JS (`server/public/site.js`), всё должно работать и в версии для слабовидящих (`html.a11y` в CSS).
+- Правила ниже про HTML-макеты к `admin/` не относятся: там адаптивная вёрстка и обычный TypeScript-код.
+- Проверка: `npm run typecheck` и `npm run build` в `admin/`; страницы смотреть headless Chromium (Playwright из `/opt/pw-browsers`).
 
 ## Обязательные блоки (в этом порядке на каждой странице)
 
