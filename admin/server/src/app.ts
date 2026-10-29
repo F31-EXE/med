@@ -17,6 +17,7 @@ import { eventPartnersRouter, partnersRouter } from "./routes/partners.js";
 import { pagesRouter } from "./routes/pages.js";
 import { eventResultsRouter } from "./routes/eventResults.js";
 import { settingsRouter } from "./routes/settings.js";
+import { dashboardRouter } from "./routes/dashboard.js";
 import { loadUser, requireAuth, requireCsrfHeader } from "./middleware/auth.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 
@@ -51,6 +52,7 @@ export function createApp() {
   api.use("/partners", requireAuth, partnersRouter);
   api.use("/pages", requireAuth, pagesRouter);
   api.use("/settings", requireAuth, settingsRouter);
+  api.use("/dashboard", requireAuth, dashboardRouter);
   api.use(notFound);
 
   app.use("/api", api);
