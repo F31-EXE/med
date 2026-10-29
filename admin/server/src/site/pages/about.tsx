@@ -2,7 +2,8 @@ import { prisma } from "../../lib/prisma.js";
 import type { SiteCtx } from "../context.js";
 import { titleOf, type View } from "../render.js";
 import { steps } from "./home.js";
-import { Avatar, Crumbs, crumbsLd, PartnerTile, Paras, Reviews, SectionHead, Stats } from "../ui.js";
+import { initials } from "../format.js";
+import { Crumbs, crumbsLd, PartnerTile, Paras, Reviews, SectionHead, Stats } from "../ui.js";
 
 type Person = { name: string; position: string | null; photoThumbUrl: string | null };
 
@@ -69,7 +70,7 @@ export async function aboutView(ctx: SiteCtx): Promise<View> {
                 {team.map((m, i) => (
                   <div className="spk" key={i}>
                     <div className="ph" style={m.photoThumbUrl && images ? { backgroundImage: `url("${m.photoThumbUrl}")` } : undefined}>
-                      {m.photoThumbUrl && images ? null : <Avatar name={m.name} />}
+                      {m.photoThumbUrl && images ? null : initials(m.name)}
                     </div>
                     <b>{m.name}</b>
                     {m.position ? <span>{m.position}</span> : null}

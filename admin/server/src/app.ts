@@ -1,4 +1,5 @@
 import path from "node:path";
+import { randomBytes } from "node:crypto";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import express from "express";
@@ -34,11 +35,15 @@ export function createApp() {
 
   if (config.isProd) app.set("trust proxy", 1);
   app.disable("x-powered-by");
+  app.use((_req, res, next) => {
+    res.locals.nonce = randomBytes(16).toString("base64");
+    next();
+  });
   app.use(
     helmet({
       contentSecurityPolicy: {
         directives: {
-          "script-src": ["'self'", (_req, res) => `'nonce-${(res as express.Response).locals.nonce ?? "none"}'`, "https://mc.yandex.ru"],
+          "script-src": ["'self'", (_req, res) => `'nonce-${(res as express.Response).locals.nonce}'`, "https://mc.yandex.ru"],
           "img-src": ["'self'", "data:", "https://mc.yandex.ru"],
           "connect-src": ["'self'", "https://mc.yandex.ru"],
           "frame-src": ["'self'", "https://yandex.ru", "https://*.yandex.ru"],

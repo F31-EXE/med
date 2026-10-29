@@ -1,4 +1,3 @@
-import { randomBytes } from "node:crypto";
 import { Router, type NextFunction, type Request, type Response } from "express";
 import { config } from "../config.js";
 import { loadCtx, type SiteCtx } from "./context.js";
@@ -79,11 +78,6 @@ function page(handler: Handler) {
     send(res, ctx, view);
   };
 }
-
-siteRouter.use((_req, res, next) => {
-  res.locals.nonce = randomBytes(16).toString("base64");
-  next();
-});
 
 siteRouter.get("/", page(homeView));
 siteRouter.get("/events", page(eventsView));

@@ -27,6 +27,7 @@ h1{font-size:clamp(2rem,5vw,3.6rem);font-weight:900}
 h2{font-size:clamp(1.7rem,3.6vw,2.6rem);font-weight:900}
 h3{font-size:1.25rem;font-weight:800}
 p{margin:0 0 1em}
+[hidden]{display:none!important}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .skip{position:absolute;left:16px;top:-60px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r-sm);z-index:100}
 .skip:focus{top:12px;color:#fff}
@@ -349,7 +350,7 @@ a.partner:hover{border-color:var(--mint);color:var(--ink)}
 .slot.nmo{box-shadow:inset 4px 0 0 var(--mint)}
 .day-panel[hidden]{display:none}
 .no-js .prog-days,.no-js .prog-halls{display:none}
-.no-js .day-panel[hidden]{display:block}
+.no-js .day-panel[hidden]{display:block!important}
 .no-js .day-panel+.day-panel{margin-top:24px}
 .day-title{display:none;font-family:var(--font-head);font-weight:900;font-size:1.2rem;margin-bottom:10px}
 .no-js .day-title{display:block}
@@ -505,7 +506,7 @@ a.partner:hover{border-color:var(--mint);color:var(--ink)}
   .cta{grid-template-columns:1.05fr 1fr;padding:64px;align-items:center}
   .cta-contacts{grid-template-columns:1fr 1fr}
   .fgrid{grid-template-columns:1.6fr 1fr 1fr 1.2fr}
-  .filters{grid-template-columns:repeat(4,1fr) auto}
+  .filters{grid-template-columns:repeat(3,1fr) 1.5fr auto}
   .filters .actions{grid-column:auto}
   .ev-grid{grid-template-columns:minmax(0,1fr) 390px;align-items:start;gap:48px}
   .ev-about{grid-template-columns:1.4fr 1fr;gap:56px}
@@ -556,3 +557,12 @@ html.a11y .a11y-panel a{color:#000!important;text-decoration:none}
 html.a11y .a11y-panel a[aria-current]{background:#000!important;color:#fff!important}
 html.a11y .a11y-panel,html.a11y .a11y-panel *{background-color:#fff;color:#000!important;border-color:#000!important}
 html.a11y .a11y-panel a[aria-current],html.a11y .a11y-panel a[aria-current] *{background:#000!important;color:#fff!important}
+html.a11y body :where(:not(.btn,.a11y-panel,.a11y-panel *)){background-color:transparent!important}
+html.a11y body{background:var(--a-bg)!important}
+html.a11y .cookie,html.a11y .header,html.a11y .anchors,html.a11y .sticky-reg,html.a11y .m-menu{background:var(--a-bg)!important;border:2px solid var(--a-fg)!important}
+html.a11y .count4 div,html.a11y .ecard-date,html.a11y .ico,html.a11y .dirs span,html.a11y .bubble,html.a11y .socials a,html.a11y .input,html.a11y .select,html.a11y .textarea,html.a11y .choice label{border:1.5px solid var(--a-fg)!important}
+html.a11y .bar{border:1.5px solid var(--a-fg)}
+html.a11y .logo-mark{background:var(--a-fg)!important}
+html.a11y .logo-mark:before,html.a11y .logo-mark:after{background:var(--a-bg)!important}
+html.a11y .prog-days button[aria-selected=true],html.a11y .prog-halls button[aria-pressed=true],html.a11y .pager [aria-current],html.a11y .tabs a[aria-current]{outline:3px solid var(--a-fg);outline-offset:-3px}
+html.a11y .ev-cover,html.a11y .ecard-img,html.a11y .ncard-img{background-color:var(--a-bg)!important}

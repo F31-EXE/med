@@ -171,8 +171,7 @@
         if (!el.name || el.disabled) return;
         if (el.type === "checkbox") { data[el.name] = el.checked; return; }
         if (el.type === "radio") { if (el.checked) data[el.name] = el.value; return; }
-        var v = el.value.trim();
-        if (v !== "" || el.name === "website") data[el.name] = v;
+        data[el.name] = el.value.trim();
       });
       var btn = $("button[type=submit]", form);
       if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = "Отправляем…"; }
