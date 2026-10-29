@@ -7,6 +7,7 @@ import { sendMail } from "../lib/mailer.js";
 import { normalizePhone } from "../lib/registrations.js";
 import { findPageDef } from "../lib/pages.js";
 import { getSiteSettings } from "./settings.js";
+import { publicEventsRouter } from "./publicEvents.js";
 import { HttpError } from "../middleware/error.js";
 
 export const publicRouter = Router();
@@ -135,5 +136,7 @@ publicRouter.post("/contact-requests", formLimiter, async (req, res) => {
 
   res.status(201).json({ ok: true });
 });
+
+publicRouter.use("/events", publicEventsRouter);
 
 publicRouter.use((_req, _res, next) => next(new HttpError(404, "Не найдено")));

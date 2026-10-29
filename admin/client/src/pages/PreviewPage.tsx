@@ -28,6 +28,7 @@ type Site = {
   events: {
     id: string;
     title: string;
+    slug: string;
     subtitle: string | null;
     format: EventFormat;
     startDate: string;
@@ -197,13 +198,15 @@ export function PreviewPage() {
           )}
         </Section>
 
-        <Section title="Ближайшие мероприятия" hint="Только опубликованные и ещё не прошедшие, по дате начала">
+        <Section title="Ближайшие мероприятия" hint="Только опубликованные и ещё не прошедшие, по дате начала. Карточка открывает страницу мероприятия">
           {events.length ? (
             <Row gutter={[16, 16]}>
               {events.map((e) => (
                 <Col key={e.id} xs={24} md={12} lg={8}>
+                  <Link to={`/preview/events/${e.slug}`}>
                   <Card
                     size="small"
+                    hoverable
                     cover={
                       e.coverThumbUrl ? (
                         <img src={e.coverThumbUrl} alt="" style={{ aspectRatio: "16 / 9", objectFit: "cover" }} />
@@ -227,6 +230,7 @@ export function PreviewPage() {
                       </Typography.Text>
                     </div>
                   </Card>
+                  </Link>
                 </Col>
               ))}
             </Row>

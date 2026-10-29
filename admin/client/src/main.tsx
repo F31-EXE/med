@@ -24,6 +24,7 @@ import { PartnersPage } from "./pages/partners/PartnersPage";
 import { PagesModule } from "./pages/sitePages/PagesModule";
 import { RequestsPage } from "./pages/RequestsPage";
 import { PreviewPage } from "./pages/PreviewPage";
+import { EventPreviewPage } from "./pages/EventPreviewPage";
 
 const modulePages: Partial<Record<ModuleKey, ReactNode>> = {
   users: <UsersPage />,
@@ -56,6 +57,7 @@ createRoot(document.getElementById("root")!).render(
                 </Route>
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/preview" element={<PreviewPage />} />
+                <Route path="/preview/events/:slug" element={<EventPreviewPage />} />
                 <Route element={<RequireAuth />}>
                   <Route element={<AdminLayout />}>
                     <Route index element={<DashboardPage />} />
