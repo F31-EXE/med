@@ -55,14 +55,9 @@ const include = {
   images: { orderBy: { sortOrder: "asc" }, select: { url: true, thumbUrl: true, caption: true } },
 } satisfies Prisma.EventInclude;
 
-async function findPublished(slug: string) {
-  const event = await prisma.event.findFirst({ where: { slug, status: "PUBLISHED", deletedAt: null }, include });
-  if (!event) throw new HttpError(404, "Мероприятие не найдено");
-  return event;
-}
-
-publicEventsRouter.get("/:slug", async (req, res) => {
-  const e = await findPublished(String(req.params.slug));
+export async function loadPublicEvent(slug: string) {
+  const e = await prisma.event.findFirst({ where: { slug, status: "PUBLISHED", deletedAt: null }, include });
+  if (!e) return null;
   const taken = await prisma.registration.count({ where: takenWhere(e.id) });
   const availability = computeAvailability(e, taken);
   const isPast = !!e.archivedAt || e.endDate < todayDateOnly();
@@ -72,13 +67,17 @@ publicEventsRouter.get("/:slug", async (req, res) => {
       where: { status: "PUBLISHED", deletedAt: null, archivedAt: null, endDate: { gte: todayDateOnly() }, NOT: { id: e.id } },
       orderBy: { startDate: "asc" },
       take: 3,
-      select: { title: true, slug: true, startDate: true, endDate: true, coverThumbUrl: true, city: { select: { name: true } } },
+      select: { title: true, slug: true, format: true, nmoPoints: true, venueName: true, startDate: true, endDate: true, coverThumbUrl: true, city: { select: { name: true } } },
     }),
   ]);
 
-  res.json({
+  return {
     event: {
+      id: e.id,
       title: e.title,
+      seoTitle: e.seoTitle,
+      seoDescription: e.seoDescription,
+      publishedAt: e.publishedAt,
       slug: e.slug,
       subtitle: e.subtitle,
       format: e.format,
@@ -137,7 +136,16 @@ publicEventsRouter.get("/:slug", async (req, res) => {
       },
     },
     others: others.map((o) => ({ ...o, startDate: formatDateOnly(o.startDate), endDate: formatDateOnly(o.endDate), city: o.city?.name ?? null })),
-  });
+  };
+}
+
+export type PublicEvent = NonNullable<Awaited<ReturnType<typeof loadPublicEvent>>>;
+
+publicEventsRouter.get("/:slug", async (req, res) => {
+  const data = await loadPublicEvent(String(req.params.slug));
+  if (!data) throw new HttpError(404, "Мероприятие не найдено");
+  const { id: _id, seoTitle: _t, seoDescription: _d, publishedAt: _p, ...event } = data.event;
+  res.json({ event, others: data.others });
 });
 
 function escape(v: string) {

@@ -41,7 +41,7 @@ export function findPageDef(key: string) {
   return pageDefs.find((p) => p.key === key);
 }
 
-export const reservedPrefixes = ["/events", "/news", "/sveden", "/files", "/uploads", "/api", "/admin"];
+export const reservedPrefixes = ["/events", "/news", "/sveden", "/files", "/uploads", "/api", "/admin", "/assets", "/a11y"];
 
 const opt = (max: number) =>
   z
