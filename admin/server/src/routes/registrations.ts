@@ -198,7 +198,7 @@ registrationsRouter.get("/", async (req, res) => {
     prisma.registration.findMany({
       where,
       include: listInclude,
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ status: "asc" }, { createdAt: "desc" }],
       skip: (q.page - 1) * q.pageSize,
       take: q.pageSize,
     }),

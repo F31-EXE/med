@@ -4,6 +4,7 @@ import { config } from "../config.js";
 import { prisma } from "../lib/prisma.js";
 import { slugify, uniqueSlug } from "../lib/slug.js";
 import { formatDateOnly } from "../lib/dates.js";
+import { richText } from "../lib/richText.js";
 import { requireRole } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
 import type { Prisma } from "../generated/prisma/client.js";
@@ -33,7 +34,7 @@ const newsSchema = z.object({
     .regex(/^[a-z0-9-]*$/, "Только латинские буквы, цифры и дефис")
     .nullish(),
   excerpt: text(400),
-  body: text(50000),
+  body: richText(50000),
   coverUrl: uploadUrl.nullish().transform((v) => v || null),
   coverThumbUrl: uploadUrl.nullish().transform((v) => v || null),
   eventId: z.string().nullish().transform((v) => v || null),

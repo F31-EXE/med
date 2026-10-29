@@ -281,6 +281,10 @@ export function RegistrationsPage() {
         />
       </Flex>
 
+      <Typography.Paragraph type="secondary" style={{ fontSize: 13, marginBottom: 8 }}>
+        Порядок: сначала новые заявки, затем подтверждённые и отклонённые; внутри статуса — от свежих к старым.
+      </Typography.Paragraph>
+
       {selected.length > 0 && (
         <Card size="small" style={{ marginBottom: 12, background: "#F3F6FA" }}>
           <Space wrap>

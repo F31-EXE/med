@@ -10,6 +10,7 @@ import type { UploadedImage } from "../../api/uploads";
 import { EventSelect } from "../../components/EventSelect";
 import { GalleryEditor, type GalleryImage } from "../../components/GalleryEditor";
 import { ImageUpload } from "../../components/ImageUpload";
+import { RichTextEditor } from "../../components/RichTextEditor";
 import { NewsStateTag, useNewsActions } from "./NewsListPage";
 import { dateTime, type News } from "./newsTypes";
 
@@ -243,8 +244,8 @@ export function NewsFormPage() {
           <Form.Item label="Анонс" name="excerpt" extra="Короткий текст для ленты новостей и превью в мессенджерах">
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 4 }} maxLength={400} showCount />
           </Form.Item>
-          <Form.Item label="Текст новости" name="body" extra="Абзацы разделяйте пустой строкой">
-            <Input.TextArea autoSize={{ minRows: 8, maxRows: 30 }} maxLength={50000} showCount />
+          <Form.Item label="Текст новости" name="body" extra="Заголовки, выделение, списки, цитаты и ссылки — на панели над текстом. Текст из Word вставляется с форматированием.">
+            <RichTextEditor placeholder="Начните писать текст новости…" maxChars={50000} />
           </Form.Item>
           <Row gutter={16}>
             <Col xs={24} md={12}>
