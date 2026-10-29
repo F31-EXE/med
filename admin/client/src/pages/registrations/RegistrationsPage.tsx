@@ -168,27 +168,55 @@ export function RegistrationsPage() {
         </a>
       </Flex>
 
-      <Select
-        placeholder="Все мероприятия"
-        allowClear
-        showSearch={{ optionFilterProp: "title" }}
-        value={eventId}
-        onChange={(v) => update({ eventId: v })}
-        loading={events.isPending}
-        style={{ width: w(520), marginBottom: 16 }}
-        options={events.data?.map((e) => ({
-          value: e.id,
-          title: e.title,
-          label: (
-            <Flex justify="space-between" gap={12}>
-              <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{e.title}</span>
-              <Typography.Text type="secondary" style={{ flexShrink: 0 }}>
-                {dayjs(e.startDate).format("DD.MM.YYYY")} · {e.counts.NEW + e.counts.CONFIRMED + e.counts.REJECTED}
-              </Typography.Text>
-            </Flex>
-          ),
-        }))}
-      />
+      <Card size="small" style={{ marginBottom: 16 }}>
+        <Typography.Text strong style={{ display: "block", marginBottom: 6 }}>
+          Мероприятие
+        </Typography.Text>
+        <Flex gap={12} wrap align="center">
+          <Select
+            placeholder="Все мероприятия — выберите, чтобы увидеть заявки на конкретное"
+            allowClear
+            showSearch={{ optionFilterProp: "title" }}
+            value={eventId}
+            onChange={(v) => update({ eventId: v })}
+            loading={events.isPending}
+            style={{ width: w(560) }}
+            popupMatchSelectWidth={false}
+            options={(["upcoming", "past"] as const)
+              .map((group) => ({
+                label: group === "upcoming" ? "Предстоящие" : "Прошедшие",
+                options: (events.data ?? [])
+                  .filter((e) => (e.endDate >= dayjs().format("YYYY-MM-DD")) === (group === "upcoming"))
+                  .sort((a, b) => (group === "upcoming" ? a.startDate.localeCompare(b.startDate) : b.startDate.localeCompare(a.startDate)))
+                  .map((e) => {
+                    const total = e.counts.NEW + e.counts.CONFIRMED + e.counts.REJECTED;
+                    return {
+                      value: e.id,
+                      title: e.title,
+                      label: (
+                        <Flex justify="space-between" gap={16}>
+                          <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {e.title}
+                            {e.status === "DRAFT" && <Typography.Text type="secondary"> (черновик)</Typography.Text>}
+                          </span>
+                          <Typography.Text type="secondary" style={{ flexShrink: 0 }}>
+                            {dayjs(e.startDate).format("DD.MM.YYYY")} · заявок: {total}
+                            {e.counts.NEW ? `, новых: ${e.counts.NEW}` : ""}
+                          </Typography.Text>
+                        </Flex>
+                      ),
+                    };
+                  }),
+              }))
+              .filter((g) => g.options.length)}
+          />
+          {eventId && (
+            <Button type="link" onClick={() => update({ eventId: undefined })} style={{ padding: 0 }}>
+              Показать все мероприятия
+            </Button>
+          )}
+        </Flex>
+      </Card>
 
       {currentEvent && <EventSummary event={currentEvent} onSettings={() => setSettingsOpen(true)} onAdd={() => setAdding(true)} />}
       {!currentEvent && (
@@ -332,15 +360,26 @@ export function RegistrationsPage() {
               </>
             ),
           },
-          ...(eventId
-            ? []
-            : [
-                {
-                  title: "Мероприятие",
-                  width: 220,
-                  render: (_: unknown, r: Registration) => <Typography.Text ellipsis={{ tooltip: r.event.title }}>{r.event.title}</Typography.Text>,
-                },
-              ]),
+          {
+            title: "Мероприятие",
+            width: 230,
+            render: (_: unknown, r: Registration) => (
+              <>
+                {eventId ? (
+                  <Typography.Text ellipsis={{ tooltip: r.event.title }}>{r.event.title}</Typography.Text>
+                ) : (
+                  <Typography.Link ellipsis onClick={() => update({ eventId: r.event.id })} title="Показать заявки только на это мероприятие">
+                    {r.event.title}
+                  </Typography.Link>
+                )}
+                <div>
+                  <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                    {dayjs(r.event.startDate).format("DD.MM.YYYY")}
+                  </Typography.Text>
+                </div>
+              </>
+            ),
+          },
           { title: "Формат", dataIndex: "format", width: 110, render: (f: ParticipationFormat) => formatLabels[f] },
           {
             title: "Заявка",
