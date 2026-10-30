@@ -480,3 +480,11 @@ model ContactRequest {
 
   @@index([status, createdAt])
 }
+
+model Redirect {
+  fromPath  String   @id
+  toPath    String
+  hits      Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -12,6 +12,7 @@ import { svedenView } from "./pages/sveden.js";
 import { searchView } from "./pages/search.js";
 import { notFoundView, errorView, textView } from "./pages/text.js";
 import { robotsTxt, sitemapXml } from "./seo.js";
+import { legacyRedirects } from "../lib/redirects.js";
 
 export const siteRouter = Router();
 
@@ -23,6 +24,8 @@ declare global {
     }
   }
 }
+
+siteRouter.use(legacyRedirects);
 
 const YEAR = 365 * 24 * 60 * 60 * 1000;
 

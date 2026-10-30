@@ -39,7 +39,7 @@ export function Document({ ctx, meta, children }: { ctx: SiteCtx; meta: Meta; ch
     name: "Media Expo Group",
     legalName: "ООО «МедиаЭкспоГрупп»",
     url: ctx.origin,
-    logo: `${ctx.origin}/assets/img/logo.png`,
+    logo: `${ctx.origin}/assets/img/meg-logo.png`,
     telephone: ctx.settings.contacts.headerPhone ?? undefined,
     address: ctx.settings.contacts.address ?? undefined,
   };
@@ -121,10 +121,11 @@ function isActive(ctx: SiteCtx, href: string) {
 export function Logo() {
   return (
     <a className="logo" href="/" aria-label="Media Expo Group — на главную">
-      <span className="logo-mark" aria-hidden="true" />
-      <span>
-        Media Expo Group
-        <small>Медицинские мероприятия</small>
+      <img className="logo-img" src="/assets/img/meg-logo-96.png" alt="" width="85" height="48" />
+      <span className="logo-tag">
+        Организация медицинских
+        <br />
+        конференций и выставок
       </span>
     </a>
   );

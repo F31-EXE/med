@@ -83,6 +83,9 @@ p{margin:0 0 1em}
 .logo-mark:before,.logo-mark:after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:3px}
 .logo-mark:before{width:20px;height:6px}.logo-mark:after{width:6px;height:20px}
 .logo small{display:block;font-family:var(--font);font-weight:500;font-size:.7rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.logo-img{height:48px;width:auto;flex:none}
+.logo-tag{font-family:var(--font);font-weight:600;font-size:.74rem;color:var(--muted);line-height:1.3;padding-left:12px;border-left:1px solid var(--line);display:none}
+@media (min-width:480px){.logo-tag{display:block}}
 .nav{display:none}
 .nav a{color:var(--ink);font-weight:600;padding:10px 16px;border-radius:100px;white-space:nowrap}
 .nav a:hover{background:var(--bg-soft);color:var(--primary)}
@@ -552,6 +555,7 @@ html.a11y .btn *{color:var(--a-bg)!important}
 html.a11y .chip,html.a11y .eyebrow{background:transparent!important;border:1.5px solid var(--a-fg)}
 html.a11y .bar i{background:var(--a-fg)!important}
 html.a11y .nf .big{-webkit-text-fill-color:var(--a-fg)}
+html.a11y.no-img .logo:before{content:"Media Expo Group";font-weight:900}
 html.a11y.no-img .ecard-img,html.a11y.no-img .ncard-img,html.a11y.no-img .ev-cover,html.a11y.no-img .article-cover,html.a11y.no-img .gallery,html.a11y.no-img .spk .ph,html.a11y.no-img .avatar,html.a11y.no-img .partner img,html.a11y.no-img img{display:none!important}
 html.a11y .a11y-panel a{color:#000!important;text-decoration:none}
 html.a11y .a11y-panel a[aria-current]{background:#000!important;color:#fff!important}

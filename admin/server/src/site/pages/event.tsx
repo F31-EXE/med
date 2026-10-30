@@ -50,7 +50,7 @@ function Countdown({ target }: { target: number }) {
   );
 }
 
-function RegCard({ e }: { e: Ev }) {
+function RegCard({ e, hasResults }: { e: Ev; hasResults: boolean }) {
   const r = e.registration;
   const pct = r.limit ? Math.min(100, Math.round((r.taken / r.limit) * 100)) : 0;
   return (
@@ -84,9 +84,15 @@ function RegCard({ e }: { e: Ev }) {
         </div>
       ) : null}
       {e.isPast ? (
-        <a className="btn btn-block btn-ghost" href="#results">
-          Итоги мероприятия
-        </a>
+        hasResults ? (
+          <a className="btn btn-block btn-ghost" href="#results">
+            Итоги мероприятия
+          </a>
+        ) : (
+          <span className="btn btn-block btn-ghost" aria-disabled="true">
+            Мероприятие завершено
+          </span>
+        )
       ) : r.open ? (
         <a className="btn btn-block" href="#registration">
           Зарегистрироваться
@@ -352,6 +358,15 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
   const partnersByLevel = (["GENERAL", "OFFICIAL", "INFO"] as const).map((lvl) => ({ lvl, items: e.partners.filter((p) => p.level === lvl) })).filter((g) => g.items.length);
   const hasVenue = !!(e.venue.name || e.venue.address);
   const map = mapUrl(e);
+  const res = e.results;
+  const hasResults = !!(
+    res &&
+    (res.text?.trim() ||
+      (res.facts as unknown[]).length ||
+      res.images.length ||
+      (res.links as unknown[]).length ||
+      res.materials.length)
+  );
 
   const sections = [
     { id: "about", label: "О мероприятии", on: !!(e.description || keyFacts.length || e.directions.length) },
@@ -359,7 +374,7 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
     { id: "speakers", label: "Спикеры", on: e.speakers.length > 0 },
     { id: "venue", label: "Площадка", on: hasVenue },
     { id: "conditions", label: "Условия участия", on: e.tariffs.length > 0 },
-    e.isPast ? { id: "results", label: "Итоги", on: !!e.results } : { id: "registration", label: "Регистрация", on: true },
+    e.isPast ? { id: "results", label: "Итоги", on: hasResults } : { id: "registration", label: "Регистрация", on: true },
     { id: "partners", label: "Партнёры", on: partnersByLevel.length > 0 },
     { id: "documents", label: "Документы", on: mainDocs.length > 0 },
   ].filter((s) => s.on);
@@ -454,7 +469,7 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
                 <div className="ev-cover" style={bg(e.coverUrl, images)}>
                   {!e.coverUrl ? <CoverIllustration format={e.format} /> : null}
                 </div>
-                <RegCard e={e} />
+                <RegCard e={e} hasResults={hasResults} />
               </div>
             </div>
           </div>
@@ -650,7 +665,7 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
           </section>
         ) : null}
 
-        {e.isPast && e.results ? (
+        {e.isPast && e.results && hasResults ? (
           <section className="ev-sec" id="results" style={{ paddingTop: 56 }}>
             <div className="wrap">
               <div className="shead">
