@@ -1,4 +1,5 @@
 import { z } from "zod";
+import "./lib/dbEnv.js";
 
 z.config(z.locales.ru());
 

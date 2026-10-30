@@ -1,4 +1,5 @@
 import "dotenv/config";
+import "../src/lib/dbEnv.js";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
