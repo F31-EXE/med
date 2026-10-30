@@ -149,6 +149,11 @@ registrationsRouter.get("/events", async (_req, res) => {
   res.json({ events: await Promise.all(events.map(eventSummary)) });
 });
 
+registrationsRouter.get("/new-count", async (_req, res) => {
+  const count = await prisma.registration.count({ where: { status: "NEW", event: { deletedAt: null } } });
+  res.json({ count });
+});
+
 registrationsRouter.get("/events/:eventId", async (req, res) => {
   const e = await prisma.event.findUnique({ where: { id: String(req.params.eventId) }, select: eventSettingsSelect });
   if (!e || e.deletedAt) throw new HttpError(404, "Мероприятие не найдено");
