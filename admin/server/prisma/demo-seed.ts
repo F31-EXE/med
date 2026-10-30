@@ -1,10 +1,11 @@
 import "dotenv/config";
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import sharp from "sharp";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type EventFormat } from "../src/generated/prisma/client.js";
+import { saveFile } from "../src/lib/storage.js";
+import { storeDocument } from "../src/lib/documents.js";
 
 if (process.env.NODE_ENV === "production") {
   console.error("Демо-наполнение нельзя запускать в production");
@@ -12,7 +13,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }) });
-const UPLOADS = process.env.UPLOADS_DIR || "uploads";
 
 const DAY = 864e5;
 function dateOnly(offsetDays: number) {
@@ -60,14 +60,14 @@ async function saveImage(svg: string, preset: "cover" | "logo" | "gallery") {
     gallery: { full: { width: 1920, height: 1920, fit: "inside" as const }, thumb: { width: 480, height: 360, fit: "cover" as const } },
     logo: { full: { width: 800, height: 400, fit: "inside" as const }, thumb: { width: 320, height: 160, fit: "inside" as const } },
   }[preset];
-  const dir = path.join("images", "demo");
-  await mkdir(path.join(UPLOADS, dir), { recursive: true });
   const name = randomBytes(9).toString("base64url");
   const src = sharp(Buffer.from(svg), { density: 96 });
   const [full, thumb] = await Promise.all([src.clone().resize(sizes.full).webp({ quality: 82 }).toBuffer(), src.clone().resize(sizes.thumb).webp({ quality: 80 }).toBuffer()]);
-  await writeFile(path.join(UPLOADS, dir, `${name}.webp`), full);
-  await writeFile(path.join(UPLOADS, dir, `${name}-thumb.webp`), thumb);
-  return { url: `/uploads/images/demo/${name}.webp`, thumbUrl: `/uploads/images/demo/${name}-thumb.webp` };
+  const [url, thumbUrl] = await Promise.all([
+    saveFile(`images/demo/${name}.webp`, full, "image/webp"),
+    saveFile(`images/demo/${name}-thumb.webp`, thumb, "image/webp"),
+  ]);
+  return { url, thumbUrl };
 }
 
 function pdf(title: string) {
@@ -93,10 +93,7 @@ function pdf(title: string) {
 
 async function saveDoc(title: string, extra: { eventId?: string; eventSection?: "MAIN" | "RESULTS"; eventSortOrder?: number; svedenSection?: string; sectionSortOrder?: number; description?: string }) {
   const buf = pdf(title);
-  const now = new Date();
-  const rel = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}/${randomBytes(12).toString("base64url")}.pdf`;
-  await mkdir(path.join(UPLOADS, "documents", path.dirname(rel)), { recursive: true });
-  await writeFile(path.join(UPLOADS, "documents", rel), buf);
+  const rel = await storeDocument(buf, "pdf");
   return prisma.document.create({
     data: {
       publicId: randomBytes(9).toString("base64url"),

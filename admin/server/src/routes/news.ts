@@ -8,6 +8,7 @@ import { richText } from "../lib/richText.js";
 import { requireRole } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
 import type { Prisma } from "../generated/prisma/client.js";
+import { imageUrlSchema } from "../lib/storage.js";
 
 export const newsRouter = Router();
 
@@ -23,7 +24,7 @@ const text = (max: number) =>
     .nullish()
     .transform((v) => v || null);
 
-const uploadUrl = z.string().regex(/^\/uploads\/[\w/.-]+\.webp$/, "Некорректная ссылка на изображение");
+const uploadUrl = imageUrlSchema();
 
 const newsSchema = z.object({
   title: z.string().trim().min(3, "Введите заголовок").max(200),

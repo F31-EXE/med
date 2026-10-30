@@ -1,16 +1,17 @@
 import "dotenv/config";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import sharp from "sharp";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type EventFormat, type PartnerLevel } from "../src/generated/prisma/client.js";
+import { saveFile } from "../src/lib/storage.js";
+import { storeDocument } from "../src/lib/documents.js";
 import { sanitizeRichText } from "../src/lib/richText.js";
 import { findPageDef } from "../src/lib/pages.js";
 
 const reset = process.argv.includes("--reset");
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }) });
-const UPLOADS = process.env.UPLOADS_DIR || "uploads";
 const SRC = path.join(import.meta.dirname, "legacy");
 
 type LegacyEvent = {
@@ -68,8 +69,6 @@ async function image(file: string, preset: keyof typeof presets) {
   const key = `${file}:${preset}`;
   if (imageCache.has(key)) return imageCache.get(key)!;
   const p = presets[preset];
-  const dir = path.join("images", "legacy");
-  await mkdir(path.join(UPLOADS, dir), { recursive: true });
   const name = randomBytes(9).toString("base64url");
   const src = sharp(await readFile(path.join(SRC, "files", file))).rotate();
   const thumbOpts = p.thumb.fit === "cover" ? { ...p.thumb, position: "attention" as const } : { ...p.thumb, withoutEnlargement: true };
@@ -77,9 +76,11 @@ async function image(file: string, preset: keyof typeof presets) {
     src.clone().resize({ ...p.full, withoutEnlargement: true }).webp({ quality: 84 }).toBuffer(),
     src.clone().resize(thumbOpts).webp({ quality: 82 }).toBuffer(),
   ]);
-  await writeFile(path.join(UPLOADS, dir, `${name}.webp`), full);
-  await writeFile(path.join(UPLOADS, dir, `${name}-thumb.webp`), thumb);
-  const result = { url: `/uploads/images/legacy/${name}.webp`, thumbUrl: `/uploads/images/legacy/${name}-thumb.webp` };
+  const [url, thumbUrl] = await Promise.all([
+    saveFile(`images/legacy/${name}.webp`, full, "image/webp"),
+    saveFile(`images/legacy/${name}-thumb.webp`, thumb, "image/webp"),
+  ]);
+  const result = { url, thumbUrl };
   imageCache.set(key, result);
   return result;
 }
@@ -88,10 +89,7 @@ const docIds = new Map<string, string>();
 
 async function document(file: string, title: string, extra: { eventId?: string; eventSection?: "MAIN" | "RESULTS"; eventSortOrder?: number; svedenSection?: string; sectionSortOrder?: number }) {
   const buf = await readFile(path.join(SRC, "files", file));
-  const now = new Date();
-  const rel = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}/${randomBytes(16).toString("base64url")}.pdf`;
-  await mkdir(path.join(UPLOADS, "documents", path.dirname(rel)), { recursive: true });
-  await writeFile(path.join(UPLOADS, "documents", rel), buf);
+  const rel = await storeDocument(buf, "pdf");
   const doc = await prisma.document.create({
     data: {
       publicId: randomBytes(9).toString("base64url"),
@@ -131,6 +129,11 @@ function htmlToText(html: string) {
 
 const dateOnly = (v: string) => new Date(`${v}T00:00:00.000Z`);
 
+if ((await prisma.event.count()) > 0 && process.argv.includes("--if-empty")) {
+  console.log("В базе уже есть мероприятия, импорт пропущен");
+  await prisma.$disconnect();
+  process.exit(0);
+}
 if ((await prisma.event.count()) > 0 && !reset) {
   console.error("В базе уже есть мероприятия. Импорт заменит весь контент — запустите с флагом --reset");
   process.exit(1);

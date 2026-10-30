@@ -16,6 +16,7 @@ import {
   svedenSections,
   titleFromFileName,
 } from "../lib/documents.js";
+import { isRemote } from "../lib/storage.js";
 import { requireRole } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
 import type { Prisma } from "../generated/prisma/client.js";
@@ -244,6 +245,7 @@ publicFilesRouter.get("/:publicId{/:name}", async (req, res) => {
   if (!doc) throw new HttpError(404, "Файл не найден");
   const asciiName = `${slugify(doc.title) || "document"}.${doc.extension}`;
   const ruName = `${doc.title.replace(/[\\/:*?"<>|]/g, " ").trim()}.${doc.extension}`;
+  if (isRemote(doc.fileKey)) return res.redirect(302, doc.fileKey);
   res.setHeader("Content-Type", doc.mimeType);
   res.setHeader(
     "Content-Disposition",

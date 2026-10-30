@@ -9,7 +9,7 @@
 
 ## Запуск для разработки
 
-Нужны Node 22+ и PostgreSQL 16.
+Нужны Node 22.9+ и PostgreSQL 16.
 
 ```bash
 npm install
@@ -44,6 +44,19 @@ npm run start -w server      # сайт, /admin и /api на одном порт
 Сервер сам раздаёт собранную админку из `client/dist` по адресу `/admin`. В `.env` укажите `NODE_ENV=production`, `SITE_URL=https://med-expo.org`, `APP_URL=https://med-expo.org/admin` и при необходимости `METRIKA_ID`.
 
 Если SMTP не настроен, письма (например, ссылка для сброса пароля) выводятся в консоль сервера.
+
+## Демо на Vercel
+
+Для показа заказчику. Боевой сайт размещайте на российском хостинге: по 152-ФЗ персональные данные участников (ФИО, телефон, СНИЛС) должны храниться на серверах в России, а Neon и Vercel Blob находятся за рубежом.
+
+1. На vercel.com: Add New → Project → репозиторий, **Root Directory** — `admin`. Остальное берётся из `admin/vercel.json`.
+2. В проекте: Storage → Neon (Postgres) и Storage → Blob (тип доступа **Public**), подключить к проекту. Они сами добавят `DATABASE_URL`, `DATABASE_URL_UNPOOLED` и `BLOB_READ_WRITE_TOKEN`.
+3. Settings → Environment Variables: `SEED_ADMIN_PASSWORD` (не короче 8 символов), `CRON_SECRET` (любая длинная строка). По желанию — `SEED_ADMIN_EMAIL` (по умолчанию `admin@med-expo.org`), `METRIKA_ID`, SMTP.
+4. Redeploy. Сборка (`npm run vercel-build`) применяет миграции, создаёт администратора и, если база пустая, загружает данные старого сайта (`db:import-legacy --if-empty`), картинки и документы уходят в Blob.
+
+Как устроено: весь сервер работает одной функцией `api/index.mjs`, собранная админка и `server/public` отдаются как статика (`.vercel-static/admin`, `.vercel-static/assets`). Если задан `BLOB_READ_WRITE_TOKEN`, загруженные файлы сохраняются в Vercel Blob (`server/src/lib/storage.ts`), и в базе лежат их адреса; без него — на диск в `UPLOADS_DIR`, как раньше. Корзина очищается раз в сутки через Vercel Cron (`/api/cron/purge`, защищён `CRON_SECRET`). `SITE_URL` и `APP_URL` по умолчанию берутся из адреса проекта на Vercel.
+
+Ограничения Vercel: запрос к функции не больше 4,5 МБ, поэтому через админку на демо не загрузить фото и документы крупнее (на своём сервере лимиты 10 и 20 МБ); ограничение частоты запросов и кеш редиректов живут в памяти отдельного экземпляра функции.
 
 ## Авторизация
 

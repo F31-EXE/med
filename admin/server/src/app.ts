@@ -26,6 +26,9 @@ import { contactRequestsRouter } from "./routes/contactRequests.js";
 import { loadUser, requireAuth, requireCsrfHeader } from "./middleware/auth.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 import { siteErrorHandler, siteRouter } from "./site/router.js";
+import { BLOB_HOST } from "./lib/storage.js";
+import { purgeExpiredEvents } from "./routes/events.js";
+import { purgeExpiredNews } from "./routes/news.js";
 
 const publicDir = fileURLToPath(new URL("../public", import.meta.url));
 const adminDir = fileURLToPath(new URL("../../client/dist", import.meta.url));
@@ -44,9 +47,9 @@ export function createApp() {
       contentSecurityPolicy: {
         directives: {
           "script-src": ["'self'", (_req, res) => `'nonce-${(res as express.Response).locals.nonce}'`, "https://mc.yandex.ru"],
-          "img-src": ["'self'", "data:", "https://mc.yandex.ru"],
+          "img-src": ["'self'", "data:", "https://mc.yandex.ru", BLOB_HOST],
           "connect-src": ["'self'", "https://mc.yandex.ru"],
-          "frame-src": ["'self'", "https://yandex.ru", "https://*.yandex.ru"],
+          "frame-src": ["'self'", "https://yandex.ru", "https://*.yandex.ru", BLOB_HOST],
         },
       },
     }),
@@ -58,6 +61,11 @@ export function createApp() {
   api.use(requireCsrfHeader);
   api.use(loadUser);
   api.get("/health", (_req, res) => {
+    res.json({ ok: true });
+  });
+  api.get("/cron/purge", async (req, res) => {
+    if (!config.CRON_SECRET || req.get("authorization") !== `Bearer ${config.CRON_SECRET}`) return res.status(401).json({ error: "Нет доступа" });
+    await Promise.all([purgeExpiredEvents(), purgeExpiredNews()]);
     res.json({ ok: true });
   });
   api.use("/auth", authRouter);

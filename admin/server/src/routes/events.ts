@@ -7,6 +7,7 @@ import { formatDateOnly, parseDateOnly, todayDateOnly } from "../lib/dates.js";
 import { requireRole } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
 import type { Prisma } from "../generated/prisma/client.js";
+import { imageUrlSchema } from "../lib/storage.js";
 
 export const eventsRouter = Router();
 
@@ -34,9 +35,7 @@ const int = (min: number, max: number) =>
     .nullish()
     .transform((v) => v ?? null);
 
-const uploadUrl = z
-  .string()
-  .regex(/^\/uploads\/[\w/.-]+\.webp$/, "Некорректная ссылка на изображение")
+const uploadUrl = imageUrlSchema("Некорректная ссылка на изображение")
   .nullish()
   .transform((v) => v || null);
 

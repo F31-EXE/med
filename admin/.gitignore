@@ -5,3 +5,5 @@ dist/
 *.tsbuildinfo
 server/src/generated/
 server/uploads/
+.vercel-static/
+.vercel

@@ -1,8 +1,9 @@
-import { mkdir, rm, writeFile } from "node:fs/promises";
+import { rm } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import { config } from "../config.js";
 import { HttpError } from "../middleware/error.js";
+import { isRemote, removeFile, saveFile } from "./storage.js";
 
 export const MAX_DOCUMENT_SIZE = 20 * 1024 * 1024;
 
@@ -58,13 +59,13 @@ export function documentsDir() {
 
 export async function storeDocument(buffer: Buffer, extension: string) {
   const now = new Date();
-  const rel = path.join(String(now.getFullYear()), String(now.getMonth() + 1).padStart(2, "0"), `${randomBytes(16).toString("base64url")}.${extension}`);
-  await mkdir(path.dirname(path.join(documentsDir(), rel)), { recursive: true });
-  await writeFile(path.join(documentsDir(), rel), buffer);
-  return rel.split(path.sep).join("/");
+  const rel = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}/${randomBytes(16).toString("base64url")}.${extension}`;
+  const url = await saveFile(`documents/${rel}`, buffer, types[extension]?.mime ?? "application/octet-stream");
+  return isRemote(url) ? url : rel;
 }
 
 export async function removeStoredDocument(fileKey: string) {
+  if (isRemote(fileKey)) return removeFile(fileKey);
   const full = path.resolve(documentsDir(), fileKey);
   if (!full.startsWith(path.resolve(documentsDir()) + path.sep)) return;
   await rm(full, { force: true });

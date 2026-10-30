@@ -4,6 +4,7 @@ import { prisma } from "../lib/prisma.js";
 import { requireRole } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
 import type { Prisma } from "../generated/prisma/client.js";
+import { imageUrlSchema } from "../lib/storage.js";
 
 export const partnersRouter = Router();
 export const eventPartnersRouter = Router({ mergeParams: true });
@@ -14,9 +15,7 @@ eventPartnersRouter.use(requireRole("ADMIN", "EDITOR"));
 const PAGE_SIZE = 30;
 const levels = ["GENERAL", "OFFICIAL", "INFO"] as const;
 
-const uploadUrl = z
-  .string()
-  .regex(/^\/uploads\/[\w/.-]+\.webp$/, "Некорректная ссылка на логотип")
+const uploadUrl = imageUrlSchema("Некорректная ссылка на логотип")
   .nullish()
   .transform((v) => v || null);
 

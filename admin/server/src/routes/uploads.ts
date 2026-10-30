@@ -1,12 +1,11 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import { Router } from "express";
 import multer from "multer";
 import sharp from "sharp";
-import { config } from "../config.js";
 import { requireRole } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
+import { saveFile } from "../lib/storage.js";
 
 export const uploadsRouter = Router();
 
@@ -46,7 +45,6 @@ uploadsRouter.post("/image", requireRole("ADMIN", "EDITOR"), (req, res, next) =>
   const now = new Date();
   const dir = path.join("images", String(now.getFullYear()), String(now.getMonth() + 1).padStart(2, "0"));
   const name = randomBytes(12).toString("base64url");
-  await mkdir(path.join(config.UPLOADS_DIR, dir), { recursive: true });
 
   let full: Buffer;
   let thumb: Buffer;
@@ -65,11 +63,7 @@ uploadsRouter.post("/image", requireRole("ADMIN", "EDITOR"), (req, res, next) =>
     throw new HttpError(400, "Файл повреждён или не является изображением");
   }
 
-  await Promise.all([
-    writeFile(path.join(config.UPLOADS_DIR, dir, `${name}.webp`), full),
-    writeFile(path.join(config.UPLOADS_DIR, dir, `${name}-thumb.webp`), thumb),
-  ]);
-
-  const base = `/uploads/${dir.split(path.sep).join("/")}/${name}`;
-  res.status(201).json({ url: `${base}.webp`, thumbUrl: `${base}-thumb.webp` });
+  const base = `${dir.split(path.sep).join("/")}/${name}`;
+  const [url, thumbUrl] = await Promise.all([saveFile(`${base}.webp`, full, "image/webp"), saveFile(`${base}-thumb.webp`, thumb, "image/webp")]);
+  res.status(201).json({ url, thumbUrl });
 });

@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client.js";
 
-const email = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase();
+const email = (process.env.SEED_ADMIN_EMAIL || "admin@med-expo.org").trim().toLowerCase();
 const password = process.env.SEED_ADMIN_PASSWORD;
 const name = process.env.SEED_ADMIN_NAME?.trim() || "Администратор";
 

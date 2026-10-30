@@ -4,12 +4,13 @@ import { prisma } from "../lib/prisma.js";
 import { todayDateOnly } from "../lib/dates.js";
 import { requireRole } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
+import { imageUrlSchema } from "../lib/storage.js";
 
 export const eventResultsRouter = Router({ mergeParams: true });
 
 eventResultsRouter.use(requireRole("ADMIN", "EDITOR"));
 
-const uploadUrl = z.string().regex(/^\/uploads\/[\w/.-]+\.webp$/, "Некорректная ссылка на изображение");
+const uploadUrl = imageUrlSchema();
 
 const resultsSchema = z.object({
   resultsText: z

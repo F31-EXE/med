@@ -5,6 +5,7 @@ import { fullName } from "../lib/speakers.js";
 import { requireRole } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
 import type { Prisma } from "../generated/prisma/client.js";
+import { imageUrlSchema } from "../lib/storage.js";
 
 export const speakersRouter = Router();
 
@@ -20,9 +21,7 @@ const text = (max: number) =>
     .nullish()
     .transform((v) => v || null);
 
-const uploadUrl = z
-  .string()
-  .regex(/^\/uploads\/[\w/.-]+\.webp$/, "Некорректная ссылка на фото")
+const uploadUrl = imageUrlSchema("Некорректная ссылка на фото")
   .nullish()
   .transform((v) => v || null);
 
