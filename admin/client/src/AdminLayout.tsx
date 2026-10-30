@@ -22,6 +22,7 @@ import type { ReactNode } from "react";
 import { useAuth } from "./auth/AuthProvider";
 import { modules, roleLabels, type ModuleKey } from "./auth/roles";
 import { colors } from "./theme";
+import { siteUrl } from "./siteUrl";
 
 const { Header, Sider, Content } = Layout;
 
@@ -107,7 +108,7 @@ export function AdminLayout() {
         </span>
       </Link>
       <a
-        href="/"
+        href={siteUrl("/")}
         target="_blank"
         rel="noreferrer"
         style={{

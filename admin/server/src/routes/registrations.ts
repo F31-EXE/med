@@ -217,7 +217,6 @@ registrationsRouter.get("/export", async (req, res) => {
   });
   const event = f.eventId ? await prisma.event.findUnique({ where: { id: f.eventId }, select: { slug: true, title: true } }) : null;
   const withEvent = !f.eventId;
-  const withSnils = rows.some((r) => r.snils);
 
   const wb = new ExcelJS.Workbook();
   wb.creator = "Media Expo Group";
@@ -242,7 +241,6 @@ registrationsRouter.get("/export", async (req, res) => {
     { header: "Должность", key: "position", width: 22 },
     { header: "Город", key: "city", width: 16 },
     { header: "Формат участия", key: "format", width: 15 },
-    ...(withSnils ? [{ header: "СНИЛС", key: "snils", width: 16 }] : []),
     { header: "Согласие на ПДн", key: "consentAt", width: 18 },
     { header: "Рассылка", key: "mailing", width: 10 },
     { header: "Источник", key: "source", width: 10 },
@@ -265,7 +263,6 @@ registrationsRouter.get("/export", async (req, res) => {
       position: r.position ?? "",
       city: r.city,
       format: formatLabels[r.format],
-      snils: r.snils ?? "",
       consentAt: dateTime(r.consentAt),
       mailing: r.consentMailing ? "да" : "нет",
       source: sourceLabels[r.source],

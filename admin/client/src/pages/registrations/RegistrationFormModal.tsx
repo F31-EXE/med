@@ -123,13 +123,6 @@ export function RegistrationFormModal({ event, open, onClose }: { event: Registr
                   <Select options={event.settings.registrationFormats.map((f) => ({ value: f, label: formatLabels[f] }))} />
                 </Form.Item>
               </Col>
-              {fields?.snils && (
-                <Col xs={24} md={12}>
-                  <Form.Item label="СНИЛС" name="snils">
-                    <Input placeholder="000-000-000 00" inputMode="numeric" maxLength={14} />
-                  </Form.Item>
-                </Col>
-              )}
             </Row>
             <Form.Item
               name="consentPersonalData"

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs, { type Dayjs } from "dayjs";
-import { Alert, App, Button, Checkbox, DatePicker, Drawer, Form, Input, InputNumber, Space, Switch, Typography } from "antd";
+import { App, Button, Checkbox, DatePicker, Drawer, Form, Input, InputNumber, Space, Switch, Typography } from "antd";
 import { api } from "../../api/client";
 import { applyFieldErrors } from "../../api/forms";
 import {
@@ -63,14 +63,6 @@ export function RegistrationSettingsDrawer({ event, open, onClose }: { event: Re
       {event && (
         <>
           <Typography.Paragraph type="secondary">{event.title}</Typography.Paragraph>
-          {event.nmoPoints ? (
-            <Alert
-              type="info"
-              showIcon
-              style={{ marginBottom: 16 }}
-              title={`Мероприятие даёт ${event.nmoPoints} баллов НМО. Если для отчёта нужен СНИЛС, включите поле ниже.`}
-            />
-          ) : null}
           <Form<Values> form={form} layout="vertical" requiredMark={false} onFinish={(v) => save.mutate(v)}>
             <Form.Item label="Регистрация открыта" name="registrationEnabled" valuePropName="checked">
               <Switch />

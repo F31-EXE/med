@@ -179,7 +179,7 @@ export function NewsListPage() {
           onSearch={(q) => update({ q })}
           style={{ width: screens.md ? 280 : "100%" }}
         />
-        <div style={{ width: screens.md ? 320 : "100%" }}>
+        <div style={{ width: screens.md ? 520 : "100%", maxWidth: "100%" }}>
           <EventSelect value={params.get("eventId")} onChange={(eventId) => update({ eventId })} placeholder="Любое мероприятие" />
         </div>
       </Flex>

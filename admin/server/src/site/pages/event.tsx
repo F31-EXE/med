@@ -267,11 +267,6 @@ function RegistrationForm({ ctx, e }: { ctx: SiteCtx; e: Ev }) {
       <Field name="city" label="Город" required>
         <input className="input" id="f-city" name="city" autoComplete="address-level2" required maxLength={100} />
       </Field>
-      {f.snils ? (
-        <Field name="snils" label="СНИЛС" hint="Нужен для начисления баллов НМО">
-          <input className="input" id="f-snils" name="snils" inputMode="numeric" placeholder="000-000-000 00" />
-        </Field>
-      ) : null}
       <div className="field" data-field="format">
         <span className="label">
           Формат участия <span className="req">*</span>

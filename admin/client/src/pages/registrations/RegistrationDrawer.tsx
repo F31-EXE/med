@@ -75,7 +75,6 @@ export function RegistrationDrawer({ registration, onClose }: { registration: Re
             {r.position && <Descriptions.Item label="Должность">{r.position}</Descriptions.Item>}
             <Descriptions.Item label="Город">{r.city}</Descriptions.Item>
             <Descriptions.Item label="Формат участия">{formatLabels[r.format]}</Descriptions.Item>
-            {r.snils && <Descriptions.Item label="СНИЛС">{r.snils}</Descriptions.Item>}
             <Descriptions.Item label="Заявка">
               {dateTime.format(new Date(r.createdAt))} <Tag style={{ marginInlineStart: 8 }}>{r.source === "SITE" ? "с сайта" : "вручную"}</Tag>
             </Descriptions.Item>

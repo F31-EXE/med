@@ -15,7 +15,6 @@ export type Registration = {
   position: string | null;
   city: string;
   format: ParticipationFormat;
-  snils: string | null;
   consentPersonalData: boolean;
   consentAt: string;
   consentMailing: boolean;
@@ -31,7 +30,6 @@ export type RegistrationFields = {
   middleName: boolean;
   workplace: boolean;
   position: boolean;
-  snils: boolean;
   mailingConsent: boolean;
 };
 
@@ -93,7 +91,6 @@ export const fieldLabels: Record<keyof RegistrationFields, string> = {
   middleName: "Отчество",
   workplace: "Место работы",
   position: "Должность",
-  snils: "СНИЛС (для НМО)",
   mailingConsent: "Согласие на рассылку",
 };
 
