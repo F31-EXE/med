@@ -758,9 +758,9 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
               {partnersByLevel.map((g) => (
                 <div className="ptier" key={g.lvl}>
                   <span>{partnerLevelLabels[g.lvl]}</span>
-                  <div className="partners" style={g.lvl === "GENERAL" ? { gridTemplateColumns: "1fr" } : undefined}>
+                  <div className="partners">
                     {g.items.map((p) => (
-                      <PartnerTile key={p.name} p={p} size={g.lvl === "GENERAL" ? "lg" : g.lvl === "INFO" ? "sm" : undefined} />
+                      <PartnerTile key={p.name} p={p} size={g.lvl === "INFO" ? "sm" : undefined} />
                     ))}
                   </div>
                 </div>
