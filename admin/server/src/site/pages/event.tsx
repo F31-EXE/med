@@ -88,11 +88,7 @@ function RegCard({ e, hasResults }: { e: Ev; hasResults: boolean }) {
           <a className="btn btn-block btn-ghost" href="#results">
             Итоги мероприятия
           </a>
-        ) : (
-          <span className="btn btn-block btn-ghost" aria-disabled="true">
-            Мероприятие завершено
-          </span>
-        )
+        ) : null
       ) : r.open ? (
         <a className="btn btn-block" href="#registration">
           Зарегистрироваться
@@ -389,11 +385,11 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
 
   return {
     meta: {
-      title: e.seoTitle ?? titleOf(ctx, `${e.title} — ${dateRange(e.startDate, e.endDate)}${e.city ? `, ${e.city}` : ""}`),
-      description: e.seoDescription ?? truncate(e.subtitle ?? e.description ?? `${formatLabels[e.format]} ${dateRange(e.startDate, e.endDate)}${e.city ? `, ${e.city}` : ""}. Программа, спикеры, регистрация.`, 200),
+      title: e.seoTitle ?? titleOf(ctx, `${e.title} — ${dateRange(e.startDate, e.endDate, e.dateUnknown)}${e.city ? `, ${e.city}` : ""}`),
+      description: e.seoDescription ?? truncate(e.subtitle ?? e.description ?? `${formatLabels[e.format]} ${dateRange(e.startDate, e.endDate, e.dateUnknown)}${e.city ? `, ${e.city}` : ""}. Программа, спикеры, регистрация.`, 200),
       image: e.coverUrl,
       canonical: `/events/${e.slug}`,
-      jsonLd: [eventLd(ctx, e), crumbsLd(ctx, [{ href: "/events", label: "Мероприятия" }, { href: `/events/${e.slug}`, label: e.title }])],
+      jsonLd: [...(e.dateUnknown ? [] : [eventLd(ctx, e)]), crumbsLd(ctx, [{ href: "/events", label: "Мероприятия" }, { href: `/events/${e.slug}`, label: e.title }])],
       stickyReg: r.open && !e.isPast ? "#registration" : undefined,
     },
     body: (
@@ -423,7 +419,7 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
                     </span>
                     <div>
                       <span>Даты</span>
-                      <strong>{dateRange(e.startDate, e.endDate)}</strong>
+                      <strong>{dateRange(e.startDate, e.endDate, e.dateUnknown)}</strong>
                     </div>
                   </div>
                   <div>

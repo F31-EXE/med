@@ -19,6 +19,7 @@ type LegacyEvent = {
   subtitle: string | null;
   startDate: string;
   endDate: string;
+  dateUnknown?: boolean;
   format: EventFormat;
   attendanceMode: "OFFLINE" | "ONLINE" | "HYBRID";
   city: string | null;
@@ -193,6 +194,7 @@ for (const e of data.events) {
       publishedAt: new Date(),
       startDate: dateOnly(e.startDate),
       endDate: dateOnly(e.endDate),
+      dateUnknown: e.dateUnknown ?? false,
       cityId: e.city ? (cities.get(e.city) ?? null) : null,
       directions: { connect: e.directions.map((d) => ({ id: directions.get(d)! })) },
       expectedParticipants: e.expectedParticipants ?? null,

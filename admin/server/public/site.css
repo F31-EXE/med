@@ -167,6 +167,7 @@ p{margin:0 0 1em}
 .ecard-date{position:absolute;left:14px;top:14px;background:#fff;border-radius:14px;padding:8px 12px;text-align:center;line-height:1.05;box-shadow:var(--shadow)}
 .ecard-date b{display:block;font-family:var(--font-head);font-size:1.4rem;font-weight:900;color:var(--primary)}
 .ecard-date span{font-size:.72rem;color:var(--muted);text-transform:uppercase;font-weight:700}
+.ecard-year b{font-size:1.15rem}
 .ecard-badge{position:absolute;right:14px;top:14px}
 .ecard-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:8px;flex:1}
 .ecard-body .chips{margin-bottom:2px}

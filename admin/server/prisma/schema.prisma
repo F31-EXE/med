@@ -108,6 +108,7 @@ model Event {
   status                EventStatus           @default(DRAFT)
   startDate             DateTime              @db.Date
   endDate               DateTime              @db.Date
+  dateUnknown           Boolean               @default(false)
   cityId                String?
   city                  City?                 @relation(fields: [cityId], references: [id], onDelete: SetNull)
   directions            Direction[]

@@ -958,6 +958,137 @@
    ],
    "status": "PUBLISHED",
    "archived": true
+  },
+  {
+   "slug": "seminar-perinatalnaya-medicina-distancionno-2020",
+   "oldPrefix": "obrazovatelnyj-seminar-aktualnye-voprosy-perinatalnoj-mediciny-v-rezhime",
+   "title": "Образовательный семинар «Актуальные вопросы перинатальной медицины»",
+   "subtitle": "В режиме дистанционного обучения",
+   "startDate": "2020-01-01",
+   "endDate": "2020-01-01",
+   "dateUnknown": true,
+   "format": "SEMINAR",
+   "attendanceMode": "ONLINE",
+   "city": null,
+   "directions": [
+    "Акушерство и гинекология",
+    "Неонатология"
+   ],
+   "status": "PUBLISHED",
+   "archived": true,
+   "description": null
+  },
+  {
+   "slug": "kongress-akusherov-ginekologov-ufo-2020",
+   "oldPrefix": "vii-kongressa-akusherov-ginekologov",
+   "title": "VII конгресс акушеров-гинекологов, неонатологов, реаниматологов-анестезиологов УФО «Женское здоровье: от рождения до менопаузы»",
+   "subtitle": "В дистанционном режиме",
+   "startDate": "2020-01-01",
+   "endDate": "2020-01-01",
+   "dateUnknown": true,
+   "format": "CONGRESS",
+   "attendanceMode": "ONLINE",
+   "city": null,
+   "directions": [
+    "Акушерство и гинекология",
+    "Неонатология",
+    "Анестезиология и реаниматология"
+   ],
+   "status": "PUBLISHED",
+   "archived": true,
+   "description": null
+  },
+  {
+   "slug": "onlajn-seminar-perinatalnaya-medicina-2020",
+   "oldPrefix": "obrazovatelnyj-onlajn-seminar-aktualnye-voprosy-perinatalnoj-mediciny",
+   "title": "Образовательный онлайн-семинар «Актуальные вопросы перинатальной медицины»",
+   "subtitle": null,
+   "startDate": "2020-01-01",
+   "endDate": "2020-01-01",
+   "dateUnknown": true,
+   "format": "SEMINAR",
+   "attendanceMode": "ONLINE",
+   "city": null,
+   "directions": [
+    "Акушерство и гинекология",
+    "Неонатология"
+   ],
+   "status": "PUBLISHED",
+   "archived": true,
+   "description": null
+  },
+  {
+   "slug": "malyshevskie-chteniya-2021",
+   "oldPrefix": "vii-nauchno-prakticheskaya-konferenciya-akusherov-ginekologov-ufo-malyshevskie",
+   "title": "VII научно-практическая конференция акушеров-гинекологов УФО «Малышевские чтения»",
+   "subtitle": "«Охрана материнства и младенчества в реалиях XXI века»",
+   "startDate": "2021-01-01",
+   "endDate": "2021-01-01",
+   "dateUnknown": true,
+   "format": "CONFERENCE",
+   "attendanceMode": "OFFLINE",
+   "city": null,
+   "directions": [
+    "Акушерство и гинекология"
+   ],
+   "status": "PUBLISHED",
+   "archived": true,
+   "description": null
+  },
+  {
+   "slug": "chaklinskie-chteniya-2022",
+   "oldPrefix": "10-ya-vserossijskaya",
+   "title": "10-я Всероссийская научно-практическая конференция травматологов-ортопедов «Чаклинские чтения 2022»",
+   "subtitle": "Посвящена 130-летию члена-корреспондента АМН СССР, заслуженного деятеля науки РСФСР Василия Дмитриевича Чаклина",
+   "startDate": "2022-01-01",
+   "endDate": "2022-01-01",
+   "dateUnknown": true,
+   "format": "CONFERENCE",
+   "attendanceMode": "OFFLINE",
+   "city": "Екатеринбург",
+   "directions": [
+    "Травматология и ортопедия"
+   ],
+   "status": "PUBLISHED",
+   "archived": true,
+   "description": null
+  },
+  {
+   "slug": "lechenie-besplodiya-metodami-vrt-2023",
+   "oldPrefix": "obrazovatelnyj-proekt-lechenie-besplodiya",
+   "title": "Образовательный проект «Лечение бесплодия методами ВРТ» для врачей акушеров-гинекологов",
+   "subtitle": "С практическим циклом",
+   "startDate": "2023-01-01",
+   "endDate": "2023-01-01",
+   "dateUnknown": true,
+   "format": "SEMINAR",
+   "attendanceMode": "OFFLINE",
+   "city": null,
+   "directions": [
+    "Акушерство и гинекология",
+    "Репродуктивная медицина"
+   ],
+   "status": "PUBLISHED",
+   "archived": true,
+   "description": null
+  },
+  {
+   "slug": "seminar-den-travmatologa-2024",
+   "oldPrefix": "nauchno-prakticheskij-seminar-posvyashchennyj-vsemirnomu-dnyu-travmatologa",
+   "title": "Научно-практический семинар, посвящённый Всемирному дню травматолога",
+   "subtitle": "«Актуальные вопросы травматологии и ортопедии на современном этапе»",
+   "startDate": "2024-01-01",
+   "endDate": "2024-01-01",
+   "dateUnknown": true,
+   "format": "SEMINAR",
+   "attendanceMode": "OFFLINE",
+   "city": null,
+   "directions": [
+    "Травматология и ортопедия"
+   ],
+   "status": "PUBLISHED",
+   "archived": true,
+   "description": null
   }
  ],
  "news": [
@@ -1328,27 +1459,27 @@
   "/meropriyatiya/post/19-20-iyunya-2020-goda-obrazovatelnyj-online-seminar-aktualnye-voprosy-perinatalnoj-mediciny": "/events/onlajn-seminar-perinatalnaya-medicina-iyun-2020",
   "/meropriyatiya/post/obrazovatelnyj-online-seminar-beremennost-covid-trombofiliya": "/events/onlajn-seminar-beremennost-covid-trombofiliya-2020",
   "/meropriyatiya/post/27-28-avgusta-2020-g-vi-nauchno-prakticheskaya-konferenciya-akusherov-ginekologov-ufo-v-distancionnom-rezhime-malyshevskie-chteniya-demograficheskie-vyzovy-sovremennosti-v-usloviyah-pandemii-covid19": "/events/malyshevskie-chteniya-avgust-2020",
-  "/meropriyatiya/post/obrazovatelnyj-seminar-aktualnye-voprosy-perinatalnoj-mediciny-v-rezhime-distancionnogo-obucheniya": "/events?tab=archive",
-  "/meropriyatiya/post/vii-kongressa-akusherov-ginekologov-neonatologov-reanimatologov-anesteziologov-ufo-v-distancionnom-rezhime-zhenskoe-zdorove-ot-rozhdeniya-do-menopauzy": "/events?tab=archive",
-  "/meropriyatiya/post/obrazovatelnyj-onlajn-seminar-aktualnye-voprosy-perinatalnoj-mediciny": "/events?tab=archive",
+  "/meropriyatiya/post/obrazovatelnyj-seminar-aktualnye-voprosy-perinatalnoj-mediciny-v-rezhime-distancionnogo-obucheniya": "/events/seminar-perinatalnaya-medicina-distancionno-2020",
+  "/meropriyatiya/post/vii-kongressa-akusherov-ginekologov-neonatologov-reanimatologov-anesteziologov-ufo-v-distancionnom-rezhime-zhenskoe-zdorove-ot-rozhdeniya-do-menopauzy": "/events/kongress-akusherov-ginekologov-ufo-2020",
+  "/meropriyatiya/post/obrazovatelnyj-onlajn-seminar-aktualnye-voprosy-perinatalnoj-mediciny": "/events/onlajn-seminar-perinatalnaya-medicina-2020",
   "/meropriyatiya/post/19-20-noyabrya-2020-g-obrazovatelnyj-online-seminar-aktualnye-voprosy-perinatalnoj-mediciny-v-rezhime-distancionnogo-obucheniya-mesto-provedeniya-yanao": "/events/onlajn-seminar-perinatalnaya-medicina-yanao-2020",
   "/meropriyatiya/post/30-noyabrya-1-dekabrya-2020-g-obrazovatelnyj-seminar-aktualnye-voprosy-perinatalnoj-mediciny-v-rezhime-distancionnogo-obucheniya": "/events/seminar-perinatalnaya-medicina-dekabr-2020",
   "/meropriyatiya/post/plan-meropriyatij-fgbu-nii-omm-minzdrava-rossii-na-2021-god": "/events?tab=archive",
   "/meropriyatiya/post/10-marta-2021-g-obrazovatelnyj-seminar-aktualnye-voprosy-perinatologii-v-distancionnom-rezhime": "/events/seminar-perinatologiya-mart-2021",
   "/meropriyatiya/post/31-marta-2021-goda-obrazovatelnyj-seminar-beremennost-covid-trombofiliya-v-rezhime-distancionnogo-obucheniya": "/events/seminar-beremennost-covid-trombofiliya-2021",
-  "/meropriyatiya/post/vii-nauchno-prakticheskaya-konferenciya-akusherov-ginekologov-ufo-malyshevskie-chteniya-ohrana-materinstva-i-mladenchestva-v-realiyah-xxi-veka": "/events?tab=archive",
+  "/meropriyatiya/post/vii-nauchno-prakticheskaya-konferenciya-akusherov-ginekologov-ufo-malyshevskie-chteniya-ohrana-materinstva-i-mladenchestva-v-realiyah-xxi-veka": "/events/malyshevskie-chteniya-2021",
   "/meropriyatiya/post/13-sentyabrya-2021-goda-obrazovatelnyj-seminar-vspomogatelnye-reproduktivnye-tehnologii-sovremennye-tendencii-v-distancionnom-rezhime": "/events/seminar-vrt-2021",
   "/meropriyatiya/post/20-21-sentyabrya-2021-goda-obrazovatelnyj-seminar-neotlozhnye-sostoyaniya-v-akusherstve-v-distancionnom-rezhime": "/events/seminar-neotlozhnye-sostoyaniya-v-akusherstve-2021",
   "/meropriyatiya/post/15-16-oktyabrya-2021-g-viii-kongress-akusherov-ginekologov-neonatologov-reanimatologov-anesteziologov-ufo-sovremennye-perinatalnye-i-reproduktivnye-tehnologii-v-ohrane-zdorovya-semi-i-xi": "/events/kongress-akusherov-ginekologov-ufo-2021",
   "/meropriyatiya/post/6-7-oktyabrya-2021-g-x-yubilejnaya-nauchno-prakticheskaya-konferenciya-chaklinskie-chteniya-posvyashchennaya-90-letiyu-uralskogo-instituta-travmatologii-i-ortopedii-imeni-v-d-chaklina-i-vystavka-travma": "/events/chaklinskie-chteniya-2021",
   "/meropriyatiya/post/14-15-oktyabrya-2022-g-ix-mezhdisciplinarnyj-kongress-akusherov-ginekologov-anesteziologov-reanimatologov-i-neonatologov-ufo-soveshchanie-glavnyh-specialistov-akusherov-ginekologov-ufo-x-special": "/events/kongress-akusherov-ginekologov-ufo-2022",
-  "/meropriyatiya/post/10-ya-vserossijskaya-nauchno-prakticheskaya-konferenciya-travmatologov-ortopedov-chaklinskie-chteniya-2022-posvyashchennaya-130-letiyu-chlena-korrespondenta-amn-sssr-zasluzhennogo-deyatelya-nauki-rsfsr-vasi": "/events?tab=archive",
+  "/meropriyatiya/post/10-ya-vserossijskaya-nauchno-prakticheskaya-konferenciya-travmatologov-ortopedov-chaklinskie-chteniya-2022-posvyashchennaya-130-letiyu-chlena-korrespondenta-amn-sssr-zasluzhennogo-deyatelya-nauki-rsfsr-vasi": "/events/chaklinskie-chteniya-2022",
   "/meropriyatiya/post/25-27-oktyabrya-2022-goda-uchenye-nii-omm-minzdrava-rossii-v-pskovskom-perinatalnom-centre-provedut-zanyatiya-po-okazaniyu-neotlozhnoj-pomoshchi-rozhenicam-i-novorozhdennym": "/events/trening-pskov-2022",
   "/meropriyatiya/post/6-7-aprelya-2023-g-h-obshcherossijskaya-nauchno-prakticheskaya-konferenciya-akusherov-ginekologov-neonatologov-anesteziologov-reanimatologov-malyshevskie-chteniya-demograficheskie-vyzovy-sovremennosti": "/events/malyshevskie-chteniya-2023",
-  "/meropriyatiya/post/obrazovatelnyj-proekt-lechenie-besplodiya-metodami-vrt-dlya-vrachej-akusherov-ginekologov-s-prakticheskim-ciklom": "/events?tab=archive",
+  "/meropriyatiya/post/obrazovatelnyj-proekt-lechenie-besplodiya-metodami-vrt-dlya-vrachej-akusherov-ginekologov-s-prakticheskim-ciklom": "/events/lechenie-besplodiya-metodami-vrt-2023",
   "/meropriyatiya/post/12-13-okyatbrya-2023-g-h-yubilejnyj-mezhdisciplinarnyj-vyezdnoj-kongress-akusherov-ginekologov-neonatologov-anesteziologov-reanimatologov-i-neonatologov-urala-perinatalnaya-i-reproduktivnaya-me": "/events/kongress-akusherov-ginekologov-urala-2023",
   "/meropriyatiya/post/6-oktyabrya-2023-g-xi-vserossijskaya-nauchno-prakticheskaya-konferenciya-travmatologov-ortopedov-chaklinskie-chteniya-vysokie-tehnologii-prakticheskomu-zdravoohraneniyu-vystavka-travmatologiya-or": "/events/chaklinskie-chteniya-2023",
-  "/meropriyatiya/post/nauchno-prakticheskij-seminar-posvyashchennyj-vsemirnomu-dnyu-travmatologa-aktualnye-voprosy-travmatologii-i-ortopedii-na-sovremennom-etape": "/events?tab=archive",
+  "/meropriyatiya/post/nauchno-prakticheskij-seminar-posvyashchennyj-vsemirnomu-dnyu-travmatologa-aktualnye-voprosy-travmatologii-i-ortopedii-na-sovremennom-etape": "/events/seminar-den-travmatologa-2024",
   "/meropriyatiya/post/11-12-aprelya-2024-g-xi-vserossijskaya-nauchno-prakticheskaya-konferenciya-akusherov-ginekologov-anesteziologov-reanimatologov-i-neonatologov-ufo-malyshevskie-chteniya-reproduktivnoe-zdorove-semi": "/events/malyshevskie-chteniya-2024",
   "/meropriyatiya/post/vyezdnoj-simulyacionno-treningovyj-cikl-neotlozhnye-sostoyaniya-v-perinatologii-po-specialnosti-akusherstvo-ginekologiya-anesteziologiya-reanimaciya-neonatologiya-dlya-vrachej-kurganskoj-obla": "/events/simulyacionnyj-cikl-kurgan-2024",
   "/meropriyatiya/post/04-oktyabrya-2024-goda-ekaterinburg-chaklinskie-chteniya-vysokie-tehnologii-prakticheskomu-zdravoohraneniyu-xii-vserossijskaya-nauchno-prakticheskaya-konferenciya-travmatologov-ortopedov-vystavka-trav": "/events/chaklinskie-chteniya-2024",
@@ -1380,15 +1511,6 @@
   "/f/vypiska_i_uvedomlenie_po_licenzii_1.zip": "@doc:docs/sveden-licenziya-vypiska.pdf"
  },
  "skipped": {
-  "Без даты": [
-   "Образовательный семинар «Актуальные вопросы перинатальной медицины» в режиме дистанционного обучения (2020)",
-   "VII конгресс акушеров-гинекологов, неонатологов, реаниматологов-анестезиологов УФО «Женское здоровье: от рождения до менопаузы» (2020)",
-   "Образовательный онлайн-семинар «Актуальные вопросы перинатальной медицины» (2020)",
-   "VII научно-практическая конференция акушеров-гинекологов УФО «Малышевские чтения: Охрана материнства и младенчества в реалиях XXI века» (2021)",
-   "10-я Всероссийская научно-практическая конференция травматологов-ортопедов «Чаклинские чтения 2022» (2022)",
-   "Образовательный проект «Лечение бесплодия методами ВРТ» для врачей акушеров-гинекологов (2023)",
-   "Научно-практический семинар, посвящённый Всемирному дню травматолога (2024)"
-  ],
   "Не мероприятие (план на год)": [
    "Образовательные мероприятия ФГБУ «НИИ ОММ» Минздрава РФ на 2019 год",
    "План мероприятий на 2019 год ФГБУ «НИИ ОММ» Минздрава РФ",

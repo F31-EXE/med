@@ -32,6 +32,7 @@ export type EventListItem = {
   state: EventState;
   startDate: string;
   endDate: string;
+  dateUnknown: boolean;
   city: Ref | null;
   directions: Ref[];
   nmoPoints: number | null;
@@ -78,9 +79,10 @@ export type EventDetail = EventListItem & {
 
 const months = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
 
-export function formatDateRange(start: string, end: string) {
+export function formatDateRange(start: string, end: string, unknown = false) {
   const [sy, sm, sd] = start.split("-").map(Number);
   const [ey, em, ed] = end.split("-").map(Number);
+  if (unknown) return `${sy} год, дата не указана`;
   if (start === end) return `${sd} ${months[sm - 1]} ${sy}`;
   if (sy === ey && sm === em) return `${sd}–${ed} ${months[sm - 1]} ${sy}`;
   if (sy === ey) return `${sd} ${months[sm - 1]} – ${ed} ${months[em - 1]} ${sy}`;

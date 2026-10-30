@@ -70,6 +70,7 @@ export type EventCardData = {
   format?: EventFormat;
   startDate: string;
   endDate: string;
+  dateUnknown?: boolean;
   city: string | null;
   venueName?: string | null;
   nmoPoints?: number | null;
@@ -79,13 +80,13 @@ export type EventCardData = {
 };
 
 export function EventCard({ e, ctx }: { e: EventCardData; ctx: SiteCtx }) {
-  const d = dateBadge(e.startDate);
+  const d = dateBadge(e.startDate, e.dateUnknown);
   const format = e.format ?? "CONGRESS";
   return (
     <a className="ecard" href={`/events/${e.slug}`}>
       <div className="ecard-img" style={bg(e.coverThumbUrl, ctx.a11y.images || !ctx.a11y.on)}>
         {!e.coverThumbUrl ? <CoverIllustration format={format} /> : null}
-        <div className="ecard-date">
+        <div className={e.dateUnknown ? "ecard-date ecard-year" : "ecard-date"}>
           <b>{d.day}</b>
           <span>{d.month}</span>
         </div>
@@ -98,7 +99,7 @@ export function EventCard({ e, ctx }: { e: EventCardData; ctx: SiteCtx }) {
         </div>
         <h3>{e.title}</h3>
         <div className="meta">
-          <span>{dateRange(e.startDate, e.endDate)}</span>
+          <span>{dateRange(e.startDate, e.endDate, e.dateUnknown)}</span>
           {e.city || e.venueName ? <span>{[e.city, e.venueName].filter(Boolean).join(", ")}</span> : null}
         </div>
       </div>

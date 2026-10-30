@@ -67,7 +67,7 @@ export async function loadPublicEvent(slug: string) {
       where: { status: "PUBLISHED", deletedAt: null, archivedAt: null, endDate: { gte: todayDateOnly() }, NOT: { id: e.id } },
       orderBy: { startDate: "asc" },
       take: 3,
-      select: { title: true, slug: true, format: true, nmoPoints: true, venueName: true, startDate: true, endDate: true, coverThumbUrl: true, city: { select: { name: true } } },
+      select: { title: true, slug: true, format: true, nmoPoints: true, venueName: true, startDate: true, endDate: true, dateUnknown: true, coverThumbUrl: true, city: { select: { name: true } } },
     }),
   ]);
 
@@ -84,6 +84,7 @@ export async function loadPublicEvent(slug: string) {
       attendanceMode: e.attendanceMode,
       startDate: formatDateOnly(e.startDate),
       endDate: formatDateOnly(e.endDate),
+      dateUnknown: e.dateUnknown,
       city: e.city?.name ?? null,
       directions: e.directions.map((d) => d.name),
       nmoPoints: e.nmoPoints,

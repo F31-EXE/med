@@ -7,6 +7,7 @@ import {
   App,
   Button,
   Card,
+  Checkbox,
   Col,
   DatePicker,
   Dropdown,
@@ -53,6 +54,7 @@ const emptyValues: Partial<FormValues> = {
   tariffs: [],
   registrationEnabled: true,
   showRegistrationCount: false,
+  dateUnknown: false,
   cover: null,
 };
 
@@ -308,6 +310,13 @@ export function EventFormPage() {
             <Col xs={24} md={12}>
               <Form.Item label="Даты проведения" name="dates" rules={[{ required: true, message: "Укажите даты" }]}>
                 <RangePicker format="DD.MM.YYYY" style={{ width: "100%" }} placeholder={["Начало", "Окончание"]} />
+              </Form.Item>
+              <Form.Item
+                name="dateUnknown"
+                valuePropName="checked"
+                extra="На сайте вместо дат будет показан только год — например, для архивных мероприятий без точной даты"
+              >
+                <Checkbox>Точная дата неизвестна</Checkbox>
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>

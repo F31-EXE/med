@@ -52,8 +52,9 @@ function parts(iso: string) {
   return { y: y!, m: m!, d: d! };
 }
 
-export function dateRange(start: string, end: string) {
+export function dateRange(start: string, end: string, unknown = false) {
   const a = parts(start);
+  if (unknown) return `${a.y} год`;
   const b = parts(end);
   if (start.slice(0, 10) === end.slice(0, 10)) return `${a.d} ${monthsGen[a.m - 1]} ${a.y}`;
   if (a.y === b.y && a.m === b.m) return `${a.d}–${b.d} ${monthsGen[a.m - 1]} ${a.y}`;
@@ -61,8 +62,9 @@ export function dateRange(start: string, end: string) {
   return `${a.d} ${monthsGen[a.m - 1]} ${a.y} – ${b.d} ${monthsGen[b.m - 1]} ${b.y}`;
 }
 
-export function dateBadge(start: string) {
+export function dateBadge(start: string, unknown = false) {
   const a = parts(start);
+  if (unknown) return { day: String(a.y), month: "год", year: a.y };
   return { day: String(a.d).padStart(2, "0"), month: monthsShort[a.m - 1]!, year: a.y };
 }
 

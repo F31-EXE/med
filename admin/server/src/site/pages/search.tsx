@@ -20,7 +20,7 @@ export async function searchView(ctx: SiteCtx, req: Request): Promise<View> {
         where: { ...publishedEvent, OR: [{ title: like }, { subtitle: like }, { description: like }, { venueName: like }] },
         orderBy: { startDate: "desc" },
         take: 20,
-        select: { title: true, slug: true, format: true, startDate: true, endDate: true, subtitle: true, description: true, city: { select: { name: true } } },
+        select: { title: true, slug: true, format: true, startDate: true, endDate: true, dateUnknown: true, subtitle: true, description: true, city: { select: { name: true } } },
       }),
       prisma.news.findMany({
         where: { AND: [publishedNewsWhere(), { OR: [{ title: like }, { excerpt: like }, { body: like }] }] },
@@ -32,7 +32,7 @@ export async function searchView(ctx: SiteCtx, req: Request): Promise<View> {
     ]);
     hits = [
       ...events.map((e) => ({
-        kind: `${formatLabels[e.format]} · ${dateRange(formatDateOnly(e.startDate), formatDateOnly(e.endDate))}${e.city ? `, ${e.city.name}` : ""}`,
+        kind: `${formatLabels[e.format]} · ${dateRange(formatDateOnly(e.startDate), formatDateOnly(e.endDate), e.dateUnknown)}${e.city ? `, ${e.city.name}` : ""}`,
         title: e.title,
         href: `/events/${e.slug}`,
         text: truncate(e.subtitle ?? e.description ?? "", 180),

@@ -34,6 +34,7 @@ export async function eventsView(ctx: SiteCtx, req: Request): Promise<View> {
     const from = month ? `${year}-${String(month).padStart(2, "0")}-01` : `${year}-01-01`;
     const toDate = month ? new Date(Date.UTC(year, month, 0)) : new Date(Date.UTC(year, 11, 31));
     and.push({ startDate: { lte: toDate }, endDate: { gte: parseDateOnly(from) } });
+    if (month) and.push({ dateUnknown: false });
   }
   const where: Prisma.EventWhereInput = { AND: and };
 

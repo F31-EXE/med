@@ -228,7 +228,7 @@ export function EventsListPage() {
           {
             title: "Даты",
             width: 190,
-            render: (_, item) => formatDateRange(item.startDate, item.endDate),
+            render: (_, item) => formatDateRange(item.startDate, item.endDate, item.dateUnknown),
           },
           {
             title: "Место",

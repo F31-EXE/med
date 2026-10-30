@@ -56,6 +56,7 @@ const eventSchema = z
     attendanceMode: z.enum(modes).default("OFFLINE"),
     startDate: dateOnly,
     endDate: dateOnly,
+    dateUnknown: z.boolean().default(false),
     cityId: z.string().nullish().transform((v) => v || null),
     directionIds: z.array(z.string()).max(10).default([]),
     nmoPoints: int(0, 100),
