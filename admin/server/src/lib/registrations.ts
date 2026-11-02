@@ -20,7 +20,6 @@ export const registrationFieldsSchema = z.object({
   middleName: z.boolean().default(true),
   workplace: z.boolean().default(true),
   position: z.boolean().default(true),
-  snils: z.boolean().default(false),
   mailingConsent: z.boolean().default(true),
 });
 
@@ -41,21 +40,6 @@ export function normalizePhone(value: string) {
 export function formatPhone(value: string) {
   const m = value.match(/^\+7(\d{3})(\d{3})(\d{2})(\d{2})$/);
   return m ? `+7 (${m[1]}) ${m[2]}-${m[3]}-${m[4]}` : value;
-}
-
-export function normalizeSnils(value: string) {
-  const digits = value.replace(/\D/g, "");
-  if (digits.length !== 11) return null;
-  const body = digits.slice(0, 9);
-  const control = Number(digits.slice(9));
-  if (Number(body) > 1001998) {
-    let sum = 0;
-    for (let i = 0; i < 9; i++) sum += Number(body[i]) * (9 - i);
-    let expected = sum < 100 ? sum : sum === 100 || sum === 101 ? 0 : sum % 101;
-    if (expected === 100) expected = 0;
-    if (expected !== control) return null;
-  }
-  return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 9)} ${digits.slice(9)}`;
 }
 
 const optText = (max: number) =>
@@ -87,17 +71,6 @@ export function registrationInputSchema(event: Pick<Event, "registrationFields" 
     format: z.enum(participationFormats, { error: "Выберите формат участия" }).refine((f) => event.registrationFormats.includes(f), {
       message: "Этот формат недоступен для мероприятия",
     }),
-    snils: fields.snils
-      ? z
-          .string()
-          .nullish()
-          .transform((v, ctx) => {
-            if (!v) return null;
-            const snils = normalizeSnils(v);
-            if (!snils) ctx.addIssue({ code: "custom", message: "Проверьте номер СНИЛС" });
-            return snils;
-          })
-      : z.any().transform(() => null),
     consentPersonalData: z.literal(true, { error: "Нужно согласие на обработку персональных данных" }),
     consentMailing: fields.mailingConsent ? z.boolean().default(false) : z.any().transform(() => false),
   });

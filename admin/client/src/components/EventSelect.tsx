@@ -32,10 +32,14 @@ export function EventSelect({ value, onChange, placeholder = "Не привяз�
       showSearch={{ filterOption: false, onSearch: setQ }}
       loading={search.isFetching}
       notFoundContent={search.isFetching ? "Поиск…" : "Мероприятий не найдено"}
+      popupMatchSelectWidth
+      style={{ width: "100%" }}
+      optionLabelProp="title"
       options={search.data?.map((e) => ({
         value: e.id,
+        title: `${e.title} · ${dayjs(e.startDate).format("DD.MM.YYYY")}`,
         label: (
-          <span>
+          <span style={{ display: "block", whiteSpace: "normal", overflowWrap: "anywhere", lineHeight: 1.35 }}>
             {e.title}{" "}
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>
               · {dayjs(e.startDate).format("DD.MM.YYYY")}

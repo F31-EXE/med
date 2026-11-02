@@ -303,7 +303,6 @@ model Registration {
   position            String?
   city                String
   format              ParticipationFormat
-  snils               String?
   consentPersonalData Boolean
   consentAt           DateTime
   consentMailing      Boolean             @default(false)

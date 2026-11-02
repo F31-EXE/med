@@ -377,7 +377,7 @@ for (const [i, e] of eventSeeds.entries()) {
       maxParticipants: e.limit ?? null,
       showRegistrationCount: !!e.limit,
       registrationFormats: e.mode === "ONLINE" ? ["ONLINE"] : e.mode === "HYBRID" ? ["OFFLINE", "ONLINE"] : ["OFFLINE"],
-      registrationFields: { middleName: true, workplace: true, position: true, snils: !!e.nmo, mailingConsent: true },
+      registrationFields: { middleName: true, workplace: true, position: true, mailingConsent: true },
       confirmationText: "Ждём вас! За день до начала пришлём напоминание и ссылку на программу.",
       coverUrl: cover.url,
       coverThumbUrl: cover.thumbUrl,

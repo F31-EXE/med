@@ -149,6 +149,11 @@ registrationsRouter.get("/events", async (_req, res) => {
   res.json({ events: await Promise.all(events.map(eventSummary)) });
 });
 
+registrationsRouter.get("/new-count", async (_req, res) => {
+  const count = await prisma.registration.count({ where: { status: "NEW", event: { deletedAt: null } } });
+  res.json({ count });
+});
+
 registrationsRouter.get("/events/:eventId", async (req, res) => {
   const e = await prisma.event.findUnique({ where: { id: String(req.params.eventId) }, select: eventSettingsSelect });
   if (!e || e.deletedAt) throw new HttpError(404, "Мероприятие не найдено");
@@ -217,7 +222,6 @@ registrationsRouter.get("/export", async (req, res) => {
   });
   const event = f.eventId ? await prisma.event.findUnique({ where: { id: f.eventId }, select: { slug: true, title: true } }) : null;
   const withEvent = !f.eventId;
-  const withSnils = rows.some((r) => r.snils);
 
   const wb = new ExcelJS.Workbook();
   wb.creator = "Media Expo Group";
@@ -242,7 +246,6 @@ registrationsRouter.get("/export", async (req, res) => {
     { header: "Должность", key: "position", width: 22 },
     { header: "Город", key: "city", width: 16 },
     { header: "Формат участия", key: "format", width: 15 },
-    ...(withSnils ? [{ header: "СНИЛС", key: "snils", width: 16 }] : []),
     { header: "Согласие на ПДн", key: "consentAt", width: 18 },
     { header: "Рассылка", key: "mailing", width: 10 },
     { header: "Источник", key: "source", width: 10 },
@@ -265,7 +268,6 @@ registrationsRouter.get("/export", async (req, res) => {
       position: r.position ?? "",
       city: r.city,
       format: formatLabels[r.format],
-      snils: r.snils ?? "",
       consentAt: dateTime(r.consentAt),
       mailing: r.consentMailing ? "да" : "нет",
       source: sourceLabels[r.source],

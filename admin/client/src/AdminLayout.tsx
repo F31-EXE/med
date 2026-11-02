@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Avatar, Button, Drawer, Grid, Layout, Menu, Space, Typography } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import { Avatar, Badge, Button, Drawer, Grid, Layout, Menu, Space, Typography } from "antd";
 import {
   AppstoreOutlined,
   CalendarOutlined,
@@ -19,9 +20,11 @@ import {
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
+import { api } from "./api/client";
 import { useAuth } from "./auth/AuthProvider";
 import { modules, roleLabels, type ModuleKey } from "./auth/roles";
 import { colors } from "./theme";
+import { siteUrl } from "./siteUrl";
 
 const { Header, Sider, Content } = Layout;
 
@@ -74,12 +77,29 @@ export function AdminLayout() {
   const location = useLocation();
   const screens = Grid.useBreakpoint();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const allowed = modules.filter((m) => user && (m.roles as readonly string[]).includes(user.role));
+  const newRegistrations = useQuery({
+    queryKey: ["registrations", "new-count"],
+    queryFn: () => api<{ count: number }>("/registrations/new-count").then((r) => r.count),
+    enabled: allowed.some((m) => m.key === "registrations"),
+    refetchInterval: 60 * 1000,
+  });
 
   if (!user) return null;
 
-  const items = modules
-    .filter((m) => (m.roles as readonly string[]).includes(user.role))
-    .map((m) => ({ key: `/${m.key}`, label: m.label, icon: icons[m.key] }));
+  const items = allowed.map((m) => ({
+    key: `/${m.key}`,
+    icon: icons[m.key],
+    label:
+      m.key === "registrations" && newRegistrations.data ? (
+        <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+          {m.label}
+          <Badge count={newRegistrations.data} overflowCount={99} title={`Новых заявок: ${newRegistrations.data}`} />
+        </span>
+      ) : (
+        m.label
+      ),
+  }));
   const selected = "/" + location.pathname.split("/")[1];
 
   const menu = (
@@ -107,7 +127,7 @@ export function AdminLayout() {
         </span>
       </Link>
       <a
-        href="/"
+        href={siteUrl("/")}
         target="_blank"
         rel="noreferrer"
         style={{

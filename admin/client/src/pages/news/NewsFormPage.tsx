@@ -13,6 +13,7 @@ import { ImageUpload } from "../../components/ImageUpload";
 import { RichTextEditor } from "../../components/RichTextEditor";
 import { NewsStateTag, useNewsActions } from "./NewsListPage";
 import { dateTime, type News } from "./newsTypes";
+import { siteUrl } from "../../siteUrl";
 
 type Mode = "draft" | "now" | "schedule";
 
@@ -165,7 +166,7 @@ export function NewsFormPage() {
         {news && !deleted && (
           <Space wrap>
             {news.state === "published" && (
-              <Button href={`/news/${news.slug}`} target="_blank" icon={<ExportOutlined />}>
+              <Button href={siteUrl(`/news/${news.slug}`)} target="_blank" icon={<ExportOutlined />}>
                 На сайте
               </Button>
             )}

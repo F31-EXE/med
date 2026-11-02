@@ -34,6 +34,7 @@ import { useEventActions } from "./useEventActions";
 import { EventTabs } from "./EventTabs";
 import { ImageUpload } from "../../components/ImageUpload";
 import type { UploadedImage } from "../../api/uploads";
+import { siteUrl } from "../../siteUrl";
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -188,7 +189,7 @@ export function EventFormPage() {
         {event && !deleted && (
           <Space wrap>
             {event.status === "PUBLISHED" && (
-              <Button href={`/events/${event.slug}`} target="_blank" icon={<ExportOutlined />}>
+              <Button href={siteUrl(`/events/${event.slug}`)} target="_blank" icon={<ExportOutlined />}>
                 На сайте
               </Button>
             )}
