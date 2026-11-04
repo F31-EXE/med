@@ -1,0 +1,15 @@
+[Unit]
+Description=Media Expo Group: сайт и админка
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=med
+WorkingDirectory=/home/med/app/admin/server
+ExecStart=/usr/bin/node --env-file=.env dist/index.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

@@ -45,6 +45,41 @@ npm run start -w server      # сайт, /admin и /api на одном порт
 
 Если SMTP не настроен, письма (например, ссылка для сброса пароля) выводятся в консоль сервера.
 
+## Сервер (Timeweb Cloud, Ubuntu 24.04)
+
+Готовые файлы — в `deploy/`: служба systemd `med-expo.service`, конфиг nginx, `update.sh` (обновление) и `backup.sh` (ежедневная копия базы и загруженных файлов, хранится 14 дней). Сервер: от 1 vCPU и 2 ГБ RAM (сборка админки требует памяти), диск от 15 ГБ.
+
+```bash
+# под root
+apt update && apt upgrade -y
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt install -y nodejs git nginx postgresql certbot python3-certbot-nginx
+ufw allow OpenSSH && ufw allow "Nginx Full" && ufw --force enable
+adduser --disabled-password --gecos "" med
+sudo -u postgres psql -c "CREATE USER med WITH PASSWORD 'пароль_базы';"
+sudo -u postgres createdb -O med med_expo
+echo "med ALL=(root) NOPASSWD: /usr/bin/systemctl restart med-expo" > /etc/sudoers.d/med-expo
+
+# под пользователем med (su - med)
+git clone -b claude/fervent-johnson-83vm4e https://github.com/F31-EXE/med.git ~/app
+cd ~/app/admin && cp server/.env.example server/.env && nano server/.env
+npm ci && npm run build
+npm run db:deploy -w server && npm run db:seed -w server
+npm run db:import-legacy -w server -- --reset   # только при первой установке
+
+# снова под root
+cp /home/med/app/admin/deploy/med-expo.service /etc/systemd/system/
+systemctl daemon-reload && systemctl enable --now med-expo
+cp /home/med/app/admin/deploy/nginx-med-expo.conf /etc/nginx/sites-available/med-expo
+ln -s /etc/nginx/sites-available/med-expo /etc/nginx/sites-enabled/ && rm -f /etc/nginx/sites-enabled/default
+nginx -t && systemctl reload nginx
+certbot --nginx -d med-expo.org -d www.med-expo.org   # после того как DNS указывает на сервер
+```
+
+В `server/.env` на сервере: `NODE_ENV=production`, `DATABASE_URL="postgresql://med:пароль_базы@localhost:5432/med_expo?schema=public"`, `SITE_URL=https://med-expo.org`, `APP_URL=https://med-expo.org/admin`, `UPLOADS_DIR=/home/med/uploads`, `SEED_ADMIN_PASSWORD`, SMTP и `METRIKA_ID`. Cookie входа в production передаются только по HTTPS, поэтому админка заработает после выпуска сертификата.
+
+Обновление: `~/app/admin/deploy/update.sh` под пользователем `med`. Резервные копии: `crontab -e` под `med` и строка `30 3 * * * /home/med/app/admin/deploy/backup.sh`. Логи: `journalctl -u med-expo -f`.
+
 ## Демо на Vercel
 
 Для показа заказчику. Боевой сайт размещайте на российском хостинге: по 152-ФЗ персональные данные участников (ФИО, телефон, СНИЛС) должны храниться на серверах в России, а Neon и Vercel Blob находятся за рубежом.
