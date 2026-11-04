@@ -376,12 +376,13 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
   ].filter((s) => s.on);
 
   const crumbs = [{ href: "/events", label: "Мероприятия" }, { label: e.title }];
+  const customLabels = new Set(keyFacts.map((f) => f.label.trim().toLowerCase()));
   const facts: { label: string; value: string }[] = [
     { label: "Формат", value: `${formatLabels[e.format]} · ${modeLabels[e.attendanceMode]}` },
     ...(e.nmoPoints ? [{ label: "Баллы НМО", value: String(e.nmoPoints) }] : []),
     ...(e.expectedParticipants ? [{ label: "Участников", value: num(e.expectedParticipants) }] : []),
-    ...keyFacts.map((f) => ({ label: f.label, value: f.value })),
-  ];
+  ].filter((f) => !customLabels.has(f.label.toLowerCase()));
+  facts.push(...keyFacts.map((f) => ({ label: f.label, value: f.value })));
 
   return {
     meta: {
@@ -398,7 +399,7 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
           <div className="wrap">
             <Crumbs items={crumbs} />
             <div className="ev-grid" style={{ marginTop: 26 }}>
-              <div>
+              <div className="ev-main">
                 <div className="chips">
                   <span className="chip chip-ink">{formatLabels[e.format]}</span>
                   {e.directions.slice(0, 2).map((d) => (
@@ -412,6 +413,8 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
                 </div>
                 <h1>{e.title}</h1>
                 {e.subtitle ? <p className="sub">{e.subtitle}</p> : null}
+              </div>
+              <div className="ev-meta">
                 <div className="meta3">
                   <div>
                     <span className="ico">
@@ -461,7 +464,7 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
                   ) : null}
                 </div>
               </div>
-              <div>
+              <div className="ev-side">
                 <div className="ev-cover" style={bg(e.coverUrl, images)}>
                   {!e.coverUrl ? <CoverIllustration format={e.format} /> : null}
                 </div>
@@ -763,9 +766,9 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
               {partnersByLevel.map((g) => (
                 <div className="ptier" key={g.lvl}>
                   <span>{partnerLevelLabels[g.lvl]}</span>
-                  <div className="partners" style={g.lvl === "GENERAL" ? { gridTemplateColumns: "1fr" } : undefined}>
+                  <div className="partners">
                     {g.items.map((p) => (
-                      <PartnerTile key={p.name} p={p} size={g.lvl === "GENERAL" ? "lg" : g.lvl === "INFO" ? "sm" : undefined} />
+                      <PartnerTile key={p.name} p={p} />
                     ))}
                   </div>
                 </div>

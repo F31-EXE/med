@@ -156,8 +156,8 @@ export function Reviews({ items }: { items: Review[] }) {
 
 export type PartnerData = { name: string; url: string | null; logoThumbUrl: string | null };
 
-export function PartnerTile({ p, size }: { p: PartnerData; size?: "lg" | "sm" }) {
-  const cls = `partner${size ? ` partner-${size}` : ""}`;
+export function PartnerTile({ p }: { p: PartnerData }) {
+  const cls = "partner";
   const inner = p.logoThumbUrl ? <img src={p.logoThumbUrl} alt={p.name} loading="lazy" /> : <span>{p.name}</span>;
   return p.url ? (
     <a className={cls} href={p.url} target="_blank" rel="noopener" title={p.name}>
