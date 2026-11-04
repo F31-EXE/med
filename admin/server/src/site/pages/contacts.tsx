@@ -92,15 +92,17 @@ export async function contactsView(ctx: SiteCtx): Promise<View> {
                 {map && images ? <iframe src={map} title="Карта: офис Media Expo Group" loading="lazy" /> : null}
               </div>
             ) : null}
+          </div>
+          <div style={{ display: "grid", gap: 20, alignContent: "start" }}>
+            <div className="cblock" id="form" style={{ scrollMarginTop: 100 }}>
+              <ContactForm ctx={ctx} source="Контакты" title="Напишите нам" />
+            </div>
             {c.requisites ? (
               <div className="cblock">
                 <h3>Реквизиты</h3>
                 <p className="req">{c.requisites}</p>
               </div>
             ) : null}
-          </div>
-          <div className="cblock" id="form" style={{ alignSelf: "start", scrollMarginTop: 100 }}>
-            <ContactForm ctx={ctx} source="Контакты" title="Напишите нам" />
           </div>
         </div>
       </div>
