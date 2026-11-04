@@ -29,20 +29,20 @@ export function EventSelect({ value, onChange, placeholder = "Не привяз�
       allowClear
       disabled={disabled}
       placeholder={placeholder}
+      style={{ width: "100%" }}
+      popupMatchSelectWidth
       showSearch={{ filterOption: false, onSearch: setQ }}
       loading={search.isFetching}
       notFoundContent={search.isFetching ? "Поиск…" : "Мероприятий не найдено"}
-      options={search.data?.map((e) => ({
-        value: e.id,
-        label: (
-          <span>
-            {e.title}{" "}
-            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-              · {dayjs(e.startDate).format("DD.MM.YYYY")}
-            </Typography.Text>
-          </span>
-        ),
-      }))}
+      options={search.data?.map((e) => ({ value: e.id, label: e.title, date: dayjs(e.startDate).format("DD.MM.YYYY") }))}
+      optionRender={(o) => (
+        <span style={{ whiteSpace: "normal", lineHeight: 1.4 }}>
+          {o.label}{" "}
+          <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+            · {o.data.date}
+          </Typography.Text>
+        </span>
+      )}
     />
   );
 }

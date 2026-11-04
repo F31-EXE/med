@@ -179,7 +179,7 @@ export function NewsListPage() {
           onSearch={(q) => update({ q })}
           style={{ width: screens.md ? 280 : "100%" }}
         />
-        <div style={{ width: screens.md ? 320 : "100%" }}>
+        <div style={{ width: screens.md ? 480 : "100%" }}>
           <EventSelect value={params.get("eventId")} onChange={(eventId) => update({ eventId })} placeholder="Любое мероприятие" />
         </div>
       </Flex>
@@ -192,7 +192,8 @@ export function NewsListPage() {
         rowKey="id"
         loading={list.isFetching}
         dataSource={list.data?.items}
-        scroll={{ x: 820 }}
+        scroll={{ x: 980 }}
+        tableLayout="fixed"
         locale={{ emptyText: list.isError ? list.error.message : "Новостей не найдено" }}
         pagination={{
           current: page,
@@ -209,7 +210,9 @@ export function NewsListPage() {
               <Flex gap={12} align="center">
                 <Avatar shape="square" size={64} src={n.coverThumbUrl ?? undefined} icon={<PictureOutlined />} style={{ flexShrink: 0, borderRadius: 6 }} />
                 <div style={{ minWidth: 0 }}>
-                  {n.state === "deleted" ? <Typography.Text>{n.title}</Typography.Text> : <Link to={`/news/${n.id}`}>{n.title}</Link>}
+                  <Typography.Paragraph ellipsis={{ rows: 2, tooltip: n.title }} style={{ margin: 0, fontSize: 13, lineHeight: 1.4 }}>
+                    {n.state === "deleted" ? n.title : <Link to={`/news/${n.id}`}>{n.title}</Link>}
+                  </Typography.Paragraph>
                   {n.excerpt && (
                     <Typography.Paragraph type="secondary" ellipsis={{ rows: 1 }} style={{ margin: 0, fontSize: 13 }}>
                       {n.excerpt}
@@ -226,8 +229,15 @@ export function NewsListPage() {
           },
           {
             title: "Мероприятие",
-            width: 220,
-            render: (_, n) => (n.event ? <Link to={`/events/${n.event.id}`}>{n.event.title}</Link> : <Typography.Text type="secondary">—</Typography.Text>),
+            width: 340,
+            render: (_, n) =>
+              n.event ? (
+                <Link to={`/events/${n.event.id}`} style={{ fontSize: 13, lineHeight: 1.4, display: "block" }}>
+                  {n.event.title}
+                </Link>
+              ) : (
+                <Typography.Text type="secondary">—</Typography.Text>
+              ),
           },
           {
             title: "Статус",

@@ -83,7 +83,7 @@ export function DocumentsPage() {
 
       <Flex wrap gap={12} style={{ marginBottom: 16 }}>
         {view === "event" && (
-          <div style={{ width: screens.md ? 360 : "100%" }}>
+          <div style={{ width: screens.md ? 480 : "100%" }}>
             <EventSelect value={eventId} onChange={(v) => update({ eventId: v })} placeholder="Выберите мероприятие" />
           </div>
         )}
