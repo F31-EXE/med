@@ -47,6 +47,8 @@ npm run start -w server      # сайт, /admin и /api на одном порт
 
 ## Сервер (Timeweb Cloud, Ubuntu 24.04)
 
+Пошаговая инструкция с DNS на reg.ru, HTTPS, почтой, резервными копиями и решением проблем — [`deploy/DEPLOY.md`](deploy/DEPLOY.md). Кратко:
+
 Готовые файлы — в `deploy/`: служба systemd `med-expo.service`, конфиг nginx, `update.sh` (обновление) и `backup.sh` (ежедневная копия базы и загруженных файлов, хранится 14 дней). Сервер: от 1 vCPU и 2 ГБ RAM (сборка админки требует памяти), диск от 15 ГБ.
 
 ```bash
