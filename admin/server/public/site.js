@@ -22,6 +22,16 @@
     });
   }
 
+  $$(".burger").forEach(function (d) {
+    var menu = $(".m-menu", d);
+    var header = d.closest(".header");
+    function fit() {
+      if (d.open && menu && header) menu.style.height = Math.max(240, window.innerHeight - header.getBoundingClientRect().bottom) + "px";
+    }
+    d.addEventListener("toggle", fit);
+    window.addEventListener("resize", fit);
+  });
+
   $$(".m-menu a").forEach(function (a) {
     a.addEventListener("click", function () {
       var d = a.closest("details");
