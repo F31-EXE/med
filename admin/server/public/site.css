@@ -236,6 +236,7 @@ a.partner:hover{border-color:var(--mint);color:var(--ink)}
 .tabs a .cnt{color:var(--muted);font-weight:600;margin-left:4px}
 .filters{display:grid;gap:12px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:22px 0 30px}
 .filters .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filters .actions .btn{min-height:52px}
 .filters .reset{font-weight:600;color:var(--muted)}
 .empty{text-align:center;padding:60px 20px;background:var(--bg-soft);border-radius:var(--r-lg);color:var(--muted)}
 .empty h3{color:var(--ink);margin-bottom:8px}
@@ -251,6 +252,16 @@ a.partner:hover{border-color:var(--mint);color:var(--ink)}
 .input,.select,.textarea{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;min-height:52px;transition:border-color .15s,box-shadow .15s}
 .textarea{min-height:120px;resize:vertical}
 .select{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235B6E83' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 16px center;padding-right:42px}
+.cselect{position:relative}
+.cselect-native{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none}
+.cselect-btn{display:block;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cselect-btn.is-placeholder{color:var(--muted)}
+.cselect-btn[aria-expanded=true]{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.cselect-list{position:absolute;z-index:40;left:0;top:calc(100% + 6px);min-width:100%;width:max-content;max-width:min(380px,calc(100vw - 32px));max-height:320px;overflow:auto;margin:0;padding:6px;list-style:none;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);outline:0}
+.cselect-list li{padding:10px 14px;border-radius:10px;cursor:pointer;line-height:1.35}
+.cselect-list li.active{background:var(--sky-soft);color:var(--primary)}
+.cselect-list li[aria-selected=true]{background:var(--mint-soft);color:var(--mint-dark);font-weight:700}
+.cselect-list li[aria-disabled=true]{color:var(--muted);cursor:default}
 .input:focus,.select:focus,.textarea:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
 .field.has-error .input,.field.has-error .select,.field.has-error .textarea{border-color:var(--danger)}
 .ferr{color:var(--danger);font-size:.86rem;min-height:0}
@@ -420,7 +431,7 @@ a.partner:hover{border-color:var(--mint);color:var(--ink)}
 .res-facts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
 .res-links{display:grid;gap:8px;margin:20px 0}
 
-.article{max-width:max-content}
+.article{max-width:max-content;margin:0 auto}
 .article-cover{border-radius:var(--r-lg);aspect-ratio:16/8;background:var(--mint-soft) center/cover no-repeat;margin:10px 0 32px}
 .share{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:36px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-weight:600}
 
@@ -568,6 +579,8 @@ html.a11y body{background:var(--a-bg)!important}
 html.a11y .cookie,html.a11y .header,html.a11y .anchors,html.a11y .sticky-reg,html.a11y .m-menu{background:var(--a-bg)!important;border:2px solid var(--a-fg)!important}
 html.a11y .count4 div,html.a11y .ecard-date,html.a11y .ico,html.a11y .dirs span,html.a11y .bubble,html.a11y .socials a,html.a11y .input,html.a11y .select,html.a11y .textarea,html.a11y .choice label{border:1.5px solid var(--a-fg)!important}
 html.a11y .bar{border:1.5px solid var(--a-fg)}
+html.a11y .cselect-list{background:var(--a-bg)!important;border:2px solid var(--a-fg)!important}
+html.a11y .cselect-list li.active,html.a11y .cselect-list li[aria-selected=true]{outline:2px solid var(--a-fg);outline-offset:-2px}
 html.a11y .logo-mark{background:var(--a-fg)!important}
 html.a11y .logo-mark:before,html.a11y .logo-mark:after{background:var(--a-bg)!important}
 html.a11y .prog-days button[aria-selected=true],html.a11y .prog-halls button[aria-pressed=true],html.a11y .pager [aria-current],html.a11y .tabs a[aria-current]{outline:3px solid var(--a-fg);outline-offset:-3px}

@@ -29,6 +29,137 @@
     });
   });
 
+  var openSelect = null;
+  function enhanceSelect(sel, n) {
+    var wrap = document.createElement("div");
+    wrap.className = "cselect";
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+    sel.classList.add("cselect-native");
+    sel.tabIndex = -1;
+    sel.setAttribute("aria-hidden", "true");
+
+    var uid = "cs" + n;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "select cselect-btn";
+    btn.id = uid + "-btn";
+    btn.setAttribute("aria-haspopup", "listbox");
+    btn.setAttribute("aria-expanded", "false");
+    var label = sel.id ? $('label[for="' + sel.id + '"]') : null;
+    if (label) {
+      if (!label.id) label.id = uid + "-label";
+      btn.setAttribute("aria-labelledby", label.id + " " + btn.id);
+      label.addEventListener("click", function (e) { e.preventDefault(); btn.focus(); });
+    } else if (sel.getAttribute("aria-label")) {
+      btn.setAttribute("aria-label", sel.getAttribute("aria-label"));
+    }
+
+    var list = document.createElement("ul");
+    list.className = "cselect-list";
+    list.id = uid + "-list";
+    list.setAttribute("role", "listbox");
+    list.tabIndex = -1;
+    list.hidden = true;
+    btn.setAttribute("aria-controls", list.id);
+    wrap.appendChild(btn);
+    wrap.appendChild(list);
+
+    var items = [];
+    var active = -1;
+    function build() {
+      list.innerHTML = "";
+      items = Array.prototype.map.call(sel.options, function (o, k) {
+        var li = document.createElement("li");
+        li.id = uid + "-o" + k;
+        li.setAttribute("role", "option");
+        li.textContent = o.textContent;
+        if (o.disabled) li.setAttribute("aria-disabled", "true");
+        li.addEventListener("mousedown", function (e) { e.preventDefault(); });
+        li.addEventListener("click", function () { if (!o.disabled) choose(k); });
+        li.addEventListener("mousemove", function () { setActive(k); });
+        list.appendChild(li);
+        return li;
+      });
+    }
+    function sync() {
+      var o = sel.options[sel.selectedIndex];
+      btn.textContent = o ? o.textContent : "";
+      btn.classList.toggle("is-placeholder", !!o && o.value === "");
+      items.forEach(function (li, k) { li.setAttribute("aria-selected", k === sel.selectedIndex ? "true" : "false"); });
+    }
+    function setActive(k) {
+      if (k < 0 || k >= items.length) return;
+      if (items[active]) items[active].classList.remove("active");
+      active = k;
+      items[k].classList.add("active");
+      list.setAttribute("aria-activedescendant", items[k].id);
+      var top = items[k].offsetTop, bottom = top + items[k].offsetHeight;
+      if (top < list.scrollTop) list.scrollTop = top;
+      else if (bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight;
+    }
+    function step(from, dir) {
+      for (var k = from + dir; k >= 0 && k < items.length; k += dir) if (!sel.options[k].disabled) return k;
+      return from;
+    }
+    function open() {
+      if (openSelect && openSelect !== close) openSelect();
+      list.hidden = false;
+      list.style.left = "";
+      list.style.right = "";
+      if (list.getBoundingClientRect().right > window.innerWidth - 8) { list.style.left = "auto"; list.style.right = "0"; }
+      btn.setAttribute("aria-expanded", "true");
+      setActive(Math.max(0, sel.selectedIndex));
+      list.focus();
+      openSelect = close;
+    }
+    function close(refocus) {
+      if (list.hidden) return;
+      list.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+      if (openSelect === close) openSelect = null;
+      if (refocus) btn.focus();
+    }
+    function choose(k) {
+      var changed = sel.selectedIndex !== k;
+      sel.selectedIndex = k;
+      sync();
+      close(true);
+      if (changed) sel.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    btn.addEventListener("click", function () { if (list.hidden) open(); else close(true); });
+    btn.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+    });
+    var typed = "", typedAt = 0;
+    list.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") { e.preventDefault(); setActive(step(active, 1)); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); setActive(step(active, -1)); }
+      else if (e.key === "Home") { e.preventDefault(); setActive(step(-1, 1)); }
+      else if (e.key === "End") { e.preventDefault(); setActive(step(items.length, -1)); }
+      else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (active >= 0) choose(active); }
+      else if (e.key === "Escape") { e.preventDefault(); close(true); }
+      else if (e.key === "Tab") { close(false); btn.focus(); }
+      else if (e.key.length === 1) {
+        var now = Date.now();
+        typed = now - typedAt > 700 ? e.key.toLowerCase() : typed + e.key.toLowerCase();
+        typedAt = now;
+        for (var k = 0; k < items.length; k++) if (items[k].textContent.toLowerCase().indexOf(typed) === 0) { setActive(k); break; }
+      }
+    });
+    list.addEventListener("blur", function () { setTimeout(function () { if (document.activeElement !== list) close(false); }, 0); });
+    sel.addEventListener("focus", function () { btn.focus(); });
+    sel.addEventListener("change", sync);
+    if (sel.form) sel.form.addEventListener("reset", function () { setTimeout(sync, 0); });
+    build();
+    sync();
+  }
+  $$("select.select").forEach(enhanceSelect);
+  document.addEventListener("click", function (e) {
+    if (openSelect && !e.target.closest(".cselect")) openSelect(false);
+  });
+
   $$(".js-autosubmit select").forEach(function (s) {
     s.addEventListener("change", function () { s.form.submit(); });
   });
@@ -110,11 +241,31 @@
     if (d.length > 8) out += "-" + d.slice(8, 10);
     return out;
   }
+  function digits(v) { return v.replace(/\D/g, ""); }
+  function caretAfter(v, n) {
+    if (n <= 0) return 0;
+    for (var k = 0, c = 0; k < v.length; k++) if (/\d/.test(v[k]) && ++c === n) return k + 1;
+    return v.length;
+  }
   $$("input[type=tel]").forEach(function (i) {
-    i.addEventListener("input", function () {
-      var atEnd = i.selectionStart === i.value.length;
-      var f = formatPhone(i.value);
-      if (f !== i.value && atEnd) i.value = f;
+    var last = i.value;
+    i.addEventListener("input", function (ev) {
+      var raw = i.value;
+      var pos = i.selectionStart == null ? raw.length : i.selectionStart;
+      var before = digits(raw.slice(0, pos)).length;
+      if (ev.inputType === "deleteContentBackward" && digits(raw) === digits(last) && before > 0) {
+        var d = digits(raw);
+        raw = d.slice(0, before - 1) + d.slice(before);
+        before -= 1;
+      }
+      var f = formatPhone(raw);
+      var n = Math.min(digits(f).length, digits(formatPhone(digits(raw).slice(0, before))).length);
+      i.value = f;
+      last = f;
+      if (document.activeElement === i) {
+        var c = caretAfter(f, n);
+        i.setSelectionRange(c, c);
+      }
     });
   });
 

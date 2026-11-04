@@ -1,10 +1,11 @@
 import type { SiteCtx } from "../context.js";
 import { titleOf, type View } from "../render.js";
 import { Crumbs, Paras } from "../ui.js";
+import { consentText } from "../consentText.js";
 
 const fallback: Record<string, string> = {
   privacy: "Текст политики конфиденциальности будет опубликован в ближайшее время.",
-  consent: "Текст согласия на обработку персональных данных будет опубликован в ближайшее время.",
+  consent: consentText,
   thanks: "Мы получили вашу заявку и свяжемся с вами в ближайшее время. Если вы регистрировались на мероприятие — проверьте почту: туда пришло письмо с подтверждением.",
 };
 
