@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -uo pipefail
-OLD_IP=${1:-80.78.248.92}
+OLD_IP=${1:?Укажите IP старого хостинга Megagroup: fetch-legacy-logos.sh IP}
 LEGACY="$(cd "$(dirname "$0")/../server/prisma/legacy" && pwd)"
 OUT="$LEGACY/files/event-logos"
 mkdir -p "$OUT"
