@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -uo pipefail
-OLD_IP=${1:-185.32.57.184}
+OLD_IP=${1:-80.78.248.92}
 LEGACY="$(cd "$(dirname "$0")/../server/prisma/legacy" && pwd)"
 OUT="$LEGACY/files/event-logos"
 mkdir -p "$OUT"
