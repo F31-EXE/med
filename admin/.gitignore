@@ -7,3 +7,4 @@ server/src/generated/
 server/uploads/
 .vercel-static/
 .vercel
+server/prisma/legacy/files/event-logos/

@@ -10,6 +10,7 @@ import { saveFile } from "../src/lib/storage.js";
 import { storeDocument } from "../src/lib/documents.js";
 import { sanitizeRichText } from "../src/lib/richText.js";
 import { findPageDef } from "../src/lib/pages.js";
+import { loadEventLogos, logoCover, logoFile } from "./legacyLogos.js";
 
 const reset = process.argv.includes("--reset");
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }) });
@@ -185,8 +186,10 @@ async function partner(name: string, url: string | null, logo: string, home: boo
 for (const [i, p] of data.homePartners.entries()) await partner(p.name, p.url, p.logo, true, i);
 
 const events = new Map<string, string>();
+const eventLogos = await loadEventLogos();
 for (const e of data.events) {
-  const cover = e.cover ? await image(e.cover, "cover") : null;
+  const logo = !e.cover && eventLogos[e.slug] ? logoFile(eventLogos[e.slug]!) : null;
+  const cover = e.cover ? await image(e.cover, "cover") : logo ? await logoCover(logo) : null;
   const created = await prisma.event.create({
     data: {
       title: e.title,
