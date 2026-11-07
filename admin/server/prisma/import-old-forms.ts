@@ -8,6 +8,7 @@ import { normalizePhone } from "../src/lib/registrations.js";
 
 const args = process.argv.slice(2);
 const apply = args.includes("--apply");
+const guess = !args.includes("--no-guess");
 const inputs = args.filter((a) => !a.startsWith("--"));
 if (!inputs.length) {
   console.error("Укажите файлы или папку с выгрузкой: npm run db:import-old-forms -w server -- ~/clients [--apply]");
@@ -128,7 +129,7 @@ function parseDate(v: string) {
 const months = ["январ", "феврал", "март", "апрел", "ма", "июн", "июл", "август", "сентябр", "октябр", "ноябр", "декабр"];
 const words = (s: string) => new Set(s.toLowerCase().replace(/ё/g, "е").match(/[а-яa-z0-9]{4,}/g) ?? []);
 
-const events = await prisma.event.findMany({ where: { deletedAt: null }, select: { id: true, slug: true, title: true, subtitle: true, startDate: true, endDate: true, attendanceMode: true } });
+const events = await prisma.event.findMany({ where: { deletedAt: null }, select: { id: true, slug: true, title: true, subtitle: true, startDate: true, endDate: true, attendanceMode: true, directions: { select: { name: true } } } });
 
 function matchEvent(text: string) {
   if (!text) return null;
@@ -184,6 +185,29 @@ function eventByRef(ref: string) {
 }
 
 const unmatchedMonths = new Map<string, number>();
+const guessed = new Map<string, number>();
+
+const specialtyHints: [RegExp, RegExp][] = [
+  [/травм|ортопед|вертебр|хирург|реабилит|протез/i, /травм|ортопед/i],
+  [/акушер|гинеколог|перинат|родиль|женск|роддом/i, /акушер|гинеколог|репродукт/i],
+  [/неонат|новорожд/i, /неонат/i],
+  [/анестез|реаним/i, /анестез|реаним/i],
+  [/педиатр|детск/i, /педиатр|неонат/i],
+  [/репродукт|эко\b|врт|бесплод/i, /репродукт|акушер/i],
+];
+
+function guessEvent(at: Date, text: string) {
+  const from = at.getTime() - 3 * 86400000;
+  const to = at.getTime() + 120 * 86400000;
+  const candidates = events.filter((e) => e.startDate.getTime() >= from && e.startDate.getTime() <= to).sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+  if (!candidates.length) return null;
+  const wanted = specialtyHints.filter(([row]) => row.test(text)).map(([, dir]) => dir);
+  if (wanted.length) {
+    const fit = candidates.find((e) => e.directions.some((d) => wanted.some((re) => re.test(d.name))));
+    if (fit) return fit;
+  }
+  return candidates[0]!;
+}
 const tables = (await Promise.all(inputs.flatMap(listFiles).map(readFile))).flat();
 const today = new Date();
 
@@ -208,11 +232,19 @@ for (const t of tables) {
       const ref = refPath(row["Referer"] ?? "");
       const month = at.toISOString().slice(0, 7);
       const manual = manualMap[choice] ?? (ref ? manualMap[ref] : undefined) ?? (!choice ? manualMap[month] : undefined);
-      const ev = manual ? events.find((e) => e.slug === manual) ?? null : (choice ? matchEvent(choice) : null) ?? (ref ? eventByRef(ref) : null);
+      let ev = manual ? events.find((e) => e.slug === manual) ?? null : (choice ? matchEvent(choice) : null) ?? (ref ? eventByRef(ref) : null);
+      let auto = false;
+      if (!ev && !choice && guess) {
+        ev = guessEvent(at, `${pick(row, /должност/i)} ${pick(row, /организац/i)}`);
+        auto = !!ev;
+        if (ev) guessed.set(ev.slug, (guessed.get(ev.slug) ?? 0) + 1);
+      }
       const label = choice || `(пусто) страница: ${ref || "не указана"}`;
-      const ch = eventChoices.get(label) ?? { slug: ev?.slug ?? null, count: 0 };
-      ch.count++;
-      eventChoices.set(label, ch);
+      if (!auto) {
+        const ch = eventChoices.get(label) ?? { slug: ev?.slug ?? null, count: 0 };
+        ch.count++;
+        eventChoices.set(label, ch);
+      }
       if (!ev) {
         stats.regNoEvent++;
         unmatchedMonths.set(month, (unmatchedMonths.get(month) ?? 0) + 1);
@@ -244,7 +276,7 @@ for (const t of tables) {
             consentAt: at,
             status: ev.endDate < today ? "CONFIRMED" : "NEW",
             source: "MANUAL",
-            managerComment: ["Перенесено со старого сайта med-expo.org", participation && `Форма участия: ${participation}`].filter(Boolean).join(". "),
+            managerComment: ["Перенесено со старого сайта med-expo.org", auto && "мероприятие не было выбрано в форме, определено по дате заявки и должности — проверьте", participation && `Форма участия: ${participation}`].filter(Boolean).join(". "),
             createdAt: at,
           },
         });
@@ -289,6 +321,10 @@ console.log("\nФормы в выгрузке:");
 for (const [f, n] of forms) console.log(`  ${f}: ${n}`);
 console.log("\nМероприятия в регистрациях («Выпадающий список» → мероприятие на новом сайте):");
 for (const [c, v] of [...eventChoices].sort((a, b) => b[1].count - a[1].count)) console.log(`  [${v.count}] ${c.slice(0, 110) || "(пусто)"}\n      → ${v.slug ?? "НЕ НАЙДЕНО"}`);
+if (guessed.size) {
+  console.log(`\nМероприятие не выбрано в форме — определено по дате заявки и должности (${[...guessed.values()].reduce((a, b) => a + b, 0)}; отключить: --no-guess):`);
+  for (const [slug, n] of [...guessed].sort((a, b) => b[1] - a[1])) console.log(`  [${n}] → ${slug}`);
+}
 if (unmatchedMonths.size) console.log(`\nРегистрации без мероприятия по месяцам: ${[...unmatchedMonths].sort().map(([m, n]) => `${m}: ${n}`).join(", ")}`);
 console.log(`\nРегистрации: новых ${stats.regNew}, уже были ${stats.regDup}, без e-mail ${stats.regNoEmail}, без мероприятия ${stats.regNoEvent}`);
 console.log(`Обращения: новых ${stats.reqNew}, уже были ${stats.reqDup}`);
