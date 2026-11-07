@@ -159,6 +159,31 @@ function matchEvent(text: string) {
 const mapFile = inputs.map((p) => (existsSync(p) && statSync(p).isDirectory() ? path.join(p, "events-map.json") : path.join(path.dirname(p), "events-map.json"))).find((p) => existsSync(p));
 const manualMap: Record<string, string> = mapFile ? JSON.parse(readFileSync(mapFile, "utf8")) : {};
 
+const legacyData = JSON.parse(readFileSync(path.join(import.meta.dirname, "legacy", "data.json"), "utf8")) as { events: { slug: string; oldPrefix?: string }[] };
+const oldPrefixes = legacyData.events.filter((e) => e.oldPrefix).map((e) => ({ prefix: e.oldPrefix!, slug: e.slug })).sort((a, b) => b.prefix.length - a.prefix.length);
+const redirects = new Map((await prisma.redirect.findMany({ select: { fromPath: true, toPath: true } })).map((r) => [r.fromPath, r.toPath]));
+
+function refPath(v: string) {
+  const m = v.match(/https?:\/\/[^\s"']+/);
+  if (!m) return "";
+  try {
+    const u = new URL(m[0]);
+    return decodeURI(u.pathname + u.search).replace(/\/+$/, "") || "/";
+  } catch {
+    return "";
+  }
+}
+
+function eventByRef(ref: string) {
+  const target = redirects.get(ref) ?? redirects.get(ref.split("?")[0]!) ?? ref;
+  const slug = target.match(/^\/events\/([^/?#]+)/)?.[1];
+  if (slug) return events.find((e) => e.slug === slug) ?? null;
+  const tail = ref.match(/\/post\/([^/?#]+)/)?.[1];
+  const legacy = tail ? oldPrefixes.find((p) => tail.startsWith(p.prefix)) : undefined;
+  return legacy ? events.find((e) => e.slug === legacy.slug) ?? null : null;
+}
+
+const unmatchedMonths = new Map<string, number>();
 const tables = (await Promise.all(inputs.flatMap(listFiles).map(readFile))).flat();
 const today = new Date();
 
@@ -180,12 +205,19 @@ for (const t of tables) {
 
     if (isRegistration) {
       const choice = pick(row, /выпадающ/i, /мероприят/i);
-      const manual = manualMap[choice];
-      const ev = manual ? events.find((e) => e.slug === manual) ?? null : matchEvent(choice);
-      const ch = eventChoices.get(choice) ?? { slug: ev?.slug ?? null, count: 0 };
+      const ref = refPath(row["Referer"] ?? "");
+      const month = at.toISOString().slice(0, 7);
+      const manual = manualMap[choice] ?? (ref ? manualMap[ref] : undefined) ?? (!choice ? manualMap[month] : undefined);
+      const ev = manual ? events.find((e) => e.slug === manual) ?? null : (choice ? matchEvent(choice) : null) ?? (ref ? eventByRef(ref) : null);
+      const label = choice || `(пусто) страница: ${ref || "не указана"}`;
+      const ch = eventChoices.get(label) ?? { slug: ev?.slug ?? null, count: 0 };
       ch.count++;
-      eventChoices.set(choice, ch);
-      if (!ev) { stats.regNoEvent++; continue; }
+      eventChoices.set(label, ch);
+      if (!ev) {
+        stats.regNoEvent++;
+        unmatchedMonths.set(month, (unmatchedMonths.get(month) ?? 0) + 1);
+        continue;
+      }
       const email = pick(row, /e-?mail|почт/i).toLowerCase();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { stats.regNoEmail++; continue; }
       const dupKey = `${ev.id}|${email}`;
@@ -257,8 +289,9 @@ console.log("\nФормы в выгрузке:");
 for (const [f, n] of forms) console.log(`  ${f}: ${n}`);
 console.log("\nМероприятия в регистрациях («Выпадающий список» → мероприятие на новом сайте):");
 for (const [c, v] of [...eventChoices].sort((a, b) => b[1].count - a[1].count)) console.log(`  [${v.count}] ${c.slice(0, 110) || "(пусто)"}\n      → ${v.slug ?? "НЕ НАЙДЕНО"}`);
+if (unmatchedMonths.size) console.log(`\nРегистрации без мероприятия по месяцам: ${[...unmatchedMonths].sort().map(([m, n]) => `${m}: ${n}`).join(", ")}`);
 console.log(`\nРегистрации: новых ${stats.regNew}, уже были ${stats.regDup}, без e-mail ${stats.regNoEmail}, без мероприятия ${stats.regNoEvent}`);
 console.log(`Обращения: новых ${stats.reqNew}, уже были ${stats.reqDup}`);
-if (stats.regNoEvent) console.log(`\nЧтобы привязать «НЕ НАЙДЕНО» вручную, создайте рядом с выгрузкой events-map.json: {"текст из выпадающего списка": "адрес-мероприятия"}`);
+if (stats.regNoEvent) console.log(`\nЧтобы привязать «НЕ НАЙДЕНО» вручную, создайте рядом с выгрузкой events-map.json: {"текст из выпадающего списка, адрес страницы или месяц ГГГГ-ММ": "адрес-мероприятия"}`);
 if (excelPhones.size) console.log(`\nВНИМАНИЕ: телефоны вида 8,91E+10 в ${[...excelPhones].join(", ")} — файл пересохранён в Excel. Возьмите исходный файл из архива.`);
 await prisma.$disconnect();
