@@ -18,14 +18,34 @@ type Row = Record<string, string>;
 type Table = { file: string; rows: Row[] };
 
 function decode(buf: Buffer) {
-  if (buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) return buf.subarray(3).toString("utf8");
+  if (buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) return buf.subarray(3).toString("utf8").replace(/^\uFEFF/, "");
   const utf8 = buf.toString("utf8");
   return utf8.includes("�") ? new TextDecoder("windows-1251").decode(buf) : utf8;
 }
 
+const headerLine = /^\uFEFF?"?Form_name"?([;,\t])/;
+
 function parseCsv(text: string) {
-  const firstLine = text.slice(0, text.indexOf("\n") > 0 ? text.indexOf("\n") : text.length);
-  const delim = [";", "\t", ","].sort((a, b) => firstLine.split(b).length - firstLine.split(a).length)[0]!;
+  const lines = text.split(/\r?\n/);
+  const declared = lines.map((l) => l.match(headerLine)).find(Boolean);
+  const delim = declared ? declared[1]! : [";", "\t", ","].sort((a, b) => lines[0]!.split(b).length - lines[0]!.split(a).length)[0]!;
+  const out: string[][] = [];
+  let chunk: string[] = [];
+  const flush = () => {
+    if (chunk.length) out.push(...parseRows(chunk.join("\n"), delim));
+    chunk = [];
+  };
+  for (const line of lines) {
+    if (headerLine.test(line)) {
+      flush();
+      out.push(line.replace(/^\uFEFF/, "").split(delim).map((h) => h.replace(/^"|"$/g, "").replace(/""/g, '"')));
+    } else chunk.push(line);
+  }
+  flush();
+  return out;
+}
+
+function parseRows(text: string, delim: string) {
   const out: string[][] = [];
   let row: string[] = [];
   let cell = "";
@@ -78,7 +98,10 @@ async function readFile(file: string): Promise<Table[]> {
     });
     return tables;
   }
-  return toTables(file, parseCsv(decode(readFileSync(file))));
+  const text = decode(readFileSync(file));
+  const tables = toTables(file, parseCsv(text));
+  if (!tables.length) console.warn(`${file}: не найдена строка заголовков Form_name. Начало файла: ${JSON.stringify(text.slice(0, 80))}`);
+  return tables;
 }
 
 function listFiles(p: string): string[] {
