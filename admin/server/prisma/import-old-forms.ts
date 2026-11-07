@@ -1,0 +1,241 @@
+import "dotenv/config";
+import "../src/lib/dbEnv.js";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import path from "node:path";
+import ExcelJS from "exceljs";
+import { prisma } from "../src/lib/prisma.js";
+import { normalizePhone } from "../src/lib/registrations.js";
+
+const args = process.argv.slice(2);
+const apply = args.includes("--apply");
+const inputs = args.filter((a) => !a.startsWith("--"));
+if (!inputs.length) {
+  console.error("Укажите файлы или папку с выгрузкой: npm run db:import-old-forms -w server -- ~/clients [--apply]");
+  process.exit(1);
+}
+
+type Row = Record<string, string>;
+type Table = { file: string; rows: Row[] };
+
+function decode(buf: Buffer) {
+  if (buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) return buf.subarray(3).toString("utf8");
+  const utf8 = buf.toString("utf8");
+  return utf8.includes("�") ? new TextDecoder("windows-1251").decode(buf) : utf8;
+}
+
+function parseCsv(text: string) {
+  const firstLine = text.slice(0, text.indexOf("\n") > 0 ? text.indexOf("\n") : text.length);
+  const delim = [";", "\t", ","].sort((a, b) => firstLine.split(b).length - firstLine.split(a).length)[0]!;
+  const out: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i]!;
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"' && cell === "") quoted = true;
+    else if (c === delim) { row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(cell); out.push(row); row = []; cell = "";
+    } else cell += c;
+  }
+  if (cell || row.length) { row.push(cell); out.push(row); }
+  return out.filter((r) => r.some((v) => v.trim()));
+}
+
+const key = (h: string) => h.replace(/\s+/g, " ").replace(/:\s*$/, "").trim();
+
+function toTables(file: string, grid: string[][]): Table[] {
+  const tables: Table[] = [];
+  let header: string[] | null = null;
+  for (const r of grid) {
+    if (key(r[0] ?? "") === "Form_name") {
+      header = r.map(key);
+      tables.push({ file, rows: [] });
+      continue;
+    }
+    if (!header) continue;
+    const row: Row = {};
+    header.forEach((h, i) => { if (h) row[h] = (r[i] ?? "").trim(); });
+    tables[tables.length - 1]!.rows.push(row);
+  }
+  return tables;
+}
+
+async function readFile(file: string): Promise<Table[]> {
+  if (/\.xlsx$/i.test(file)) {
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.readFile(file);
+    const tables: Table[] = [];
+    wb.eachSheet((s) => {
+      const grid: string[][] = [];
+      s.eachRow((r) => grid.push((r.values as unknown[]).slice(1).map((v) => (v == null ? "" : v instanceof Date ? v.toISOString() : typeof v === "object" && v && "text" in v ? String((v as { text: unknown }).text) : String(v)))));
+      tables.push(...toTables(file, grid));
+    });
+    return tables;
+  }
+  return toTables(file, parseCsv(decode(readFileSync(file))));
+}
+
+function listFiles(p: string): string[] {
+  if (!existsSync(p)) throw new Error(`Нет файла или папки: ${p}`);
+  if (statSync(p).isDirectory()) return readdirSync(p).filter((f) => /\.(csv|txt|xlsx)$/i.test(f)).sort().map((f) => path.join(p, f));
+  return [p];
+}
+
+function pick(row: Row, ...patterns: RegExp[]) {
+  for (const re of patterns) for (const [k, v] of Object.entries(row)) if (re.test(k) && v) return v;
+  return "";
+}
+
+function parseDate(v: string) {
+  const m = v.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+  if (m) {
+    const [, d, mo, y, h = "0", mi = "0", s = "0"] = m;
+    return new Date(`${y}-${mo!.padStart(2, "0")}-${d!.padStart(2, "0")}T${h.padStart(2, "0")}:${mi}:${s.padStart(2, "0")}+05:00`);
+  }
+  const t = Date.parse(v);
+  return Number.isNaN(t) ? new Date() : new Date(t);
+}
+
+const months = ["январ", "феврал", "март", "апрел", "ма", "июн", "июл", "август", "сентябр", "октябр", "ноябр", "декабр"];
+const words = (s: string) => new Set(s.toLowerCase().replace(/ё/g, "е").match(/[а-яa-z0-9]{4,}/g) ?? []);
+
+const events = await prisma.event.findMany({ where: { deletedAt: null }, select: { id: true, slug: true, title: true, subtitle: true, startDate: true, endDate: true, attendanceMode: true } });
+
+function matchEvent(text: string) {
+  if (!text) return null;
+  const dm = text.toLowerCase().match(/(\d{1,2})(?:\s*[-–]\s*\d{1,2})?\s+([а-яё]+)\s+(\d{4})/);
+  if (dm) {
+    const mi = months.findIndex((m) => dm[2]!.startsWith(m === "ма" ? "ма" : m));
+    if (mi >= 0) {
+      const iso = `${dm[3]}-${String(mi + 1).padStart(2, "0")}-${dm[1]!.padStart(2, "0")}`;
+      const byDate = events.filter((e) => e.startDate.toISOString().slice(0, 10) === iso);
+      if (byDate.length === 1) return byDate[0]!;
+    }
+  }
+  const w = words(text);
+  let best: (typeof events)[number] | null = null;
+  let score = 0;
+  for (const e of events) {
+    const ew = words(`${e.title} ${e.subtitle ?? ""}`);
+    let hit = 0;
+    for (const x of ew) if (w.has(x)) hit++;
+    const s = ew.size ? hit / ew.size : 0;
+    const yearOk = text.includes(String(e.startDate.getUTCFullYear()));
+    const total = s + (yearOk ? 0.2 : 0);
+    if (total > score) { score = total; best = e; }
+  }
+  return score >= 0.55 ? best : null;
+}
+
+const mapFile = inputs.map((p) => (existsSync(p) && statSync(p).isDirectory() ? path.join(p, "events-map.json") : path.join(path.dirname(p), "events-map.json"))).find((p) => existsSync(p));
+const manualMap: Record<string, string> = mapFile ? JSON.parse(readFileSync(mapFile, "utf8")) : {};
+
+const tables = (await Promise.all(inputs.flatMap(listFiles).map(readFile))).flat();
+const today = new Date();
+
+const stats = { regNew: 0, regDup: 0, regNoEmail: 0, regNoEvent: 0, reqNew: 0, reqDup: 0 };
+const eventChoices = new Map<string, { slug: string | null; count: number }>();
+const forms = new Map<string, number>();
+const excelPhones = new Set<string>();
+const seenReg = new Set<string>();
+
+for (const t of tables) {
+  for (const row of t.rows) {
+    const form = row["Form_name"] || "Без названия";
+    forms.set(form, (forms.get(form) ?? 0) + 1);
+    const at = parseDate(row["Date"] ?? "");
+    const phoneRaw = pick(row, /^телефон$/i, /^номер телефона$/i, /^(?!.*e-?mail).*телефон/i);
+    if (/e\+/i.test(phoneRaw)) excelPhones.add(t.file);
+    const phone = normalizePhone(phoneRaw) ?? (phoneRaw || null);
+    const isRegistration = Object.keys(row).some((k) => /фамили/i.test(k));
+
+    if (isRegistration) {
+      const choice = pick(row, /выпадающ/i, /мероприят/i);
+      const manual = manualMap[choice];
+      const ev = manual ? events.find((e) => e.slug === manual) ?? null : matchEvent(choice);
+      const ch = eventChoices.get(choice) ?? { slug: ev?.slug ?? null, count: 0 };
+      ch.count++;
+      eventChoices.set(choice, ch);
+      if (!ev) { stats.regNoEvent++; continue; }
+      const email = pick(row, /e-?mail|почт/i).toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { stats.regNoEmail++; continue; }
+      const dupKey = `${ev.id}|${email}`;
+      const exists = seenReg.has(dupKey) || (await prisma.registration.findUnique({ where: { eventId_email: { eventId: ev.id, email } }, select: { id: true } }));
+      seenReg.add(dupKey);
+      if (exists) { stats.regDup++; continue; }
+      const participation = pick(row, /форма участия/i);
+      stats.regNew++;
+      if (apply) {
+        await prisma.registration.create({
+          data: {
+            eventId: ev.id,
+            lastName: pick(row, /фамили/i) || "—",
+            firstName: pick(row, /^ваше имя$/i, /имя/i) || "—",
+            middleName: pick(row, /отчеств/i) || null,
+            email,
+            phone: phone ?? "",
+            specialtyName: "Не указана",
+            workplace: pick(row, /организац/i) || null,
+            position: pick(row, /должност/i) || null,
+            city: pick(row, /город/i) || "Не указан",
+            format: ev.attendanceMode === "ONLINE" ? "ONLINE" : "OFFLINE",
+            consentPersonalData: true,
+            consentAt: at,
+            status: ev.endDate < today ? "CONFIRMED" : "NEW",
+            source: "MANUAL",
+            managerComment: ["Перенесено со старого сайта med-expo.org", participation && `Форма участия: ${participation}`].filter(Boolean).join(". "),
+            createdAt: at,
+          },
+        });
+      }
+      continue;
+    }
+
+    const contact = pick(row, /e-?mail или телефон/i);
+    const email = pick(row, /^e-?mail$/i, /почт/i) || (contact.includes("@") ? contact : "");
+    const phone2 = phone ?? (contact && !contact.includes("@") ? normalizePhone(contact) ?? contact : null);
+    const name = pick(row, /^ваше имя/i, /имя/i) || "Без имени";
+    const skip = /^(form_name|date|referer|галочка)$|выражаю|согласи|^ваше имя|телефон|e-?mail|почт|организац/i;
+    const comment = Object.entries(row)
+      .filter(([k, v]) => v && !skip.test(k) && !/^я выражаю/i.test(v))
+      .map(([k, v]) => (/область ввода|текст|сообщени|вопрос/i.test(k) ? v : `${k}: ${v}`))
+      .join("\n");
+    const source = `Старый сайт: ${form}`;
+    const exists = await prisma.contactRequest.findFirst({ where: { source, createdAt: at, name }, select: { id: true } });
+    if (exists) { stats.reqDup++; continue; }
+    stats.reqNew++;
+    if (apply) {
+      await prisma.contactRequest.create({
+        data: {
+          name: name.slice(0, 200),
+          organization: pick(row, /организац/i) || null,
+          phone: phone2,
+          email: email || null,
+          comment: comment || null,
+          source,
+          consentAt: at,
+          status: "PROCESSED",
+          processedAt: at,
+          createdAt: at,
+        },
+      });
+    }
+  }
+}
+
+console.log(apply ? "ИМПОРТ ВЫПОЛНЕН" : "ПРОБНЫЙ ЗАПУСК — в базу ничего не записано (добавьте --apply)");
+console.log("\nФормы в выгрузке:");
+for (const [f, n] of forms) console.log(`  ${f}: ${n}`);
+console.log("\nМероприятия в регистрациях («Выпадающий список» → мероприятие на новом сайте):");
+for (const [c, v] of [...eventChoices].sort((a, b) => b[1].count - a[1].count)) console.log(`  [${v.count}] ${c.slice(0, 110) || "(пусто)"}\n      → ${v.slug ?? "НЕ НАЙДЕНО"}`);
+console.log(`\nРегистрации: новых ${stats.regNew}, уже были ${stats.regDup}, без e-mail ${stats.regNoEmail}, без мероприятия ${stats.regNoEvent}`);
+console.log(`Обращения: новых ${stats.reqNew}, уже были ${stats.reqDup}`);
+if (stats.regNoEvent) console.log(`\nЧтобы привязать «НЕ НАЙДЕНО» вручную, создайте рядом с выгрузкой events-map.json: {"текст из выпадающего списка": "адрес-мероприятия"}`);
+if (excelPhones.size) console.log(`\nВНИМАНИЕ: телефоны вида 8,91E+10 в ${[...excelPhones].join(", ")} — файл пересохранён в Excel. Возьмите исходный файл из архива.`);
+await prisma.$disconnect();
