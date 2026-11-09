@@ -35,6 +35,7 @@ export const speakerRoleLabels: Record<EventSpeakerRole, string> = {
 };
 
 export const partnerLevelLabels: Record<PartnerLevel, string> = {
+  ORGANIZER: "Организаторы",
   GENERAL: "Генеральный партнёр",
   OFFICIAL: "Официальные партнёры",
   INFO: "Информационные партнёры",

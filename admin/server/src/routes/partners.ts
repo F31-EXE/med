@@ -13,7 +13,7 @@ partnersRouter.use(requireRole("ADMIN", "EDITOR"));
 eventPartnersRouter.use(requireRole("ADMIN", "EDITOR"));
 
 const PAGE_SIZE = 30;
-const levels = ["GENERAL", "OFFICIAL", "INFO"] as const;
+const levels = ["ORGANIZER", "GENERAL", "OFFICIAL", "INFO"] as const;
 
 const uploadUrl = imageUrlSchema("Некорректная ссылка на логотип")
   .nullish()

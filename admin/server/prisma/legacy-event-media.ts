@@ -11,6 +11,102 @@ const data = JSON.parse(await readFile(path.join(import.meta.dirname, "legacy", 
 };
 const prefixes = data.events.filter((e) => e.oldPrefix).map((e) => ({ prefix: e.oldPrefix!, slug: e.slug })).sort((a, b) => b.prefix.length - a.prefix.length);
 
+if (process.argv.includes("--apply")) {
+  await applyManifest();
+  process.exit(0);
+}
+
+async function applyManifest() {
+  const { randomBytes } = await import("node:crypto");
+  const { prisma } = await import("../src/lib/prisma.js");
+  const { saveFile } = await import("../src/lib/storage.js");
+  type Item = { file: string; alt: string; title: string; href: string; width: number; height: number };
+  const manifest = JSON.parse(await readFile(path.join(OUT, "manifest.json"), "utf8")) as { slug: string; images: Item[] }[];
+
+  const presets = {
+    cover: { full: { width: 1920, height: 1080, fit: "inside" as const }, thumb: { width: 640, height: 360, fit: "cover" as const } },
+    gallery: { full: { width: 1920, height: 1920, fit: "inside" as const }, thumb: { width: 480, height: 360, fit: "cover" as const } },
+    logo: { full: { width: 800, height: 400, fit: "inside" as const }, thumb: { width: 320, height: 160, fit: "inside" as const } },
+  };
+  async function store(file: string, preset: keyof typeof presets) {
+    const p = presets[preset];
+    const src = sharp(await readFile(file)).rotate();
+    const name = randomBytes(9).toString("base64url");
+    const thumbOpts = p.thumb.fit === "cover" ? { ...p.thumb, position: "attention" as const } : { ...p.thumb, withoutEnlargement: true };
+    const [full, thumb] = await Promise.all([
+      src.clone().resize({ ...p.full, withoutEnlargement: true }).webp({ quality: 84 }).toBuffer(),
+      src.clone().resize(thumbOpts).webp({ quality: 82 }).toBuffer(),
+    ]);
+    const [url, thumbUrl] = await Promise.all([
+      saveFile(`images/legacy/${name}.webp`, full, "image/webp"),
+      saveFile(`images/legacy/${name}-thumb.webp`, thumb, "image/webp"),
+    ]);
+    return { url, thumbUrl };
+  }
+  const host = (u: string) => {
+    try {
+      return /^https?:/i.test(u) ? new URL(u).hostname.replace(/^www\./, "") : "";
+    } catch {
+      return "";
+    }
+  };
+  const isLogo = (i: Item) => (i.width <= 700 && i.height <= 260) || (!!host(i.href) && !host(i.href).endsWith("oml.ru") && !host(i.href).endsWith("med-expo.org") && i.height <= 400);
+
+  const report: string[] = [];
+  for (const entry of manifest) {
+    const event = await prisma.event.findUnique({
+      where: { slug: entry.slug },
+      select: { id: true, coverUrl: true, _count: { select: { partners: true, images: true } } },
+    });
+    if (!event) {
+      report.push(`${entry.slug}: мероприятия нет в базе`);
+      continue;
+    }
+    const dir = path.join(OUT, entry.slug);
+    const logos = entry.images.filter(isLogo);
+    const photos = entry.images.filter((i) => !isLogo(i));
+    const done: string[] = [];
+
+    if (logos.length && event._count.partners === 0) {
+      for (const [n, l] of logos.entries()) {
+        const url = host(l.href) ? l.href : null;
+        const name = (l.alt || l.title || host(l.href) || `Организатор ${n + 1}`).slice(0, 200);
+        let partner = await prisma.partner.findFirst({ where: { name: { equals: name, mode: "insensitive" } }, select: { id: true, logoUrl: true } });
+        if (!partner && host(l.href)) partner = await prisma.partner.findFirst({ where: { url: { contains: host(l.href), mode: "insensitive" } }, select: { id: true, logoUrl: true } });
+        if (!partner) {
+          const logo = await store(path.join(dir, l.file), "logo");
+          partner = await prisma.partner.create({ data: { name, url, logoUrl: logo.url, logoThumbUrl: logo.thumbUrl }, select: { id: true, logoUrl: true } });
+        }
+        await prisma.eventPartner.upsert({
+          where: { eventId_partnerId: { eventId: event.id, partnerId: partner.id } },
+          create: { eventId: event.id, partnerId: partner.id, level: "ORGANIZER", sortOrder: n },
+          update: {},
+        });
+      }
+      done.push(`организаторов ${logos.length}`);
+    } else if (logos.length) done.push(`логотипы пропущены — партнёры уже есть (${event._count.partners})`);
+
+    const rest = [...photos];
+    if (!event.coverUrl && rest.length) {
+      const cover = await store(path.join(dir, rest.shift()!.file), "cover");
+      await prisma.event.update({ where: { id: event.id }, data: { coverUrl: cover.url, coverThumbUrl: cover.thumbUrl } });
+      done.push("обложка");
+    }
+    if (rest.length && event._count.images === 0) {
+      for (const [n, ph] of rest.entries()) {
+        const img = await store(path.join(dir, ph.file), "gallery");
+        await prisma.eventImage.create({ data: { eventId: event.id, url: img.url, thumbUrl: img.thumbUrl, caption: ph.alt || null, sortOrder: n } });
+      }
+      done.push(`фото в галерею ${rest.length}`);
+    } else if (rest.length) done.push(`фото пропущены — галерея уже есть (${event._count.images})`);
+
+    report.push(`${entry.slug}: ${done.join(", ") || "нечего добавлять"}`);
+  }
+  console.log("ЗАПИСАНО В БАЗУ\n" + report.join("\n"));
+  console.log("\nНазвания организаторов взяты из подписей картинок или адресов сайтов — поправьте их в админке «Партнёры и клиенты».");
+  await prisma.$disconnect();
+}
+
 async function get(url: string) {
   const res = await fetch(url, { redirect: "follow", headers: { "User-Agent": "Mozilla/5.0 (med-expo migration)" } });
   return res;
@@ -87,4 +183,4 @@ for (const [href, slug] of posts) {
 
 await mkdir(OUT, { recursive: true });
 await writeFile(path.join(OUT, "manifest.json"), JSON.stringify(manifest, null, 2));
-console.log(`\nСохранено в ${OUT} (manifest.json и папки по мероприятиям). В базу ничего не записано.`);
+console.log(`\nСохранено в ${OUT} (manifest.json и папки по мероприятиям). В базу ничего не записано.\nЗаписать: npm run db:legacy-event-media -w server -- --apply`);

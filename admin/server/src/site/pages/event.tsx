@@ -351,7 +351,7 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
   const images = ctx.a11y.images || !ctx.a11y.on;
   const mainDocs = e.documents;
   const programDoc = mainDocs.find((d) => /программ/i.test(d.title));
-  const partnersByLevel = (["GENERAL", "OFFICIAL", "INFO"] as const).map((lvl) => ({ lvl, items: e.partners.filter((p) => p.level === lvl) })).filter((g) => g.items.length);
+  const partnersByLevel = (["ORGANIZER", "GENERAL", "OFFICIAL", "INFO"] as const).map((lvl) => ({ lvl, items: e.partners.filter((p) => p.level === lvl) })).filter((g) => g.items.length);
   const hasVenue = !!(e.venue.name || e.venue.address);
   const map = mapUrl(e);
   const res = e.results;

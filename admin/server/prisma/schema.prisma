@@ -405,6 +405,7 @@ model Partner {
 }
 
 enum PartnerLevel {
+  ORGANIZER
   GENERAL
   OFFICIAL
   INFO

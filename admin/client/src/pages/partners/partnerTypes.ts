@@ -8,21 +8,23 @@ export type Partner = PartnerBrief & {
   eventsCount: number;
 };
 
-export type PartnerLevel = "GENERAL" | "OFFICIAL" | "INFO";
+export type PartnerLevel = "ORGANIZER" | "GENERAL" | "OFFICIAL" | "INFO";
 
 export const levelLabels: Record<PartnerLevel, string> = {
+  ORGANIZER: "Организаторы",
   GENERAL: "Генеральный партнёр",
   OFFICIAL: "Официальные партнёры",
   INFO: "Информационные партнёры",
 };
 
 export const levelShort: Record<PartnerLevel, string> = {
+  ORGANIZER: "Организатор",
   GENERAL: "Генеральный",
   OFFICIAL: "Официальный",
   INFO: "Информационный",
 };
 
-export const levels: PartnerLevel[] = ["GENERAL", "OFFICIAL", "INFO"];
+export const levels: PartnerLevel[] = ["ORGANIZER", "GENERAL", "OFFICIAL", "INFO"];
 
 export const checker = "repeating-conic-gradient(#f5f5f5 0% 25%, #fff 0% 50%) 50% / 12px 12px";
 
