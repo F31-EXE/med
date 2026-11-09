@@ -351,7 +351,16 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
   const images = ctx.a11y.images || !ctx.a11y.on;
   const mainDocs = e.documents;
   const programDoc = mainDocs.find((d) => /программ/i.test(d.title));
-  const partnersByLevel = (["ORGANIZER", "GENERAL", "OFFICIAL", "INFO"] as const).map((lvl) => ({ lvl, items: e.partners.filter((p) => p.level === lvl) })).filter((g) => g.items.length);
+  const partnersByLevel: { key: string; label: string; items: typeof e.partners }[] = [];
+  for (const lvl of ["ORGANIZER", "GENERAL", "OFFICIAL", "INFO"] as const) {
+    for (const p of e.partners.filter((x) => x.level === lvl)) {
+      const label = p.groupTitle ?? partnerLevelLabels[lvl];
+      const key = `${lvl}|${label}`;
+      const g = partnersByLevel.find((x) => x.key === key);
+      if (g) g.items.push(p);
+      else partnersByLevel.push({ key, label, items: [p] });
+    }
+  }
   const hasVenue = !!(e.venue.name || e.venue.address);
   const map = mapUrl(e);
   const res = e.results;
@@ -764,8 +773,8 @@ export async function eventView(ctx: SiteCtx, slug: string): Promise<View | null
                 </div>
               </div>
               {partnersByLevel.map((g) => (
-                <div className="ptier" key={g.lvl}>
-                  <span>{partnerLevelLabels[g.lvl]}</span>
+                <div className="ptier" key={g.key}>
+                  <span>{g.label}</span>
                   <div className="partners">
                     {g.items.map((p) => (
                       <PartnerTile key={p.name} p={p} />

@@ -416,8 +416,9 @@ model EventPartner {
   event     Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
   partnerId String
   partner   Partner      @relation(fields: [partnerId], references: [id], onDelete: Restrict)
-  level     PartnerLevel
-  sortOrder Int
+  level      PartnerLevel
+  groupTitle String?
+  sortOrder  Int
 
   @@id([eventId, partnerId])
 }

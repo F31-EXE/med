@@ -20,7 +20,7 @@ async function applyManifest() {
   const { randomBytes } = await import("node:crypto");
   const { prisma } = await import("../src/lib/prisma.js");
   const { saveFile } = await import("../src/lib/storage.js");
-  type Item = { file: string; alt: string; title: string; href: string; width: number; height: number };
+  type Item = { file: string; alt: string; title: string; href: string; width: number; height: number; group?: string; row?: number; shownHeight?: number };
   const manifest = JSON.parse(await readFile(path.join(OUT, "manifest.json"), "utf8")) as { slug: string; images: Item[] }[];
 
   const presets = {
@@ -50,8 +50,25 @@ async function applyManifest() {
       return "";
     }
   };
-  const isLogo = (i: Item) => (i.width <= 700 && i.height <= 260) || (!!host(i.href) && !host(i.href).endsWith("oml.ru") && !host(i.href).endsWith("med-expo.org") && i.height <= 400);
+  const levelOf = (g = "") =>
+    /титул|генерал/i.test(g) ? ("GENERAL" as const) : /информац|сми/i.test(g) ? ("INFO" as const) : /спонсор|участник|выстав|партн/i.test(g) ? ("OFFICIAL" as const) : ("ORGANIZER" as const);
+  const groupTitle = (g = "") => {
+    const t = g.replace(/[:.\s]+$/, "").trim();
+    if (!t) return null;
+    const lower = t === t.toUpperCase() ? t.toLowerCase() : t;
+    return (lower[0]!.toUpperCase() + lower.slice(1)).slice(0, 100);
+  };
+  const external = (i: Item) => !!host(i.href) && !/(^|\.)(oml\.ru|med-expo\.org)$/.test(host(i.href));
+  const isLogo = (i: Item) =>
+    (i.row ?? 1) > 1 || !!i.group || external(i) || (!!i.shownHeight && i.shownHeight <= 260) || (i.width <= 700 && i.height <= 260);
 
+  const legacy = JSON.parse(await readFile(path.join(import.meta.dirname, "legacy", "data.json"), "utf8")) as {
+    homePartners: { name: string; logo: string }[];
+    events: { partners?: [string, string | null, string, string][] }[];
+  };
+  const knownByFile = new Map<string, string>();
+  for (const p of legacy.homePartners) knownByFile.set(path.basename(p.logo).toLowerCase(), p.name);
+  for (const e of legacy.events) for (const [name, , logo] of e.partners ?? []) knownByFile.set(path.basename(logo).toLowerCase(), name);
   const report: string[] = [];
   for (const entry of manifest) {
     const event = await prisma.event.findUnique({
@@ -67,10 +84,13 @@ async function applyManifest() {
     const photos = entry.images.filter((i) => !isLogo(i));
     const done: string[] = [];
 
-    if (logos.length && event._count.partners === 0) {
+    const replace = process.argv.includes("--replace-partners");
+    if (logos.length && replace && event._count.partners) await prisma.eventPartner.deleteMany({ where: { eventId: event.id } });
+    if (logos.length && (event._count.partners === 0 || replace)) {
       for (const [n, l] of logos.entries()) {
         const url = host(l.href) ? l.href : null;
-        const name = (l.alt || l.title || host(l.href) || `Организатор ${n + 1}`).slice(0, 200);
+        const known = knownByFile.get(l.file.replace(/^\d+-/, "").toLowerCase());
+        const name = (l.alt || l.title || known || host(l.href) || `Партнёр ${n + 1}`).slice(0, 200);
         let partner = await prisma.partner.findFirst({ where: { name: { equals: name, mode: "insensitive" } }, select: { id: true, logoUrl: true } });
         if (!partner && host(l.href)) partner = await prisma.partner.findFirst({ where: { url: { contains: host(l.href), mode: "insensitive" } }, select: { id: true, logoUrl: true } });
         if (!partner) {
@@ -79,12 +99,13 @@ async function applyManifest() {
         }
         await prisma.eventPartner.upsert({
           where: { eventId_partnerId: { eventId: event.id, partnerId: partner.id } },
-          create: { eventId: event.id, partnerId: partner.id, level: "ORGANIZER", sortOrder: n },
+          create: { eventId: event.id, partnerId: partner.id, level: levelOf(l.group), groupTitle: groupTitle(l.group), sortOrder: n },
           update: {},
         });
       }
-      done.push(`организаторов ${logos.length}`);
-    } else if (logos.length) done.push(`логотипы пропущены — партнёры уже есть (${event._count.partners})`);
+      const groups = [...new Set(logos.map((l) => groupTitle(l.group) ?? "Организаторы"))];
+      done.push(`логотипов ${logos.length} (${groups.join(" / ")})`);
+    } else if (logos.length) done.push(`логотипы пропущены — партнёры уже есть (${event._count.partners}); заменить: --replace-partners`);
 
     const rest = [...photos];
     if (!event.coverUrl && rest.length) {
@@ -103,7 +124,7 @@ async function applyManifest() {
     report.push(`${entry.slug}: ${done.join(", ") || "нечего добавлять"}`);
   }
   console.log("ЗАПИСАНО В БАЗУ\n" + report.join("\n"));
-  console.log("\nНазвания организаторов взяты из подписей картинок или адресов сайтов — поправьте их в админке «Партнёры и клиенты».");
+  console.log("\nНазвания партнёров взяты из подписей картинок, уже известных логотипов или адресов сайтов — поправьте их в админке «Партнёры и клиенты».");
   await prisma.$disconnect();
 }
 
@@ -139,7 +160,7 @@ console.log(`Страниц мероприятий на старом сайте:
 const chrome = new Set<string>();
 for (const m of (await html(BASE + "/")).matchAll(/<img\b[^>]*>/gi)) chrome.add(attr(m[0], "src"));
 
-type Img = { file: string; src: string; alt: string; title: string; href: string; width: number; height: number };
+type Img = { file: string; src: string; alt: string; title: string; href: string; width: number; height: number; group: string; row: number; shownHeight: number };
 const manifest: { slug: string; url: string; title: string; images: Img[] }[] = [];
 
 for (const [href, slug] of posts) {
@@ -155,30 +176,54 @@ for (const [href, slug] of posts) {
   const seen = new Set<string>();
   const dir = path.join(OUT, slug);
   await mkdir(dir, { recursive: true });
-  for (const m of body.matchAll(/(<a\b[^>]*>\s*)?(<img\b[^>]*>)/gi)) {
-    const tag = m[2]!;
-    const src = attr(tag, "src") || attr(tag, "data-src");
-    if (!src || chrome.has(src) || seen.has(src) || /^data:|\.svg($|\?)/i.test(src) || /\/(t|g)\/|counter|metrika|captcha/i.test(src)) continue;
-    seen.add(src);
-    const full = src.match(/\/d\/[^/?#]+$/) && src.startsWith("/thumb/") ? src.replace(/^\/thumb\/.*?(\/d\/[^/?#]+)$/, "$1") : src;
-    let buf: Buffer | null = null;
-    for (const u of [full, src]) {
-      const res = await get(u.startsWith("http") ? u : BASE + u).catch(() => null);
-      if (res?.ok && /^image\//.test(res.headers.get("content-type") ?? "")) {
-        buf = Buffer.from(await res.arrayBuffer());
-        break;
-      }
+  const blockRe = /<\/?(?:p|div|td|tr|li|ul|ol|table|h[1-6]|figure|section|article|br)\b[^>]*>/gi;
+  const segments = body.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, "").split(blockRe);
+  const textOf = (seg: string) => decode(seg.replace(/<[^>]+>/g, " ")).replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+  let group = "";
+  for (const seg of segments) {
+    const imgs = [...seg.matchAll(/(<a\b[^>]*>\s*)?(<img\b[^>]*>)/gi)];
+    if (!imgs.length) {
+      const t = textOf(seg);
+      if (t) group = t.length <= 80 ? t : "";
+      continue;
     }
-    if (!buf) continue;
-    const meta = await sharp(buf).metadata().catch(() => null);
-    if (!meta?.width || !meta.height) continue;
-    const file = `${String(images.length + 1).padStart(2, "0")}-${decodeURIComponent(full.split("/").pop()!).replace(/[^\w.-]+/g, "_")}`;
-    await writeFile(path.join(dir, file), buf);
-    images.push({ file, src: full, alt: attr(tag, "alt"), title: attr(tag, "title"), href: m[1] ? attr(m[1], "href") : "", width: meta.width, height: meta.height });
+    for (const m of imgs) {
+      const tag = m[2]!;
+      const src = attr(tag, "src") || attr(tag, "data-src");
+      if (!src || chrome.has(src) || seen.has(src) || /^data:|\.svg($|\?)/i.test(src) || /\/(t|g)\/|counter|metrika|captcha/i.test(src)) continue;
+      seen.add(src);
+      const full = src.match(/\/d\/[^/?#]+$/) && src.startsWith("/thumb/") ? src.replace(/^\/thumb\/.*?(\/d\/[^/?#]+)$/, "$1") : src;
+      let buf: Buffer | null = null;
+      for (const u of [full, src]) {
+        const res = await get(u.startsWith("http") ? u : BASE + u).catch(() => null);
+        if (res?.ok && /^image\//.test(res.headers.get("content-type") ?? "")) {
+          buf = Buffer.from(await res.arrayBuffer());
+          break;
+        }
+      }
+      if (!buf) continue;
+      const meta = await sharp(buf).metadata().catch(() => null);
+      if (!meta?.width || !meta.height) continue;
+      const shown = Number(attr(tag, "height") || tag.match(/height:\s*(\d+)px/i)?.[1] || src.match(/\/\d+r(\d+)\//)?.[1] || 0);
+      const file = `${String(images.length + 1).padStart(2, "0")}-${decodeURIComponent(full.split("/").pop()!).replace(/[^\w.-]+/g, "_")}`;
+      await writeFile(path.join(dir, file), buf);
+      images.push({
+        file,
+        src: full,
+        alt: attr(tag, "alt"),
+        title: attr(tag, "title"),
+        href: m[1] ? attr(m[1], "href") : "",
+        width: meta.width,
+        height: meta.height,
+        group,
+        row: imgs.length,
+        shownHeight: shown,
+      });
+    }
   }
   manifest.push({ slug, url: BASE + href, title, images });
   console.log(`\n${slug}: картинок ${images.length}`);
-  for (const i of images) console.log(`  ${i.file}  ${i.width}x${i.height}${i.alt ? `  alt="${i.alt.slice(0, 50)}"` : ""}${i.href ? `  → ${i.href.slice(0, 60)}` : ""}`);
+  for (const i of images) console.log(`  ${i.file}  ${i.width}x${i.height}${i.alt ? `  alt="${i.alt.slice(0, 50)}"` : ""}${i.href ? `  → ${i.href.slice(0, 60)}` : ""}${i.row > 1 ? `  ряд ${i.row}` : ""}${i.group ? `  [${i.group.slice(0, 40)}]` : ""}`);
 }
 
 await mkdir(OUT, { recursive: true });

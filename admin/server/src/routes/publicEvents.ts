@@ -47,7 +47,7 @@ const include = {
     },
   },
   speakers: { orderBy: { sortOrder: "asc" }, select: { role: true, speaker: { select: { ...speakerBriefSelect, bio: true } } } },
-  partners: { orderBy: [{ level: "asc" }, { sortOrder: "asc" }], select: { level: true, partner: { select: { name: true, url: true, logoThumbUrl: true } } } },
+  partners: { orderBy: [{ level: "asc" }, { sortOrder: "asc" }], select: { level: true, groupTitle: true, partner: { select: { name: true, url: true, logoThumbUrl: true } } } },
   documents: {
     orderBy: { eventSortOrder: "asc" },
     select: { title: true, description: true, publicId: true, extension: true, size: true, fileUpdatedAt: true, eventSection: true },
@@ -111,7 +111,7 @@ export async function loadPublicEvent(slug: string) {
         sessions: d.sessions.map((s) => ({ ...s, speakers: s.speakers.map((sp) => ({ role: sp.role, ...speakerBrief(sp.speaker) })) })),
       })),
       speakers: e.speakers.map((s) => ({ role: s.role, ...speakerBrief(s.speaker), bio: s.speaker.bio })),
-      partners: e.partners.map((p) => ({ level: p.level, ...p.partner })),
+      partners: e.partners.map((p) => ({ level: p.level, groupTitle: p.groupTitle, ...p.partner })),
       documents: e.documents
         .filter((d) => d.eventSection === "MAIN")
         .map(({ eventSection: _s, publicId, ...d }) => ({ ...d, url: `/files/${publicId}` })),

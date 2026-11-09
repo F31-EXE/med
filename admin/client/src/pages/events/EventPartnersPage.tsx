@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { App, Button, Card, Empty, Flex, Select, Space, Spin, Typography } from "antd";
+import { App, AutoComplete, Button, Card, Empty, Flex, Select, Space, Spin, Typography } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { api } from "../../api/client";
 import { SortableList } from "../../components/SortableList";
@@ -11,7 +11,7 @@ import { PartnerSelect } from "../partners/PartnerSelect";
 import { hostOf, levelLabels, levelShort, levels, type PartnerBrief, type PartnerLevel } from "../partners/partnerTypes";
 import { EventShell } from "./EventTabs";
 
-type Row = { partnerId: string; level: PartnerLevel; partner: PartnerBrief };
+type Row = { partnerId: string; level: PartnerLevel; groupTitle: string | null; partner: PartnerBrief };
 
 const levelOptions = levels.map((value) => ({ value, label: levelShort[value] }));
 
@@ -40,7 +40,7 @@ function EventPartners({ eventId, readOnly }: { eventId: string; readOnly: boole
     mutationFn: () =>
       api(`/events/${eventId}/partners`, {
         method: "PUT",
-        body: { partners: levels.flatMap((l) => rows.filter((r) => r.level === l)).map(({ partnerId, level }) => ({ partnerId, level })) },
+        body: { partners: levels.flatMap((l) => rows.filter((r) => r.level === l)).map(({ partnerId, level, groupTitle }) => ({ partnerId, level, groupTitle })) },
       }),
     onSuccess: () => {
       message.success("Партнёры мероприятия сохранены");
@@ -58,8 +58,10 @@ function EventPartners({ eventId, readOnly }: { eventId: string; readOnly: boole
 
   function add(partner: PartnerBrief, level: PartnerLevel) {
     if (rows.some((r) => r.partnerId === partner.id)) return;
-    change([...rows, { partnerId: partner.id, level, partner }]);
+    change([...rows, { partnerId: partner.id, level, groupTitle: null, partner }]);
   }
+
+  const groupOptions = [...new Set(rows.map((r) => r.groupTitle).filter((g): g is string => !!g?.trim()))].map((value) => ({ value }));
 
   if (query.isPending) {
     return (
@@ -75,7 +77,7 @@ function EventPartners({ eventId, readOnly }: { eventId: string; readOnly: boole
   return (
     <>
       <Typography.Paragraph type="secondary">
-        Блок «Партнёры» на странице мероприятия. Логотипы выводятся по уровням в указанном порядке; порядок внутри уровня — перетаскиванием.
+        Блок «Партнёры» на странице мероприятия. Логотипы выводятся по уровням в указанном порядке; порядок внутри уровня — перетаскиванием. Чтобы разбить уровень на группы со своими заголовками (например, «Титульные спонсоры», «Участники выставки»), заполните у партнёров поле заголовка — пустое поле означает название уровня.
       </Typography.Paragraph>
 
       {levels.map((level) => {
@@ -104,7 +106,17 @@ function EventPartners({ eventId, readOnly }: { eventId: string; readOnly: boole
                         </div>
                       )}
                     </div>
-                    <Space>
+                    <Space wrap>
+                      <AutoComplete
+                        value={r.groupTitle ?? ""}
+                        options={groupOptions}
+                        disabled={readOnly}
+                        placeholder={levelLabels[r.level]}
+                        onChange={(v: string) => change(rows.map((x) => (x.partnerId === r.partnerId ? { ...x, groupTitle: v.trim() ? v : null } : x)))}
+                        filterOption={(input, o) => String(o?.value ?? "").toLowerCase().includes(input.toLowerCase())}
+                        style={{ width: 220 }}
+                        aria-label="Заголовок группы на сайте"
+                      />
                       <Select
                         value={r.level}
                         options={levelOptions}

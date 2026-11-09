@@ -156,7 +156,7 @@ eventPartnersRouter.get("/", async (req, res) => {
     orderBy: [{ level: "asc" }, { sortOrder: "asc" }],
     include: { partner: { select: brief } },
   });
-  res.json({ partners: rows.map((r) => ({ partnerId: r.partnerId, level: r.level, partner: r.partner })) });
+  res.json({ partners: rows.map((r) => ({ partnerId: r.partnerId, level: r.level, groupTitle: r.groupTitle, partner: r.partner })) });
 });
 
 eventPartnersRouter.put("/", async (req, res) => {
@@ -164,7 +164,13 @@ eventPartnersRouter.put("/", async (req, res) => {
   const { partners } = z
     .object({
       partners: z
-        .array(z.object({ partnerId: z.string(), level: z.enum(levels) }))
+        .array(
+          z.object({
+            partnerId: z.string(),
+            level: z.enum(levels),
+            groupTitle: z.string().trim().max(100).nullish().transform((v) => v || null),
+          }),
+        )
         .max(300)
         .refine((v) => new Set(v.map((p) => p.partnerId)).size === v.length, "Партнёр указан дважды"),
     })
