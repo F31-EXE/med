@@ -18,10 +18,14 @@ export function logoFile(file: string) {
 }
 
 async function onCanvas(logo: Buffer, width: number, height: number) {
+  const meta = await sharp(logo).metadata();
+  const w = meta.width ?? width;
+  const h = meta.height ?? height;
+  const scale = Math.min((width * 0.62) / w, (height * 0.62) / h, 3);
   const inner = await sharp(logo)
     .rotate()
     .flatten({ background: "#ffffff" })
-    .resize({ width: Math.round(width * 0.62), height: Math.round(height * 0.62), fit: "inside", withoutEnlargement: true })
+    .resize({ width: Math.max(1, Math.round(w * scale)), height: Math.max(1, Math.round(h * scale)), fit: "inside", kernel: "lanczos3" })
     .toBuffer();
   return sharp({ create: { width, height, channels: 3, background: "#ffffff" } })
     .composite([{ input: inner, gravity: "center" }])
