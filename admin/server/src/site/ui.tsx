@@ -279,7 +279,7 @@ export function ConsentCheck({ ctx, name = "consent" }: { ctx: SiteCtx; name?: s
   );
 }
 
-export function ContactForm({ ctx, source, title = "Оставить заявку", compact }: { ctx: SiteCtx; source: string; title?: string; compact?: boolean }) {
+export function ContactForm({ ctx, source, title = "Оставить заявку", compact, placeholder = "Расскажите о мероприятии: формат, даты, число участников" }: { ctx: SiteCtx; source: string; title?: string; compact?: boolean; placeholder?: string }) {
   return (
     <form className="js-form" method="post" action="/api/public/contact-requests" data-thanks={ctx.href("thanks")} noValidate>
       {title ? <h3>{title}</h3> : null}
@@ -307,7 +307,7 @@ export function ContactForm({ ctx, source, title = "Оставить заявк�
         </Field>
       </div>
       <Field name="comment" label="Комментарий">
-        <textarea className="textarea" id="f-comment" name="comment" maxLength={3000} placeholder="Расскажите о мероприятии: формат, даты, число участников" />
+        <textarea className="textarea" id="f-comment" name="comment" maxLength={3000} placeholder={placeholder} />
       </Field>
       <ConsentCheck ctx={ctx} />
       <button className="btn btn-block" type="submit">

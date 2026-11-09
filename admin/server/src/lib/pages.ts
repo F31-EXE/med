@@ -19,6 +19,7 @@ export const pageDefs: PageDef[] = [
   { key: "about", group: "main", title: "О компании", defaultPath: "/about", pathEditable: true, kind: "about", hint: "История, команда, отзывы; цифры компании берутся из настроек" },
   { key: "events", group: "main", title: "Мероприятия", defaultPath: "/events", pathEditable: false, kind: "text", hint: "Вводный текст над каталогом и SEO каталога" },
   { key: "news", group: "main", title: "Новости", defaultPath: "/news", pathEditable: false, kind: "text", hint: "Вводный текст над лентой и SEO ленты" },
+  { key: "education", group: "main", title: "Обучение", defaultPath: "/obuchenie", pathEditable: true, kind: "text", hint: "Описание программ обучения; документы подтягиваются из «Сведений → Образование», ниже — форма заявки на обучение" },
   { key: "contacts", group: "main", title: "Контакты", defaultPath: "/contacts", pathEditable: true, kind: "text", hint: "Телефоны, адрес и реквизиты берутся из настроек; здесь — дополнительный текст" },
   { key: "privacy", group: "service", title: "Политика конфиденциальности", defaultPath: "/privacy", pathEditable: true, kind: "text" },
   { key: "consent", group: "service", title: "Согласие на обработку персональных данных", defaultPath: "/consent", pathEditable: true, kind: "text" },

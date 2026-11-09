@@ -28,7 +28,7 @@ export async function sitemapXml() {
     { loc: "/events?tab=archive", priority: "0.5" },
     { loc: "/news", priority: "0.7" },
   ];
-  for (const key of ["about", "contacts", "privacy", "consent"]) {
+  for (const key of ["about", "education", "contacts", "privacy", "consent"]) {
     const p = pages.get(key)?.path;
     if (p) urls.push({ loc: p, priority: "0.6" });
   }

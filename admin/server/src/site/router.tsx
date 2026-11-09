@@ -8,6 +8,7 @@ import { eventView } from "./pages/event.js";
 import { newsListView, newsItemView } from "./pages/news.js";
 import { aboutView } from "./pages/about.js";
 import { contactsView } from "./pages/contacts.js";
+import { educationView } from "./pages/education.js";
 import { svedenView } from "./pages/sveden.js";
 import { searchView } from "./pages/search.js";
 import { notFoundView, errorView, textView } from "./pages/text.js";
@@ -98,6 +99,7 @@ siteRouter.get(
       if (p.path !== path) continue;
       if (key === "about") return aboutView(ctx);
       if (key === "contacts") return contactsView(ctx);
+      if (key === "education") return educationView(ctx);
       if (key === "search") return searchView(ctx, req);
       if (key === "privacy" || key === "consent" || key === "thanks") return textView(ctx, key);
     }

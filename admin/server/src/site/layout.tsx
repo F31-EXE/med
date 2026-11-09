@@ -110,6 +110,7 @@ function nav(ctx: SiteCtx) {
     { href: "/events", label: "Мероприятия" },
     { href: "/news", label: "Новости" },
     { href: ctx.href("about"), label: "О компании" },
+    { href: ctx.href("education"), label: "Обучение" },
     { href: ctx.href("contacts"), label: "Контакты" },
   ];
 }
@@ -300,6 +301,9 @@ function Footer({ ctx }: { ctx: SiteCtx }) {
             <ul>
               <li>
                 <a href={ctx.href("about")}>О компании</a>
+              </li>
+              <li>
+                <a href={ctx.href("education")}>Обучение</a>
               </li>
               <li>
                 <a href={ctx.href("contacts")}>Контакты</a>
