@@ -21,7 +21,13 @@ async function applyManifest() {
   const { prisma } = await import("../src/lib/prisma.js");
   const { saveFile } = await import("../src/lib/storage.js");
   type Item = { file: string; alt: string; title: string; href: string; width: number; height: number; group?: string; row?: number; shownHeight?: number };
-  const manifest = JSON.parse(await readFile(path.join(OUT, "manifest.json"), "utf8")) as { slug: string; images: Item[] }[];
+  const manifest = JSON.parse(await readFile(path.join(OUT, "manifest.json"), "utf8")) as {
+    slug: string;
+    images: Item[];
+    text?: string;
+    docs?: { file: string; title: string; original: string }[];
+  }[];
+  const { detectDocument, newPublicId, storeDocument } = await import("../src/lib/documents.js");
 
   const presets = {
     cover: { full: { width: 1920, height: 1080, fit: "inside" as const }, thumb: { width: 640, height: 360, fit: "cover" as const } },
@@ -73,7 +79,7 @@ async function applyManifest() {
   for (const entry of manifest) {
     const event = await prisma.event.findUnique({
       where: { slug: entry.slug },
-      select: { id: true, coverUrl: true, _count: { select: { partners: true, images: true } } },
+      select: { id: true, coverUrl: true, description: true, _count: { select: { partners: true, images: true, documents: true } } },
     });
     if (!event) {
       report.push(`${entry.slug}: мероприятия нет в базе`);
@@ -106,6 +112,30 @@ async function applyManifest() {
       const groups = [...new Set(logos.map((l) => groupTitle(l.group) ?? "Организаторы"))];
       done.push(`логотипов ${logos.length} (${groups.join(" / ")})`);
     } else if (logos.length) done.push(`логотипы пропущены — партнёры уже есть (${event._count.partners}); заменить: --replace-partners`);
+
+    if (entry.text && !event.description?.trim()) {
+      await prisma.event.update({ where: { id: event.id }, data: { description: entry.text.slice(0, 20000) } });
+      done.push(`описание (${entry.text.length} симв.)`);
+    } else if (entry.text) done.push("описание уже есть");
+
+    const files = entry.docs ?? [];
+    if (files.length && event._count.documents === 0) {
+      let n = 0;
+      for (const d of files) {
+        const buf = await readFile(path.join(dir, d.file));
+        let type: { extension: string; mimeType: string };
+        try {
+          type = detectDocument(d.original, buf);
+        } catch {
+          continue;
+        }
+        const fileKey = await storeDocument(buf, type.extension);
+        await prisma.document.create({
+          data: { publicId: newPublicId(), title: (groupTitle(d.title) ?? d.original).slice(0, 200), fileKey, originalName: d.original, extension: type.extension, mimeType: type.mimeType, size: buf.length, eventId: event.id, eventSection: "MAIN", eventSortOrder: n++ },
+        });
+      }
+      done.push(`документов ${n}`);
+    } else if (files.length) done.push(`документы уже есть (${event._count.documents})`);
 
     const rest = [...photos];
     if (!event.coverUrl && rest.length) {
@@ -161,7 +191,7 @@ const chrome = new Set<string>();
 for (const m of (await html(BASE + "/")).matchAll(/<img\b[^>]*>/gi)) chrome.add(attr(m[0], "src"));
 
 type Img = { file: string; src: string; alt: string; title: string; href: string; width: number; height: number; group: string; row: number; shownHeight: number };
-const manifest: { slug: string; url: string; title: string; images: Img[] }[] = [];
+const manifest: { slug: string; url: string; title: string; images: Img[]; text: string; docs: { file: string; title: string; original: string }[] }[] = [];
 
 for (const [href, slug] of posts) {
   const page = await html(BASE + href);
@@ -170,8 +200,13 @@ for (const [href, slug] of posts) {
     console.log(`\n${slug}: страница не открылась`);
     continue;
   }
-  const start = Math.max(0, page.search(/<h1/i));
-  const body = page.slice(start).replace(/<footer[\s\S]*$/i, "");
+  const contentAt = page.indexOf("g-page-article__text");
+  const start = contentAt > 0 ? page.lastIndexOf("<", contentAt) : Math.max(0, page.search(/<h1/i));
+  const tail = page.slice(start);
+  const stop = [tail.search(/mosaic-form/i), tail.indexOf("Есть вопросы?"), tail.search(/<footer/i)].filter((i) => i > 0);
+  const body = stop.length ? tail.slice(0, Math.min(...stop)) : tail;
+  const paragraphs: { text: string; heading: boolean }[] = [];
+  const docs: { file: string; title: string; original: string }[] = [];
   const images: Img[] = [];
   const seen = new Set<string>();
   const dir = path.join(OUT, slug);
@@ -181,12 +216,27 @@ for (const [href, slug] of posts) {
   const textOf = (seg: string) => decode(seg.replace(/<[^>]+>/g, " ")).replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
   let group = "";
   for (const seg of segments) {
+    for (const l of seg.matchAll(/<a\b[^>]*href="([^"]+\.(?:pdf|docx?|xlsx?))"[^>]*>([\s\S]*?)<\/a>/gi)) {
+      const link = decode(l[1]!);
+      const original = decodeURIComponent(link.split("/").pop()!);
+      if (docs.some((d) => d.original === original)) continue;
+      const res = await get(/^https?:/i.test(link) ? link : BASE + (link.startsWith("/") ? link : `/${link}`)).catch(() => null);
+      if (!res?.ok) continue;
+      const file = `doc-${String(docs.length + 1).padStart(2, "0")}-${original.replace(/[^\w.-]+/g, "_")}`;
+      await writeFile(path.join(dir, file), Buffer.from(await res.arrayBuffer()));
+      docs.push({ file, title: textOf(l[2]!).replace(/[.:]+$/, "") || original, original });
+    }
     const imgs = [...seg.matchAll(/(<a\b[^>]*>\s*)?(<img\b[^>]*>)/gi)];
     if (!imgs.length) {
       const t = textOf(seg);
-      if (t) group = t.length <= 80 ? t : "";
+      if (t) {
+        group = t.length <= 80 ? t : "";
+        paragraphs.push({ text: t, heading: false });
+      }
       continue;
     }
+    const last = paragraphs[paragraphs.length - 1];
+    if (group && last && last.text === group) last.heading = true;
     for (const m of imgs) {
       const tag = m[2]!;
       const src = attr(tag, "src") || attr(tag, "data-src");
@@ -221,8 +271,14 @@ for (const [href, slug] of posts) {
       });
     }
   }
-  manifest.push({ slug, url: BASE + href, title, images });
-  console.log(`\n${slug}: картинок ${images.length}`);
+  const docTitles = new Set(docs.map((d) => d.title.toLowerCase()));
+  const text = paragraphs
+    .filter((x) => !x.heading && x.text !== title && !docTitles.has(x.text.replace(/[.:]+$/, "").toLowerCase()))
+    .map((x) => x.text)
+    .join("\n\n");
+  manifest.push({ slug, url: BASE + href, title, images, text, docs });
+  console.log(`\n${slug}: картинок ${images.length}, текст ${text.length} симв., файлов ${docs.length}`);
+  for (const d of docs) console.log(`  файл: ${d.title.slice(0, 70)} (${d.original})`);
   for (const i of images) console.log(`  ${i.file}  ${i.width}x${i.height}${i.alt ? `  alt="${i.alt.slice(0, 50)}"` : ""}${i.href ? `  → ${i.href.slice(0, 60)}` : ""}${i.row > 1 ? `  ряд ${i.row}` : ""}${i.group ? `  [${i.group.slice(0, 40)}]` : ""}`);
 }
 
