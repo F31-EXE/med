@@ -164,8 +164,8 @@ async function get(url: string) {
 }
 
 async function html(url: string) {
-  const res = await get(url);
-  return res.ok ? await res.text() : "";
+  const res = await get(url).catch(() => null);
+  return res?.ok ? await res.text() : "";
 }
 
 const decode = (s: string) => s.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
@@ -175,8 +175,10 @@ const listPages = ["/meropriyatiya", "/meropriyatiya/archive"];
 for (let y = 2018; y <= new Date().getFullYear() + 1; y++) listPages.push(`/meropriyatiya/archive?year=${y}`);
 for (let p = 1; p <= 6; p++) listPages.push(`/meropriyatiya/archive/p/${p}`);
 
+const fromDirAt = process.argv.indexOf("--from-dir");
+const fromDir = fromDirAt > 0 ? process.argv[fromDirAt + 1] : undefined;
 const posts = new Map<string, string>();
-for (const p of listPages) {
+for (const p of fromDir ? [] : listPages) {
   const page = await html(BASE + p);
   for (const m of page.matchAll(/href="(\/meropriyatiya\/post\/[^"#?]+)"/g)) {
     const href = decode(m[1]!);
@@ -185,7 +187,36 @@ for (const p of listPages) {
     if (hit && !posts.has(href)) posts.set(href, hit.slug);
   }
 }
-console.log(`Страниц мероприятий на старом сайте: ${posts.size} (адрес: ${BASE})`);
+const sources: { slug: string; url: string; page: string }[] = [];
+if (fromDir) {
+  const { readdir } = await import("node:fs/promises");
+  const months = ["январ", "феврал", "март", "апрел", "ма", "июн", "июл", "август", "сентябр", "октябр", "ноябр", "декабр"];
+  const slugs = new Set(data.events.map((e) => e.slug));
+  const unknown: string[] = [];
+  for (const name of (await readdir(fromDir)).filter((f) => /\.(html?|txt)$/i.test(f)).sort()) {
+    const page = await readFile(path.join(fromDir, name), "utf8");
+    const stem = name.replace(/\.[^.]+$/, "");
+    const tail = page.match(/\/meropriyatiya\/post\/([^"'\s<>?#]+)/)?.[1] ?? stem;
+    let slug = slugs.has(stem) ? stem : prefixes.find((x) => tail.startsWith(x.prefix) || stem.startsWith(x.prefix))?.slug;
+    if (!slug) {
+      const plain = decode(page.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").slice(0, 1500).toLowerCase();
+      const dm = plain.match(/(\d{1,2})(?:\s*[-–]\s*\d{1,2})?[\s.-]+([а-яё]+)\s+(\d{4})/);
+      const mi = dm ? months.findIndex((m) => dm[2]!.startsWith(m)) : -1;
+      if (dm && mi >= 0) {
+        const iso = `${dm[3]}-${String(mi + 1).padStart(2, "0")}-${dm[1]!.padStart(2, "0")}`;
+        const hits = data.events.filter((e) => e.startDate === iso);
+        if (hits.length === 1) slug = hits[0]!.slug;
+      }
+    }
+    if (slug) sources.push({ slug, url: path.join(fromDir, name), page });
+    else unknown.push(name);
+  }
+  console.log(`Файлов с HTML: ${sources.length + unknown.length}, мероприятие определено у ${sources.length}`);
+  if (unknown.length) console.log(`Не удалось определить мероприятие — переименуйте файл в адрес мероприятия (например, chaklinskie-chteniya-2019.html):\n  ${unknown.join("\n  ")}`);
+} else {
+  for (const [href, slug] of posts) sources.push({ slug, url: BASE + href, page: await html(BASE + href) });
+  console.log(`Страниц мероприятий на старом сайте: ${posts.size} (адрес: ${BASE})`);
+}
 
 const chrome = new Set<string>();
 for (const m of (await html(BASE + "/")).matchAll(/<img\b[^>]*>/gi)) chrome.add(attr(m[0], "src"));
@@ -193,8 +224,7 @@ for (const m of (await html(BASE + "/")).matchAll(/<img\b[^>]*>/gi)) chrome.add(
 type Img = { file: string; src: string; alt: string; title: string; href: string; width: number; height: number; group: string; row: number; shownHeight: number };
 const manifest: { slug: string; url: string; title: string; images: Img[]; text: string; docs: { file: string; title: string; original: string }[] }[] = [];
 
-for (const [href, slug] of posts) {
-  const page = await html(BASE + href);
+for (const { slug, url, page } of sources) {
   const title = decode(page.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1]?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() ?? "");
   if (!page || /Страница не найдена/.test(title)) {
     console.log(`\n${slug}: страница не открылась`);
@@ -230,7 +260,7 @@ for (const [href, slug] of posts) {
     if (!imgs.length) {
       const t = textOf(seg);
       if (t) {
-        group = t.length <= 80 ? t : "";
+        group = t.length <= 80 && !/[.!?…]$/.test(t) && (/:$/.test(t) || t === t.toUpperCase() || t.length <= 40) ? t : "";
         paragraphs.push({ text: t, heading: false });
       }
       continue;
@@ -276,7 +306,7 @@ for (const [href, slug] of posts) {
     .filter((x) => !x.heading && x.text !== title && !docTitles.has(x.text.replace(/[.:]+$/, "").toLowerCase()))
     .map((x) => x.text)
     .join("\n\n");
-  manifest.push({ slug, url: BASE + href, title, images, text, docs });
+  manifest.push({ slug, url, title, images, text, docs });
   console.log(`\n${slug}: картинок ${images.length}, текст ${text.length} симв., файлов ${docs.length}`);
   for (const d of docs) console.log(`  файл: ${d.title.slice(0, 70)} (${d.original})`);
   for (const i of images) console.log(`  ${i.file}  ${i.width}x${i.height}${i.alt ? `  alt="${i.alt.slice(0, 50)}"` : ""}${i.href ? `  → ${i.href.slice(0, 60)}` : ""}${i.row > 1 ? `  ряд ${i.row}` : ""}${i.group ? `  [${i.group.slice(0, 40)}]` : ""}`);
