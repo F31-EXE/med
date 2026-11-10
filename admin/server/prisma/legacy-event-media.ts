@@ -304,6 +304,7 @@ for (const { slug, url, page } of sources) {
   const docTitles = new Set(docs.map((d) => d.title.toLowerCase()));
   const text = paragraphs
     .filter((x) => !x.heading && x.text !== title && !docTitles.has(x.text.replace(/[.:]+$/, "").toLowerCase()))
+    .filter((x) => !/^(страница|раздел)\s+наход[а-я]*\s+в\s+(работе|разработке)\.?$/i.test(x.text))
     .map((x) => x.text)
     .join("\n\n");
   manifest.push({ slug, url, title, images, text, docs });
