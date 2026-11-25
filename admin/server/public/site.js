@@ -289,10 +289,11 @@
 
   function showErrors(form, fields, message) {
     var first = null;
+    var orphans = [];
     Object.keys(fields || {}).forEach(function (name) {
       var key = name.split(".")[0];
       var field = $('[data-field="' + key + '"]', form);
-      if (!field) return;
+      if (!field) { orphans.push(fields[name]); return; }
       field.classList.add("has-error");
       var err = $(".ferr", field);
       if (err) err.textContent = fields[name];
@@ -304,7 +305,7 @@
       }
     });
     var msg = $(".form-msg", form);
-    if (msg && (message || !first)) msg.textContent = message || "Не удалось отправить форму";
+    if (msg && (message || !first || orphans.length)) msg.textContent = [message || "Не удалось отправить форму"].concat(orphans).join(". ");
     (first || msg).focus && (first || msg).focus();
     if (!first && msg) msg.scrollIntoView({ block: "center", behavior: "smooth" });
   }

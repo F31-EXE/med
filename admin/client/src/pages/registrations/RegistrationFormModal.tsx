@@ -104,14 +104,14 @@ export function RegistrationFormModal({ event, open, onClose }: { event: Registr
             <Row gutter={16}>
               {fields?.workplace && (
                 <Col xs={24} md={12}>
-                  <Form.Item label="Место работы" name="workplace">
+                  <Form.Item label="Место работы" name="workplace" rules={[{ required: true, whitespace: true, message: "Укажите место работы" }]}>
                     <Input maxLength={300} />
                   </Form.Item>
                 </Col>
               )}
               {fields?.position && (
                 <Col xs={24} md={12}>
-                  <Form.Item label="Должность" name="position">
+                  <Form.Item label="Должность" name="position" rules={[{ required: true, whitespace: true, message: "Укажите должность" }]}>
                     <Input maxLength={200} />
                   </Form.Item>
                 </Col>

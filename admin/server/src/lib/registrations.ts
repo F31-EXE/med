@@ -71,7 +71,7 @@ export function registrationInputSchema(event: Pick<Event, "registrationFields" 
   return z.object({
     lastName: z.string().trim().min(1, "Введите фамилию").max(60),
     firstName: z.string().trim().min(1, "Введите имя").max(60),
-    middleName: fields.middleName ? optText(60) : z.any().transform(() => null),
+    middleName: fields.middleName ? optText(60) : z.any().optional().transform(() => null),
     email: z.string().trim().toLowerCase().email("Введите корректный e-mail").max(200),
     phone: z
       .string({ error: "Введите телефон" })
@@ -81,8 +81,8 @@ export function registrationInputSchema(event: Pick<Event, "registrationFields" 
         return phone ?? "";
       }),
     specialtyId: z.string({ error: "Выберите специальность" }).min(1, "Выберите специальность"),
-    workplace: fields.workplace ? optText(300) : z.any().transform(() => null),
-    position: fields.position ? optText(200) : z.any().transform(() => null),
+    workplace: fields.workplace ? z.string({ error: "Укажите место работы" }).trim().min(1, "Укажите место работы").max(300, "Не длиннее 300 символов") : z.any().optional().transform(() => null),
+    position: fields.position ? z.string({ error: "Укажите должность" }).trim().min(1, "Укажите должность").max(200, "Не длиннее 200 символов") : z.any().optional().transform(() => null),
     city: z.string().trim().min(1, "Введите город").max(100),
     format: z.enum(participationFormats, { error: "Выберите формат участия" }).refine((f) => event.registrationFormats.includes(f), {
       message: "Этот формат недоступен для мероприятия",
@@ -97,9 +97,9 @@ export function registrationInputSchema(event: Pick<Event, "registrationFields" 
             if (!snils) ctx.addIssue({ code: "custom", message: "Проверьте номер СНИЛС" });
             return snils;
           })
-      : z.any().transform(() => null),
+      : z.any().optional().transform(() => null),
     consentPersonalData: z.literal(true, { error: "Нужно согласие на обработку персональных данных" }),
-    consentMailing: fields.mailingConsent ? z.boolean().default(false) : z.any().transform(() => false),
+    consentMailing: fields.mailingConsent ? z.boolean().default(false) : z.any().optional().transform(() => false),
   });
 }
 

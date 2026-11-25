@@ -253,13 +253,13 @@ function RegistrationForm({ ctx, e }: { ctx: SiteCtx; e: Ev }) {
       {f.workplace || f.position ? (
         <div className="row2">
           {f.workplace ? (
-            <Field name="workplace" label="Место работы">
-              <input className="input" id="f-workplace" name="workplace" autoComplete="organization" maxLength={300} />
+            <Field name="workplace" label="Место работы" required>
+              <input className="input" id="f-workplace" name="workplace" autoComplete="organization" required maxLength={300} />
             </Field>
           ) : null}
           {f.position ? (
-            <Field name="position" label="Должность">
-              <input className="input" id="f-position" name="position" autoComplete="organization-title" maxLength={200} />
+            <Field name="position" label="Должность" required>
+              <input className="input" id="f-position" name="position" autoComplete="organization-title" required maxLength={200} />
             </Field>
           ) : null}
         </div>
